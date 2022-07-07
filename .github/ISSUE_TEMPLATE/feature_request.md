@@ -11,4 +11,4 @@ assignees: ''
 기능 설명 : 
 
 **To-Do List**
-- [  ]
+- [ ]
