@@ -16,7 +16,7 @@
 ![AWS](https://img.shields.io/badge/AWS-%23FF9900.svg?style=for-the-badge&logo=amazon-aws&logoColor=white)
 
 ### 🧑‍💻 Developers   
-| 주효식 | 강민재 |
-| :---: | :---: | 
-|[HYOSITIVE](https://github.com/HYOSITIVE)|[m1njae](https://github.com/m1njae)| 
+| 주효식 HYOSITIVE | 강민재 m1njae |
+| :---: | :---: |
+|<a href="https://github.com/HYOSITIVE"><img src="https://user-images.githubusercontent.com/21357387/177687634-9498573e-7d2b-42f5-b312-66183e9593f3.jpg" width="200px" height="200px" />|<a href="https://github.com/m1njae"><img src ="https://user-images.githubusercontent.com/21357387/177687625-92731611-1e29-41e0-9e87-8bc3ef1ddac3.jpg" width = "200px" height="200px" />
 <img width="500" alt="광기" src="https://user-images.githubusercontent.com/21357387/177604314-2c322887-4e75-4c12-8b67-37e40173af19.png">
