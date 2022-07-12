@@ -10,5 +10,5 @@ export interface ScheduleInfo {
   isCompleted: boolean;
   isReschedule: boolean;
   isRoutine: boolean;
-  orderIndex: Number;
+  orderIndex: number;
 }

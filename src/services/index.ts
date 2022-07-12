@@ -1,4 +1,7 @@
 import InformationService from './InformationService';
+import ScheduleService from './ScheduleService';
 
-//service index file
-export { InformationService };
+export { 
+  InformationService,
+  ScheduleService
+};
