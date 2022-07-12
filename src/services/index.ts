@@ -1,2 +1,3 @@
-//service index file
-export {};
+import ScheduleService from './ScheduleService';
+
+export { ScheduleService };
