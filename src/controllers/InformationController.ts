@@ -7,7 +7,7 @@ import InformationService from '../services/InformationService';
 
 /**
  * @route POST /information/days
- * @desc Create dailyNote
+ * @desc Create dailyMemo
  * @access Public
  */
 const createDailyMemo = async (req: Request, res: Response): Promise<void> => {
