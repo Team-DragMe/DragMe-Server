@@ -14,6 +14,11 @@ const InformationSchema = new mongoose.Schema(
     value: {
       type: String,
     },
+    userId: {
+      type: mongoose.Types.ObjectId,
+      required: true,
+      ref: 'User',
+    },
   },
   {
     timestamps: true,
