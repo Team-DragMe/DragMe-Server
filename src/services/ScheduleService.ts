@@ -1,7 +1,9 @@
 import Schedule from '../models/Schedule';
 import { ScheduleCreateDto } from '../interfaces/schedule/ScheduleCreateDto';
 
-const createSchedule = async (scheduleCreateDto: ScheduleCreateDto) => {
+const createSchedule = async (
+  scheduleCreateDto: ScheduleCreateDto
+): Promise<void> => {
   try {
     // 이미 존재하는 계획블록 조회 (orderIndex로 정렬)
     const existingSchedules = await Schedule.find({
