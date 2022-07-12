@@ -1,3 +1,7 @@
+import InformationController from './InformationController';
 import ScheduleController from './ScheduleController';
 
-export { ScheduleController };
+export {
+  InformationController,
+  ScheduleController
+};

@@ -1,3 +1,7 @@
+import InformationService from './InformationService';
 import ScheduleService from './ScheduleService';
 
-export { ScheduleService };
+export { 
+  InformationService,
+  ScheduleService
+};
