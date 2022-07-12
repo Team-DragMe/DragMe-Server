@@ -1,4 +1,4 @@
+import InformationController from './InformationController';
+
 // controller index file
-export {
-    
-}
+export { InformationController };
