@@ -2,7 +2,7 @@ import express, { Request, response, Response } from 'express';
 import statusCode from '../modules/statusCode';
 import responseMessage from '../modules/responseMessage';
 import util from '../modules/util';
-import { DailyNoteCreateDto } from '../interfaces/information/DailyNoteCreateDto';
+import { DailyMemoCreateDto } from '../interfaces/information/DailyMemoCreateDto';
 import InformationService from '../services/InformationService';
 
 /**
@@ -10,10 +10,10 @@ import InformationService from '../services/InformationService';
  * @desc Create dailyNote
  * @access Public
  */
-const createDailyNote = async (req: Request, res: Response): Promise<void> => {
-  const dailyNoteCreateDto: DailyNoteCreateDto = req.body;
+const createDailyMemo = async (req: Request, res: Response): Promise<void> => {
+  const dailyMemoCreateDto: DailyMemoCreateDto = req.body;
   try {
-    await InformationService.createDailyNote(dailyNoteCreateDto);
+    await InformationService.createDailyMemo(dailyMemoCreateDto);
 
     res
       .status(statusCode.CREATED)
@@ -33,4 +33,4 @@ const createDailyNote = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-export default { createDailyNote };
+export default { createDailyMemo };
