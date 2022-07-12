@@ -1,4 +1,3 @@
-// controller index file
-export {
-    
-}
+import ScheduleController from './ScheduleController';
+
+export { ScheduleController };
