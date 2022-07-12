@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-export interface DailyNoteCreateDto {
+export interface DailyMemoCreateDto {
   date: string;
   type: string;
   value: string;
