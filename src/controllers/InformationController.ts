@@ -18,7 +18,7 @@ const createDailyMemo = async (req: Request, res: Response) => {
     res
       .status(statusCode.CREATED)
       .send(
-        util.success(statusCode.CREATED, responseMessage.CREATED_MEMO_SUCCESS)
+        util.success(statusCode.CREATED, responseMessage.CREATE_MEMO_SUCCESS)
       );
   } catch (error) {
     console.log(error);
