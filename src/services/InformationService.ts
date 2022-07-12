@@ -1,31 +1,31 @@
 import mongoose from 'mongoose';
-import { DailyNoteCreateDto } from '../interfaces/information/DailyNoteCreateDto';
+import { DailyMemoCreateDto } from '../interfaces/information/DailyMemoCreateDto';
 import Information from '../models/Information';
 
-const createDailyNote = async (
-  dailyNoteCreateDto: DailyNoteCreateDto
+const createDailyMemo = async (
+  dailyMemoCreateDto: DailyMemoCreateDto
 ): Promise<void> => {
   try {
     const userId = '62cd6eb82b6b4e92c7fc08f1'; // 임시 구현
-    dailyNoteCreateDto.userId = new mongoose.Types.ObjectId(userId); // 명시적으로 결정
+    dailyMemoCreateDto.userId = new mongoose.Types.ObjectId(userId); // 명시적으로 결정
 
     const isMemo = await Information.find({
-      date: dailyNoteCreateDto.date,
-      type: dailyNoteCreateDto.type,
+      date: dailyMemoCreateDto.date,
+      type: dailyMemoCreateDto.type,
     });
     if (isMemo.length === 0) {
-      const dailyNote = new Information(dailyNoteCreateDto);
+      const dailyNote = new Information(dailyMemoCreateDto);
       await dailyNote.save();
     } else {
       await Information.findOneAndUpdate(
         {
           $and: [
-            { userId: dailyNoteCreateDto.userId },
-            { date: dailyNoteCreateDto.date },
+            { userId: dailyMemoCreateDto.userId },
+            { date: dailyMemoCreateDto.date },
           ],
         },
         {
-          value: dailyNoteCreateDto.value,
+          value: dailyMemoCreateDto.value,
         },
         { new: true }
       );
@@ -35,4 +35,4 @@ const createDailyNote = async (
     throw error;
   }
 };
-export default { createDailyNote };
+export default { createDailyMemo };
