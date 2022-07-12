@@ -5,7 +5,7 @@ const message = {
   INTERNAL_SERVER_ERROR: '서버 내부 오류',
 
   //dailyNote
-  CREATED_MEMO_SUCCESS: '하루 메모 작성 성공',
+  CREATE_MEMO_SUCCESS: '하루 메모 작성 성공',
 };
 
 export default message;
