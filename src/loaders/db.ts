@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import config from '../config';
 import User from '../models/User';
 import Information from '../models/Information';
+import Schedule from '../models/Schedule';
 
 const connectDB = async () => {
   try {
@@ -17,6 +18,10 @@ const connectDB = async () => {
 
     Information.createCollection().then(function (collection) {
       console.log('Information Collection is created!');
+    });
+
+    Schedule.createCollection().then(function (collection) {
+      console.log('Schedule Collection is created!');
     });
   } catch (err: any) {
     console.error(err.message);
