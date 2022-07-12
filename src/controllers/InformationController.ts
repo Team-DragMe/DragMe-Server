@@ -10,7 +10,7 @@ import InformationService from '../services/InformationService';
  * @desc Create dailyMemo
  * @access Public
  */
-const createDailyMemo = async (req: Request, res: Response): Promise<void> => {
+const createDailyMemo = async (req: Request, res: Response) => {
   const dailyMemoCreateDto: DailyMemoCreateDto = req.body;
   try {
     await InformationService.createDailyMemo(dailyMemoCreateDto);
