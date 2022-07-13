@@ -3,7 +3,7 @@ import Schedule from '../models/Schedule';
 import { ScheduleCreateDto } from '../interfaces/schedule/ScheduleCreateDto';
 import { ScheduleListGetDto } from '../interfaces/schedule/ScheduleListGetDto';
 import { ScheduleUpdateDto } from '../interfaces/schedule/ScheduleUpdateDto';
-import { ScheduleInfo } from '../interfaces/schedule/ScheduleInfo';\
+import { ScheduleInfo } from '../interfaces/schedule/ScheduleInfo';
 
 const createSchedule = async (
   scheduleCreateDto: ScheduleCreateDto
@@ -38,21 +38,21 @@ const createSchedule = async (
   }
 };
 
-const dayReschedule = async (date: string): Promise<void> => {
+const dayReschedule = async (
+  scheduleId: mongoose.Types.ObjectId
+): Promise<ScheduleInfo | null> => {
   try {
-    //계획블록 조회
-    const scheduleId = new mongoose.Types.ObjectId('62cd879d1f0329b6e236522b');
-
-    //계획블록 id를 찾아서 isReschedule true로 전환
-    await Schedule.findOneAndUpdate(
+    //계획블록 id를 찾아서 isReschedule true로 전환, 시간 데이터 삭제
+    const delaySchedule = await Schedule.findOneAndUpdate(
       {
         _id: scheduleId,
       },
       {
-        isReschedule: true,
+        $set: { isReschedule: true, timeSets: [] },
       },
       { new: true }
     );
+    return delaySchedule;
   } catch (error) {
     console.log(error);
     throw error;
