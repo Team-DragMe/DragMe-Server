@@ -1,32 +1,32 @@
 import mongoose from 'mongoose';
-import { DailyMemoCreateDto } from '../interfaces/information/DailyMemoCreateDto';
+import { InformationCreateDto } from '../interfaces/information/InformationCreateDto';
 import { InformationResponseDto } from '../interfaces/information/InformationResponseDto';
 import Information from '../models/Information';
 
 const createDailyMemo = async (
-  dailyMemoCreateDto: DailyMemoCreateDto
+  informationCreateDto: InformationCreateDto
 ): Promise<void> => {
   try {
     const userId = '62cd6eb82b6b4e92c7fc08f1'; // 임시 구현
-    dailyMemoCreateDto.userId = new mongoose.Types.ObjectId(userId); // 명시적으로 결정
-    dailyMemoCreateDto.type = 'memo';
+    informationCreateDto.userId = new mongoose.Types.ObjectId(userId); // 명시적으로 결정
+    informationCreateDto.type = 'memo';
     const isMemo = await Information.find({
-      date: dailyMemoCreateDto.date,
+      date: informationCreateDto.date,
       type: 'memo',
     });
     if (isMemo.length === 0) {
-      const dailyNote = new Information(dailyMemoCreateDto);
+      const dailyNote = new Information(informationCreateDto);
       await dailyNote.save();
     } else {
       await Information.findOneAndUpdate(
         {
           $and: [
-            { userId: dailyMemoCreateDto.userId },
-            { date: dailyMemoCreateDto.date },
+            { userId: informationCreateDto.userId },
+            { date: informationCreateDto.date },
           ],
         },
         {
-          value: dailyMemoCreateDto.value,
+          value: informationCreateDto.value,
         },
         { new: true }
       );
@@ -76,4 +76,39 @@ const getDailyInformation = async (
     throw error;
   }
 };
-export default { createDailyMemo, getDailyInformation };
+
+const createEmoji = async (
+  informationCreateDto: InformationCreateDto
+): Promise<void> => {
+  try {
+    const userId = '62cd6eb82b6b4e92c7fc08f1'; // 임시 구현
+    informationCreateDto.userId = new mongoose.Types.ObjectId(userId); // 명시적으로 결정
+    informationCreateDto.type = 'emoji';
+
+    const isEmoji = await Information.find({
+      date: informationCreateDto.date,
+      type: 'emoji',
+    });
+    if (isEmoji.length === 0) {
+      const newEmoji = new Information(informationCreateDto);
+      await newEmoji.save();
+    } else {
+      await Information.findOneAndUpdate(
+        {
+          $and: [
+            { userId: informationCreateDto.userId },
+            { date: informationCreateDto.date },
+          ],
+        },
+        {
+          value: informationCreateDto.value,
+        },
+        { new: true }
+      );
+    }
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+export default { createDailyMemo, getDailyInformation, createEmoji };
