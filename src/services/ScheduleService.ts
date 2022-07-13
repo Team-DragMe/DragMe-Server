@@ -33,7 +33,7 @@ const createSchedule = async (scheduleCreateDto: ScheduleCreateDto) => {
   }
 };
 
-const reschedule = async (date: string): Promise<void> => {
+const dayReschedule = async (date: string): Promise<void> => {
   try {
     //계획블록 조회
     const scheduleId = new mongoose.Types.ObjectId('62cd879d1f0329b6e236522b');
@@ -56,5 +56,5 @@ const reschedule = async (date: string): Promise<void> => {
 
 export default {
   createSchedule,
-  reschedule,
+  dayReschedule,
 };
