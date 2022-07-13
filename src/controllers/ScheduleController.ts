@@ -46,7 +46,7 @@ const createSchedule = async (req: Request, res: Response) => {
  * @desc Delay Schedule
  * @access Public
  */
-const reschedule = async (req: Request, res: Response) => {
+const dayReschedule = async (req: Request, res: Response) => {
   const { date } = req.query;
   try {
     if (!date) {
@@ -54,7 +54,7 @@ const reschedule = async (req: Request, res: Response) => {
         .status(statusCode.BAD_REQUEST)
         .send(util.fail(statusCode.BAD_REQUEST, message.NULL_VALUE));
     } else {
-      await ScheduleService.reschedule(date as string);
+      await ScheduleService.dayReschedule(date as string);
     }
     res
       .status(statusCode.OK)
@@ -73,5 +73,5 @@ const reschedule = async (req: Request, res: Response) => {
 };
 export default {
   createSchedule,
-  reschedule,
+  dayReschedule,
 };
