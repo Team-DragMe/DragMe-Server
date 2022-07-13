@@ -1,13 +1,16 @@
 import mongoose from 'mongoose';
 import Schedule from '../models/Schedule';
 import { ScheduleCreateDto } from '../interfaces/schedule/ScheduleCreateDto';
+import { ScheduleListGetDto } from '../interfaces/schedule/ScheduleListGetDto';
 
-const createSchedule = async (scheduleCreateDto: ScheduleCreateDto) => {
+const createSchedule = async (
+  scheduleCreateDto: ScheduleCreateDto
+): Promise<void> => {
   try {
     // 이미 존재하는 계획블록 조회 (orderIndex로 정렬)
     const existingSchedules = await Schedule.find({
       date: scheduleCreateDto.date,
-      userId: scheduleCreateDto.userId._id,
+      userId: scheduleCreateDto.userId,
     }).sort({ orderIndex: 1 });
 
     // 새로 생성할 계획블록의 index 계산
@@ -54,7 +57,25 @@ const dayReschedule = async (date: string): Promise<void> => {
   }
 };
 
+const getDailySchedules = async (
+  date: string,
+  userId: mongoose.Types.ObjectId
+): Promise<ScheduleListGetDto> => {
+  try {
+    const dailySchedules = await Schedule.find({
+      date: date,
+      userId: userId,
+    }).sort({ orderIndex: 1 });
+
+    return { schedules: dailySchedules };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
 export default {
   createSchedule,
   dayReschedule,
+  getDailySchedules,
 };

@@ -23,7 +23,7 @@ const createSchedule = async (req: Request, res: Response) => {
   }
 
   try {
-    const schedule = await ScheduleService.createSchedule(scheduleCreateDto);
+    await ScheduleService.createSchedule(scheduleCreateDto);
 
     res
       .status(statusCode.CREATED)
@@ -71,7 +71,50 @@ const dayReschedule = async (req: Request, res: Response) => {
       );
   }
 };
+
+/**
+ * @route GET /schedule/days?date=
+ * @desc Get Daily Schedules
+ * @access Public
+ */
+const getDailySchedules = async (req: Request, res: Response) => {
+  const { date } = req.query;
+  const userId = new mongoose.Types.ObjectId('62cd27ae39f42cfbf520009a'); // 임시 구현
+  if (!date) {
+    return res
+      .status(statusCode.BAD_REQUEST)
+      .send(util.fail(statusCode.BAD_REQUEST, message.NULL_VALUE));
+  }
+
+  try {
+    const dailySchedules = await ScheduleService.getDailySchedules(
+      date as string,
+      userId
+    );
+    res
+      .status(statusCode.OK)
+      .send(
+        util.success(
+          statusCode.OK,
+          message.GET_DAILY_SCHEDULES_SUCCESS,
+          dailySchedules
+        )
+      );
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(statusCode.INTERNAL_SERVER_ERROR)
+      .send(
+        util.fail(
+          statusCode.INTERNAL_SERVER_ERROR,
+          message.INTERNAL_SERVER_ERROR
+        )
+      );
+  }
+};
+
 export default {
   createSchedule,
   dayReschedule,
+  getDailySchedules,
 };
