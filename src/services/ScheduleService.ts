@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import Schedule from '../models/Schedule';
 import { ScheduleCreateDto } from '../interfaces/schedule/ScheduleCreateDto';
 import { ScheduleListGetDto } from '../interfaces/schedule/ScheduleListGetDto';
+import { RescheduleListGetDto } from '../interfaces/schedule/RescheduleListGetDto';
 import { ScheduleUpdateDto } from '../interfaces/schedule/ScheduleUpdateDto';
 import { ScheduleInfo } from '../interfaces/schedule/ScheduleInfo';
 
@@ -76,6 +77,21 @@ const getDailySchedules = async (
   }
 };
 
+const getReschedules = async (
+  userId: mongoose.Types.ObjectId
+): Promise<RescheduleListGetDto> => {
+  try {
+    const delaySchedules = await Schedule.find({
+      userId: userId,
+      isReschedule: true,
+    }).sort({ orderIndex: 1 });
+
+    return { schedules: delaySchedules };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
 const updateScheduleTitle = async (
   scheduleId: mongoose.Types.ObjectId,
   scheduleUpdateDto: ScheduleUpdateDto
@@ -102,5 +118,6 @@ export default {
   createSchedule,
   dayReschedule,
   getDailySchedules,
+  getReschedules,
   updateScheduleTitle,
 };
