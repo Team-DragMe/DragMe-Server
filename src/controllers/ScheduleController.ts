@@ -6,6 +6,7 @@ import { ScheduleCreateDto } from '../interfaces/schedule/ScheduleCreateDto';
 import ScheduleService from '../services/ScheduleService';
 import mongoose from 'mongoose';
 import { ScheduleUpdateDto } from '../interfaces/schedule/ScheduleUpdateDto';
+import Schedule from '../models/Schedule';
 
 /**
  * @route POST /schedule
@@ -114,7 +115,32 @@ const getDailySchedules = async (req: Request, res: Response) => {
       );
   }
 };
-
+/**
+ * @route GET /schedule/delay
+ * @desc Get Day Reschedules
+ * @access Public
+ */
+const getReschedules = async (req: Request, res: Response) => {
+  const userId = new mongoose.Types.ObjectId('62cd27ae39f42cfbf520009a');
+  try {
+    const data = await ScheduleService.getReschedules(userId);
+    return res
+      .status(statusCode.OK)
+      .send(
+        util.success(statusCode.OK, message.GET_DELAY_SCHEDULES_SUCCESS, data)
+      );
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(statusCode.INTERNAL_SERVER_ERROR)
+      .send(
+        util.fail(
+          statusCode.INTERNAL_SERVER_ERROR,
+          message.INTERNAL_SERVER_ERROR
+        )
+      );
+  }
+};
 /**
  * @route PATCH /schedule/title
  * @desc Update Schedule Title
@@ -168,5 +194,6 @@ export default {
   createSchedule,
   dayReschedule,
   getDailySchedules,
+  getReschedules,
   updateScheduleTitle,
 };
