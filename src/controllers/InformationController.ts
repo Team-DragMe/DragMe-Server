@@ -36,28 +36,20 @@ const createDailyMemo = async (req: Request, res: Response) => {
  * @desc GET Schedule Information
  * @access Public
  */
-const getDailyInformation = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
+const getDailyInformation = async (req: Request, res: Response) => {
   const { date } = req.query;
+  if (!date) {
+    res
+      .status(statusCode.BAD_REQUEST)
+      .send(util.fail(statusCode.BAD_REQUEST, message.NULL_VALUE));
+  }
   try {
-    if (!date) {
-      res
-        .status(statusCode.BAD_REQUEST)
-        .send(util.fail(statusCode.BAD_REQUEST, message.NULL_VALUE));
-    } else {
-      const data = await InformationService.getDailyInformation(date as string);
-      res
-        .status(statusCode.OK)
-        .send(
-          util.success(
-            statusCode.OK,
-            message.GET_DAILYSCHEDULE_INFORMATION_SUCESS,
-            data
-          )
-        );
-    }
+    const data = await InformationService.getDailyInformation(date as string);
+    res
+      .status(statusCode.OK)
+      .send(
+        util.success(statusCode.OK, message.GET_DAILY_INFORMATION_SUCCESS, data)
+      );
   } catch (error) {
     console.log(error);
     res
