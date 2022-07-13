@@ -23,7 +23,7 @@ const createSchedule = async (req: Request, res: Response) => {
   }
 
   try {
-    const schedule = await ScheduleService.createSchedule(scheduleCreateDto);
+    await ScheduleService.createSchedule(scheduleCreateDto);
 
     res
       .status(statusCode.CREATED)
