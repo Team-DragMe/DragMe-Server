@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { DailyMemoCreateDto } from '../interfaces/information/DailyMemoCreateDto';
+import { InformationResponseDto } from '../interfaces/information/InformationResponseDto';
 import Information from '../models/Information';
 
 const createDailyMemo = async (
@@ -36,7 +37,9 @@ const createDailyMemo = async (
   }
 };
 
-const getDailyInformation = async (date: string) => {
+const getDailyInformation = async (
+  date: string
+): Promise<InformationResponseDto> => {
   try {
     const emoji = await Information.findOne({
       $and: [{ date: date }, { type: 'emoji' }],
