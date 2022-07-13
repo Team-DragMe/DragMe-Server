@@ -43,19 +43,20 @@ const createSchedule = async (req: Request, res: Response) => {
 };
 
 /**
- * @route PATCH /schedule/day-reschedule?date=
+ * @route PATCH /schedule/day-reschedule
  * @desc Delay Schedule
  * @access Public
  */
 const dayReschedule = async (req: Request, res: Response) => {
-  const { date } = req.query;
+  const scheduleId = new mongoose.Types.ObjectId('62cd876a77bc33d906978333');
   try {
-    if (!date) {
-      res
-        .status(statusCode.BAD_REQUEST)
-        .send(util.fail(statusCode.BAD_REQUEST, message.NULL_VALUE));
-    } else {
-      await ScheduleService.dayReschedule(date as string);
+    const delaySchedule = await ScheduleService.dayReschedule(scheduleId);
+
+    if (!delaySchedule) {
+      // scheduleId가 잘못된 경우, 404 return
+      return res
+        .status(statusCode.NOT_FOUND)
+        .send(util.fail(statusCode.NOT_FOUND, message.NOT_FOUND));
     }
     res
       .status(statusCode.OK)
