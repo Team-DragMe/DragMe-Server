@@ -3,6 +3,7 @@ import Schedule from '../models/Schedule';
 import { ScheduleCreateDto } from '../interfaces/schedule/ScheduleCreateDto';
 import { ScheduleListGetDto } from '../interfaces/schedule/ScheduleListGetDto';
 import { ScheduleUpdateDto } from '../interfaces/schedule/ScheduleUpdateDto';
+import { ScheduleInfo } from '../interfaces/schedule/ScheduleInfo';\
 
 const createSchedule = async (
   scheduleCreateDto: ScheduleCreateDto
@@ -78,9 +79,9 @@ const getDailySchedules = async (
 const updateScheduleTitle = async (
   scheduleId: mongoose.Types.ObjectId,
   scheduleUpdateDto: ScheduleUpdateDto
-): Promise<void> => {
+): Promise<ScheduleInfo | null> => {
   try {
-    await Schedule.findOneAndUpdate(
+    const updatedSchedule = await Schedule.findOneAndUpdate(
       {
         _id: scheduleId,
       },
@@ -89,6 +90,8 @@ const updateScheduleTitle = async (
       },
       { new: true }
     );
+
+    return updatedSchedule;
   } catch (error) {
     console.log(error);
     throw error;
