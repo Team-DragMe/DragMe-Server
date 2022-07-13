@@ -1,5 +1,4 @@
 const message = {
-
   // Error
   NULL_VALUE: '필요한 값이 없습니다.',
   NOT_FOUND: '존재하지 않는 자원',
@@ -8,9 +7,10 @@ const message = {
 
   // Information
   CREATE_MEMO_SUCCESS: '하루 메모 작성 성공',
-  
+
   // Schedule
   CREATE_SCHEDULE_SUCCESS: '계획블록 생성 성공',
+  DELAY_SCHEDULE_SUCCESS: '계획블록 미루기 성공',
 };
 
 export default message;
