@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import Schedule from '../models/Schedule';
 import { ScheduleCreateDto } from '../interfaces/schedule/ScheduleCreateDto';
 
@@ -32,6 +33,28 @@ const createSchedule = async (scheduleCreateDto: ScheduleCreateDto) => {
   }
 };
 
+const reschedule = async (date: string): Promise<void> => {
+  try {
+    //계획블록 조회
+    const scheduleId = new mongoose.Types.ObjectId('62cd879d1f0329b6e236522b');
+
+    //계획블록 id를 찾아서 isReschedule true로 전환
+    await Schedule.findOneAndUpdate(
+      {
+        _id: scheduleId,
+      },
+      {
+        isReschedule: true,
+      },
+      { new: true }
+    );
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
 export default {
   createSchedule,
+  reschedule,
 };
