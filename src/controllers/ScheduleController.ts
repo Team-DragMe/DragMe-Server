@@ -135,7 +135,18 @@ const updateScheduleTitle = async (req: Request, res: Response) => {
   };
 
   try {
-    await ScheduleService.updateScheduleTitle(scheduleId, scheduleUpdateDto);
+    const updatedSchedule = await ScheduleService.updateScheduleTitle(
+      scheduleId,
+      scheduleUpdateDto
+    );
+
+    if (!updatedSchedule) {
+      // scheduleId가 잘못된 경우, 404 return
+      return res
+        .status(statusCode.NOT_FOUND)
+        .send(util.fail(statusCode.NOT_FOUND, message.NOT_FOUND));
+    }
+
     res
       .status(statusCode.OK)
       .send(util.success(statusCode.OK, message.UPDATE_SCHEDULE_TITLE_SUCCESS));
