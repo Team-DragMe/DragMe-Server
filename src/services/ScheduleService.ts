@@ -2,7 +2,6 @@ import mongoose from 'mongoose';
 import Schedule from '../models/Schedule';
 import { ScheduleCreateDto } from '../interfaces/schedule/ScheduleCreateDto';
 import { ScheduleListGetDto } from '../interfaces/schedule/ScheduleListGetDto';
-import Information from '../models/Information';
 
 const createSchedule = async (
   scheduleCreateDto: ScheduleCreateDto
