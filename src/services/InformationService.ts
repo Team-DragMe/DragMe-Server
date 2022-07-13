@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { DailyMemoCreateDto } from '../interfaces/information/DailyMemoCreateDto';
+import { InformationResponseDto } from '../interfaces/information/InformationResponseDto';
 import Information from '../models/Information';
 
 const createDailyMemo = async (
@@ -35,4 +36,44 @@ const createDailyMemo = async (
     throw error;
   }
 };
-export default { createDailyMemo };
+
+const getDailyInformation = async (
+  date: string
+): Promise<InformationResponseDto> => {
+  try {
+    const emoji = await Information.findOne({
+      $and: [{ date: date }, { type: 'emoji' }],
+    });
+    const dailyGoal = await Information.findOne({
+      $and: [{ date: date }, { type: 'dailyGoal' }],
+    });
+    const memo = await Information.findOne({
+      $and: [{ date: date }, { type: 'memo' }],
+    });
+
+    let data: {
+      emoji: string | null;
+      dailyGoal: string | null;
+      memo: string | null;
+    } = {
+      emoji: null,
+      dailyGoal: null,
+      memo: null,
+    };
+
+    if (emoji) {
+      data.emoji = emoji.value;
+    }
+    if (dailyGoal) {
+      data.dailyGoal = dailyGoal.value;
+    }
+    if (memo) {
+      data.memo = memo.value;
+    }
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+export default { createDailyMemo, getDailyInformation };
