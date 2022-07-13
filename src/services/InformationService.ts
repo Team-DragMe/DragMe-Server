@@ -9,10 +9,10 @@ const createDailyMemo = async (
   try {
     const userId = '62cd6eb82b6b4e92c7fc08f1'; // 임시 구현
     dailyMemoCreateDto.userId = new mongoose.Types.ObjectId(userId); // 명시적으로 결정
-
+    dailyMemoCreateDto.type = 'memo';
     const isMemo = await Information.find({
       date: dailyMemoCreateDto.date,
-      type: dailyMemoCreateDto.type,
+      type: 'memo',
     });
     if (isMemo.length === 0) {
       const dailyNote = new Information(dailyMemoCreateDto);
