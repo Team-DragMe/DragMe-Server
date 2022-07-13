@@ -41,6 +41,37 @@ const createSchedule = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * @route PATCH /schedule/day-reschedule?date=
+ * @desc Delay Schedule
+ * @access Public
+ */
+const dayReschedule = async (req: Request, res: Response) => {
+  const { date } = req.query;
+  try {
+    if (!date) {
+      res
+        .status(statusCode.BAD_REQUEST)
+        .send(util.fail(statusCode.BAD_REQUEST, message.NULL_VALUE));
+    } else {
+      await ScheduleService.dayReschedule(date as string);
+    }
+    res
+      .status(statusCode.OK)
+      .send(util.success(statusCode.OK, message.DELAY_SCHEDULE_SUCCESS));
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(statusCode.INTERNAL_SERVER_ERROR)
+      .send(
+        util.fail(
+          statusCode.INTERNAL_SERVER_ERROR,
+          message.INTERNAL_SERVER_ERROR
+        )
+      );
+  }
+};
 export default {
   createSchedule,
+  dayReschedule,
 };
