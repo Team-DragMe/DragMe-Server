@@ -204,6 +204,45 @@ const getRoutines = async (
   }
 };
 
+const rescheduleDay = async (
+  scheduleId: mongoose.Types.ObjectId,
+  date: string
+): Promise<ScheduleInfo | null> => {
+  try {
+    // 계획블록의 isReschedule false로 전환, date 지정
+    const moveBackSchedule = await Schedule.findOneAndUpdate(
+      {
+        _id: scheduleId,
+      },
+      {
+        $set: { isReschedule: false, date: date },
+      },
+      { new: true }
+    );
+
+    if (!moveBackSchedule) {
+      return null;
+    } else {
+      // 하위 계획블록도 동일하게 처리
+      for (const moveBackSubSchedule of moveBackSchedule.subSchedules) {
+        await Schedule.findOneAndUpdate(
+          {
+            _id: moveBackSubSchedule._id,
+          },
+          {
+            $set: { isReschedule: false, date: date },
+          },
+          { new: true }
+        );
+      }
+    }
+    return moveBackSchedule;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
 export default {
   createSchedule,
   dayReschedule,
@@ -212,4 +251,5 @@ export default {
   updateScheduleTitle,
   createRoutine,
   getRoutines,
+  rescheduleDay,
 };
