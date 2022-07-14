@@ -117,7 +117,7 @@ const getDailySchedules = async (req: Request, res: Response) => {
 };
 /**
  * @route GET /schedule/delay
- * @desc Get Day Reschedules
+ * @desc Get Reschedules
  * @access Public
  */
 const getReschedules = async (req: Request, res: Response) => {
@@ -126,9 +126,7 @@ const getReschedules = async (req: Request, res: Response) => {
     const data = await ScheduleService.getReschedules(userId);
     return res
       .status(statusCode.OK)
-      .send(
-        util.success(statusCode.OK, message.GET_DELAY_SCHEDULES_SUCCESS, data)
-      );
+      .send(util.success(statusCode.OK, message.GET_RESCHEDULES_SUCCESS, data));
   } catch (error) {
     console.log(error);
     return res
