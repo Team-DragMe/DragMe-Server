@@ -18,6 +18,7 @@ const message = {
   UPDATE_SCHEDULE_TITLE_SUCCESS: '계획블록 이름 수정 성공',
   CREATE_ROUTINE_SUCCESS: '자주 사용하는 계획 등록 성공',
   GET_ROUTINES_SUCCESS: '자주 사용하는 계획 조회 성공',
+  MOVE_BACK_SCHEDULE_SUCCESS: '미룬 계획블록 계획표로 옮기기 성공',
 };
 
 export default message;
