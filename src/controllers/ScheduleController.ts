@@ -115,6 +115,7 @@ const getDailySchedules = async (req: Request, res: Response) => {
       );
   }
 };
+
 /**
  * @route GET /schedule/delay
  * @desc Get Reschedules
@@ -139,6 +140,7 @@ const getReschedules = async (req: Request, res: Response) => {
       );
   }
 };
+
 /**
  * @route PATCH /schedule/title
  * @desc Update Schedule Title
@@ -258,6 +260,42 @@ const getRoutines = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * @route PATCH /schedule/reschedule-day
+ * @desc Move Reschedule back to Schedules
+ * @access Public
+ */
+const rescheduleDay = async (req: Request, res: Response) => {
+  let { scheduleId } = req.body;
+  const { date } = req.body;
+  scheduleId = new mongoose.Types.ObjectId(scheduleId);
+  try {
+    const moveBackSchedule = await ScheduleService.rescheduleDay(
+      scheduleId,
+      date
+    );
+    if (!moveBackSchedule) {
+      // scheduleId가 잘못된 경우, 404 return
+      return res
+        .status(statusCode.NOT_FOUND)
+        .send(util.fail(statusCode.NOT_FOUND, message.NOT_FOUND));
+    }
+    res
+      .status(statusCode.OK)
+      .send(util.success(statusCode.OK, message.MOVE_BACK_SCHEDULE_SUCCESS));
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(statusCode.INTERNAL_SERVER_ERROR)
+      .send(
+        util.fail(
+          statusCode.INTERNAL_SERVER_ERROR,
+          message.INTERNAL_SERVER_ERROR
+        )
+      );
+  }
+};
+
 export default {
   createSchedule,
   dayReschedule,
@@ -266,4 +304,5 @@ export default {
   updateScheduleTitle,
   createRoutine,
   getRoutines,
+  rescheduleDay,
 };
