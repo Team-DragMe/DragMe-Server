@@ -5,6 +5,7 @@ import { ScheduleListGetDto } from '../interfaces/schedule/ScheduleListGetDto';
 import { RescheduleListGetDto } from '../interfaces/schedule/RescheduleListGetDto';
 import { ScheduleUpdateDto } from '../interfaces/schedule/ScheduleUpdateDto';
 import { ScheduleInfo } from '../interfaces/schedule/ScheduleInfo';
+import { calculateOrderIndex } from '../modules/calculateOrderIndex';
 
 const createSchedule = async (
   scheduleCreateDto: ScheduleCreateDto
@@ -132,17 +133,7 @@ const createRoutine = async (
       isRoutine: true,
       userId: userId,
     }).sort({ orderIndex: 1 });
-
-    // 새로 생성할 계획블록의 index 계산
-    let newIndex;
-    if (existingRoutines.length === 0) {
-      // 이미 존재하는 계획블록이 없을 경우, 해당 날짜의 첫 번째 블록
-      newIndex = 1024;
-    } else {
-      // 계획블록이 이미 존재하는 경우, 기존 존재하는 계획블록의 마지막 index + 1024로 설정
-      newIndex = existingRoutines[existingRoutines.length - 1].orderIndex;
-      newIndex += 1024;
-    }
+    const newIndex = calculateOrderIndex(existingRoutines);
 
     // 새로운 routine 생성
     const newSchedule: ScheduleCreateDto = {
