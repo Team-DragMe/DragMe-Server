@@ -83,6 +83,7 @@ const getReschedules = async (
     throw error;
   }
 };
+
 const updateScheduleTitle = async (
   scheduleId: mongoose.Types.ObjectId,
   scheduleUpdateDto: ScheduleUpdateDto
@@ -144,6 +145,22 @@ const createRoutine = async (
   }
 };
 
+const getRoutines = async (
+  userId: mongoose.Types.ObjectId
+): Promise<ScheduleListGetDto> => {
+  try {
+    const routines = await Schedule.find({
+      userId: userId,
+      isRoutine: true,
+    }).sort({ orderIndex: 1 });
+
+    return { schedules: routines };
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
 export default {
   createSchedule,
   dayReschedule,
@@ -151,4 +168,5 @@ export default {
   getReschedules,
   updateScheduleTitle,
   createRoutine,
+  getRoutines,
 };

@@ -9,5 +9,6 @@ router.get('/days', ScheduleController.getDailySchedules);
 router.get('/delay', ScheduleController.getReschedules);
 router.patch('/title', ScheduleController.updateScheduleTitle);
 router.post('/day-routine', ScheduleController.createRoutine);
+router.get('/routine', ScheduleController.getRoutines);
 
 export default router;

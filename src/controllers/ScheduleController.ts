@@ -230,6 +230,33 @@ const createRoutine = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * @route GET /schedule/routine
+ * @desc Get Routines
+ * @access Public
+ */
+const getRoutines = async (req: Request, res: Response) => {
+  const userId = new mongoose.Types.ObjectId('62cd27ae39f42cfbf520009a');
+  try {
+    const routines = await ScheduleService.getRoutines(userId);
+    res
+      .status(statusCode.OK)
+      .send(
+        util.success(statusCode.OK, message.GET_ROUTINES_SUCCESS, routines)
+      );
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(statusCode.INTERNAL_SERVER_ERROR)
+      .send(
+        util.fail(
+          statusCode.INTERNAL_SERVER_ERROR,
+          message.INTERNAL_SERVER_ERROR
+        )
+      );
+  }
+};
+
 export default {
   createSchedule,
   dayReschedule,
@@ -237,4 +264,5 @@ export default {
   getReschedules,
   updateScheduleTitle,
   createRoutine,
+  getRoutines,
 };
