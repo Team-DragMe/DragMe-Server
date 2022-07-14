@@ -5,7 +5,6 @@ const ScheduleSchema = new mongoose.Schema(
   {
     date: {
       type: String,
-      required: true,
     },
     timeSets: [
       {
