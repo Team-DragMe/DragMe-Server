@@ -34,7 +34,7 @@ const dayReschedule = async (
   scheduleId: mongoose.Types.ObjectId
 ): Promise<ScheduleInfo | null> => {
   try {
-    //계획블록 id를 찾아서 isReschedule true로 전환, 시간 데이터 삭제
+    // 계획블록의 isReschedule true로 전환, 시간 데이터 삭제
     const delaySchedule = await Schedule.findOneAndUpdate(
       {
         _id: scheduleId,
@@ -44,6 +44,23 @@ const dayReschedule = async (
       },
       { new: true }
     );
+
+    if (!delaySchedule) {
+      return null;
+    } else {
+      // 하위 계획블록도 동일하게 처리
+      for (const delaySubSchedule of delaySchedule.subSchedules) {
+        await Schedule.findOneAndUpdate(
+          {
+            _id: delaySubSchedule._id,
+          },
+          {
+            $set: { isReschedule: true, timeSets: [] },
+          },
+          { new: true }
+        );
+      }
+    }
     return delaySchedule;
   } catch (error) {
     console.log(error);
@@ -112,8 +129,10 @@ const createRoutine = async (
 ): Promise<ScheduleInfo | null> => {
   try {
     // 자주 사용하는 계획으로 등록 할 원본 계획블록 find
-    const originalSchedule = await Schedule.findById(scheduleId);
-    console.log(originalSchedule);
+    const originalSchedule = await Schedule.findById(scheduleId).populate({
+      path: 'subSchedules',
+      model: 'Schedule',
+    });
     if (!originalSchedule) {
       // scheduleId에 해당하는 원본 계획블록이 없는 경우, null을 return
       return originalSchedule;
@@ -134,9 +153,33 @@ const createRoutine = async (
       userId: originalSchedule.userId,
       orderIndex: newIndex,
       isRoutine: true,
+      subSchedules: [],
     };
-    const newRoutine = new Schedule(newSchedule);
-    await newRoutine.save();
+
+    // 원본 계획블록의 하위 계획들을 복사해 newSubSchedules 생성
+    const newSubSchedules = await Promise.all(
+      originalSchedule.subSchedules.map((originalSubSchedule: any) => {
+        const result = {
+          date: '',
+          title: originalSubSchedule.title,
+          categoryColorCode: originalSubSchedule.categoryColorCode,
+          userId: originalSubSchedule.userId,
+          orderIndex: originalSubSchedule.orderIndex,
+          isRoutine: true,
+        };
+        return result;
+      })
+    );
+
+    // newSubSchedules 배열을 돌면서 후속 처리 진행
+    for (const newSubSchedule of newSubSchedules) {
+      const newSubRoutine = new Schedule(newSubSchedule); // Schedule 객체인 newSubRoutine 생성
+      await newSubRoutine.save(); // 생성된 newSubRoutine을 db에 저장
+      newSchedule.subSchedules?.push(newSubRoutine._id); // 생성된 newSubRoutine의 _id를 newSchedule의 subSchedule 배열에 삽입
+    }
+
+    const newRoutine = new Schedule(newSchedule); // 하위 계획의 후속처리까지 완료된 새로 생성된 자주 사용하는 계획을 Schedule 객체로 생성
+    await newRoutine.save(); // 생성된 newRoutine을 db에 저장
 
     return newRoutine;
   } catch (error) {

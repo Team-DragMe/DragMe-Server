@@ -48,7 +48,8 @@ const createSchedule = async (req: Request, res: Response) => {
  * @access Public
  */
 const dayReschedule = async (req: Request, res: Response) => {
-  const scheduleId = new mongoose.Types.ObjectId('62cd876a77bc33d906978333');
+  let { scheduleId } = req.body;
+  scheduleId = new mongoose.Types.ObjectId(scheduleId);
   try {
     const delaySchedule = await ScheduleService.dayReschedule(scheduleId);
 

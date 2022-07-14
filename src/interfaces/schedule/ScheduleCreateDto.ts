@@ -8,4 +8,5 @@ export interface ScheduleCreateDto {
   orderIndex: Number;
   isReschedule?: boolean;
   isRoutine?: boolean;
+  subSchedules?: mongoose.Types.ObjectId[];
 }
