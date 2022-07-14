@@ -16,6 +16,7 @@ const message = {
   GET_RESCHEDULES_SUCCESS: '미룬 계획블록 리스트 조회 성공',
   GET_DAILY_INFORMATION_SUCCESS: '일간계획 정보 조회 성공',
   UPDATE_SCHEDULE_TITLE_SUCCESS: '계획블록 이름 수정 성공',
+  CREATE_ROUTINE_SUCCESS: '자주 사용하는 계획 등록 성공',
 };
 
 export default message;

@@ -6,4 +6,6 @@ export interface ScheduleCreateDto {
   categoryColorCode: string;
   userId: mongoose.Types.ObjectId;
   orderIndex: Number;
+  isReschedule?: boolean;
+  isRoutine?: boolean;
 }
