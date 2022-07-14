@@ -34,7 +34,7 @@ const dayReschedule = async (
   scheduleId: mongoose.Types.ObjectId
 ): Promise<ScheduleInfo | null> => {
   try {
-    //계획블록 id를 찾아서 isReschedule true로 전환, 시간 데이터 삭제
+    // 계획블록의 isReschedule true로 전환, 시간 데이터 삭제
     const delaySchedule = await Schedule.findOneAndUpdate(
       {
         _id: scheduleId,
@@ -44,6 +44,23 @@ const dayReschedule = async (
       },
       { new: true }
     );
+
+    if (!delaySchedule) {
+      return null;
+    } else {
+      // 하위 계획블록도 동일하게 처리
+      for (const delaySubSchedule of delaySchedule.subSchedules) {
+        await Schedule.findOneAndUpdate(
+          {
+            _id: delaySubSchedule._id,
+          },
+          {
+            $set: { isReschedule: true, timeSets: [] },
+          },
+          { new: true }
+        );
+      }
+    }
     return delaySchedule;
   } catch (error) {
     console.log(error);
