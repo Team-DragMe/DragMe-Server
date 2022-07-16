@@ -296,16 +296,25 @@ const rescheduleDay = async (req: Request, res: Response) => {
   }
 };
 /**
- * @route PATCH /schedule/reschedule-day
+ * @route POST /schedule/reschedule-day
  * @desc Move Routine back to Schedules
  * @access Public
  */
 const routineDay = async (req: Request, res: Response) => {
   let { scheduleId } = req.body;
   const { date } = req.body;
+  if (!scheduleId || scheduleId.length != 24) {
+    // 유효하지 않은 scheduleId인 경우 : 400 error
+    return res
+      .status(statusCode.BAD_REQUEST)
+      .send(util.fail(statusCode.BAD_REQUEST, message.NULL_VALUE));
+  }
+
   scheduleId = new mongoose.Types.ObjectId(scheduleId);
+  const userId = new mongoose.Types.ObjectId('62cd27ae39f42cfbf520009a');
   try {
     const moveRoutineToSchedule = await ScheduleService.routineDay(
+      userId,
       scheduleId,
       date
     );
