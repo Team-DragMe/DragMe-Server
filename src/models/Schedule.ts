@@ -6,29 +6,12 @@ const ScheduleSchema = new mongoose.Schema(
     date: {
       type: String,
     },
-    timeSets: [
-      {
-        startTime: {
-          hour: {
-            type: String,
-          },
-          minute: {
-            type: String,
-          },
-        },
-        endTime: {
-          hour: {
-            type: String,
-          },
-          minute: {
-            type: String,
-          },
-        },
-        isExpected: {
-          type: Boolean,
-        },
-      },
-    ],
+    estimatedTime: {
+      type: [Number],
+    },
+    usedTime: {
+      type: [Number],
+    },
     title: {
       type: String,
       required: true,

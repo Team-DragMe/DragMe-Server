@@ -2,7 +2,8 @@ import mongoose from 'mongoose';
 
 export interface ScheduleInfo {
   date: string;
-  timeSets: object[];
+  estimatedTime: number[];
+  usedTime: number[];
   title: string;
   subSchedules: mongoose.Types.ObjectId[];
   categoryColorCode: string;
