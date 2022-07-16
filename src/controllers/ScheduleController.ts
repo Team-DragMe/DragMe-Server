@@ -297,7 +297,7 @@ const rescheduleDay = async (req: Request, res: Response) => {
 };
 /**
  * @route POST /schedule/reschedule-day
- * @desc Move Routine back to Schedules
+ * @desc Move Routine to Schedules
  * @access Public
  */
 const routineDay = async (req: Request, res: Response) => {

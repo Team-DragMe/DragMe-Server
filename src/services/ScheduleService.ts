@@ -249,7 +249,7 @@ const routineDay = async (
   date: string
 ): Promise<ScheduleInfo | null> => {
   try {
-    //계획표로 이동할 자주 사용하는 계획블록 find
+    // 계획표로 이동할 자주 사용하는 계획블록 find
     const moveRoutineToSchedule = await Schedule.findById(scheduleId).populate({
       path: 'subSchedules',
       model: 'Schedule',
@@ -272,7 +272,6 @@ const routineDay = async (
       categoryColorCode: moveRoutineToSchedule.categoryColorCode,
       userId: moveRoutineToSchedule.userId,
       orderIndex: newIndex,
-      //isRoutine: false,
       subSchedules: [],
     };
 
