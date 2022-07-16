@@ -115,6 +115,45 @@ const getDailySchedules = async (req: Request, res: Response) => {
       );
   }
 };
+/**
+ * @route PATCH /schedule/complete
+ * @desc Complete Schedule
+ * @access Public
+ */
+const completeSchedule = async (req: Request, res: Response) => {
+  let { scheduleId } = req.body;
+  if (!scheduleId || scheduleId.length != 24) {
+    // 유효하지 않은 scheduleId인 경우 : 400 error
+    return res
+      .status(statusCode.BAD_REQUEST)
+      .send(util.fail(statusCode.BAD_REQUEST, message.NULL_VALUE));
+  }
+
+  scheduleId = new mongoose.Types.ObjectId(scheduleId);
+
+  try {
+    await ScheduleService.completeSchedule(scheduleId);
+    if (!completeSchedule) {
+      // scheduleId가 잘못된 경우, 404 return
+      return res
+        .status(statusCode.NOT_FOUND)
+        .send(util.fail(statusCode.NOT_FOUND, message.NOT_FOUND));
+    }
+    res
+      .status(statusCode.OK)
+      .send(util.success(statusCode.OK, message.COMPLETE_SCHEDULE_SUCCESS));
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(statusCode.INTERNAL_SERVER_ERROR)
+      .send(
+        util.fail(
+          statusCode.INTERNAL_SERVER_ERROR,
+          message.INTERNAL_SERVER_ERROR
+        )
+      );
+  }
+};
 
 /**
  * @route GET /schedule/delay
@@ -343,6 +382,7 @@ const routineDay = async (req: Request, res: Response) => {
 };
 export default {
   createSchedule,
+  completeSchedule,
   dayReschedule,
   getDailySchedules,
   getReschedules,
