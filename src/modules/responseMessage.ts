@@ -11,6 +11,7 @@ const message = {
 
   // Schedule
   CREATE_SCHEDULE_SUCCESS: '계획블록 생성 성공',
+  COMPLETE_SCHEDULE_SUCCESS: '계획블록 완료 성공',
   DELAY_SCHEDULE_SUCCESS: '계획블록 미루기 성공',
   GET_DAILY_SCHEDULES_SUCCESS: '일간 계획블록 리스트 조회 성공',
   GET_RESCHEDULES_SUCCESS: '미룬 계획블록 리스트 조회 성공',
@@ -19,6 +20,8 @@ const message = {
   CREATE_ROUTINE_SUCCESS: '자주 사용하는 계획 등록 성공',
   GET_ROUTINES_SUCCESS: '자주 사용하는 계획 조회 성공',
   MOVE_BACK_SCHEDULE_SUCCESS: '미룬 계획블록 계획표로 옮기기 성공',
+  MOVE_ROUTINE_TO_SCHEDULE_SUCCESS:
+    '자주 사용하는 계획블록 계획표로 옮기기 성공',
 };
 
 export default message;
