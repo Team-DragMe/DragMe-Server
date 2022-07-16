@@ -6,12 +6,13 @@ import { RescheduleListGetDto } from '../interfaces/schedule/RescheduleListGetDt
 import { ScheduleUpdateDto } from '../interfaces/schedule/ScheduleUpdateDto';
 import { ScheduleInfo } from '../interfaces/schedule/ScheduleInfo';
 import { calculateOrderIndex } from '../modules/calculateOrderIndex';
+import { check } from 'express-validator';
 
 const createSchedule = async (
   scheduleCreateDto: ScheduleCreateDto
 ): Promise<void> => {
   try {
-    // 특정 날짜의 계획블록 영억 내에서의 orderIndex 계산
+    // 특정 날짜의 계획블록 영역 내에서의 orderIndex 계산
     const existingSchedules = await Schedule.find({
       date: scheduleCreateDto.date,
       userId: scheduleCreateDto.userId,
@@ -243,6 +244,45 @@ const rescheduleDay = async (
   }
 };
 
+const routineDay = async (
+  scheduleId: mongoose.Types.ObjectId,
+  date: string
+): Promise<ScheduleInfo | null> => {
+  try {
+    // 계획블록의 isRoutine false로 전환, date 지정
+    const moveRoutineToSchedule = await Schedule.findOneAndUpdate(
+      {
+        _id: scheduleId,
+      },
+      {
+        $set: { isRoutine: false, date: date },
+      },
+      { new: true }
+    );
+
+    if (!moveRoutineToSchedule) {
+      return null;
+    } else {
+      // 하위 계획블록도 동일하게 처리
+      for (const moveBackSubSchedule of moveRoutineToSchedule.subSchedules) {
+        await Schedule.findOneAndUpdate(
+          {
+            _id: moveBackSubSchedule._id,
+          },
+          {
+            $set: { isRoutine: false, date: date },
+          },
+          { new: true }
+        );
+      }
+    }
+    return moveRoutineToSchedule;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
 export default {
   createSchedule,
   dayReschedule,
@@ -252,4 +292,5 @@ export default {
   createRoutine,
   getRoutines,
   rescheduleDay,
+  routineDay,
 };
