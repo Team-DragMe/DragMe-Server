@@ -272,6 +272,7 @@ const routineDay = async (
       categoryColorCode: moveRoutineToSchedule.categoryColorCode,
       userId: moveRoutineToSchedule.userId,
       orderIndex: newIndex,
+      isRoutine: false,
       subSchedules: [],
     };
 
