@@ -11,7 +11,7 @@ const createSchedule = async (
   scheduleCreateDto: ScheduleCreateDto
 ): Promise<void> => {
   try {
-    // 특정 날짜의 계획블록 영억 내에서의 orderIndex 계산
+    // 특정 날짜의 계획블록 영역 내에서의 orderIndex 계산
     const existingSchedules = await Schedule.find({
       date: scheduleCreateDto.date,
       userId: scheduleCreateDto.userId,
@@ -243,6 +243,69 @@ const rescheduleDay = async (
   }
 };
 
+const routineDay = async (
+  userId: mongoose.Types.ObjectId,
+  scheduleId: mongoose.Types.ObjectId,
+  date: string
+): Promise<ScheduleInfo | null> => {
+  try {
+    // 계획표로 이동할 자주 사용하는 계획블록 find
+    const moveRoutineToSchedule = await Schedule.findById(scheduleId).populate({
+      path: 'subSchedules',
+      model: 'Schedule',
+    });
+    if (!moveRoutineToSchedule) {
+      // scheduleId에 해당하는 원본 계획블록이 없는 경우, null을 return
+      return moveRoutineToSchedule;
+    }
+
+    // 계획표 내에서 orderIndex 계산
+    const existingSchedules = await Schedule.find({
+      date: date,
+      userId: userId,
+    }).sort({ orderIndex: 1 });
+    const newIndex = calculateOrderIndex(existingSchedules);
+    // 새로운 계획블록 생성
+    const newSchedule: ScheduleCreateDto = {
+      date: date,
+      title: moveRoutineToSchedule.title,
+      categoryColorCode: moveRoutineToSchedule.categoryColorCode,
+      userId: moveRoutineToSchedule.userId,
+      orderIndex: newIndex,
+      isRoutine: false,
+      subSchedules: [],
+    };
+
+    // 자주 사용하는 계획블록의 하위 계획들을 복사해 newSubSchedules 생성
+    const newSubSchedules = await Promise.all(
+      moveRoutineToSchedule.subSchedules.map((RoutineSubSchedule: any) => {
+        const result = {
+          date: date,
+          title: RoutineSubSchedule.title,
+          categoryColorCode: RoutineSubSchedule.categoryColorCode,
+          userId: RoutineSubSchedule.userId,
+          orderIndex: RoutineSubSchedule.orderIndex,
+          isRoutine: false,
+        };
+        return result;
+      })
+    );
+    // newSubSchedules 배열을 돌면서 후속 처리 진행
+    for (const newSubSchedule of newSubSchedules) {
+      const newSubFromRoutine = new Schedule(newSubSchedule); // Schedule 객체인 newSubFromRoutine 생성
+      await newSubFromRoutine.save(); // 생성된 newSubFromRoutine을 db에 저장
+      newSchedule.subSchedules?.push(newSubFromRoutine._id); // 생성된 newSubFromRoutine의 _id를 newSchedule의 subSchedule 배열에 삽입
+    }
+
+    const makeNewSchedule = new Schedule(newSchedule); // 하위 계획의 후속처리까지 완료된 새로 생성된 자주 사용하는 계획을 Schedule 객체로 생성
+    await makeNewSchedule.save(); // 생성된 newRoutine을 db에 저장
+    return makeNewSchedule;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
 export default {
   createSchedule,
   dayReschedule,
@@ -252,4 +315,5 @@ export default {
   createRoutine,
   getRoutines,
   rescheduleDay,
+  routineDay,
 };
