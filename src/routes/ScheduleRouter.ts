@@ -14,5 +14,6 @@ router.get('/routine', ScheduleController.getRoutines);
 router.patch('/reschedule-day', ScheduleController.rescheduleDay);
 router.post('/routine-day', ScheduleController.routineDay);
 router.patch('/order', ScheduleController.updateScheduleOrder);
+router.patch('/category', ScheduleController.updateScheduleCategory);
 
 export default router;

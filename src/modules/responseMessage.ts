@@ -23,6 +23,7 @@ const message = {
   MOVE_ROUTINE_TO_SCHEDULE_SUCCESS:
     '자주 사용하는 계획블록 계획표로 옮기기 성공',
   UPDATE_SCHEDULE_ORDER_SUCCESS: '계획블록 순서 변경 성공',
+  UPDATE_SCHEDULE_CATEGORY_SUCCESS: '계획블록 카테고리 변경 성공',
 };
 
 export default message;
