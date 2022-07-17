@@ -30,6 +30,44 @@ const createSchedule = async (
   }
 };
 
+const completeSchedule = async (
+  scheduleId: mongoose.Types.ObjectId
+): Promise<ScheduleInfo | null> => {
+  try {
+    // scheduleId로 계획블록 조회
+    const checkCompleteSchedule = await Schedule.findById(scheduleId);
+    if (!checkCompleteSchedule) {
+      return null;
+    } else {
+      if (checkCompleteSchedule.isCompleted === true) {
+        await Schedule.findOneAndUpdate(
+          {
+            _id: scheduleId,
+          },
+          {
+            $set: { isCompleted: false, usedTime: [] },
+          },
+          { new: true }
+        );
+      } else {
+        await Schedule.findOneAndUpdate(
+          {
+            _id: scheduleId,
+          },
+          {
+            isCompleted: true,
+          },
+          { new: true }
+        );
+      }
+      return checkCompleteSchedule;
+    }
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
 const dayReschedule = async (
   scheduleId: mongoose.Types.ObjectId
 ): Promise<ScheduleInfo | null> => {
@@ -308,6 +346,7 @@ const routineDay = async (
 
 export default {
   createSchedule,
+  completeSchedule,
   dayReschedule,
   getDailySchedules,
   getReschedules,
