@@ -73,6 +73,47 @@ const createTime = async (
   }
 };
 
+const deleteTime = async (
+  scheduleId: mongoose.Types.ObjectId,
+  timeDto: TimeDto
+): Promise<ScheduleInfo | null> => {
+  try {
+    const deleteScheduleTime = await Schedule.findById(scheduleId);
+    if (!deleteScheduleTime) {
+      return null;
+    } else {
+      if (timeDto.isUsed === false) {
+        await Schedule.findByIdAndUpdate(
+          {
+            _id: scheduleId,
+          },
+          {
+            $pull: { estimatedTime: { $in: timeDto.timeBlockNumbers } },
+          },
+          {
+            new: true,
+          }
+        );
+      } else {
+        await Schedule.findByIdAndUpdate(
+          {
+            _id: scheduleId,
+          },
+          {
+            $pull: { usedTime: { $in: timeDto.timeBlockNumbers } },
+          },
+          {
+            new: true,
+          }
+        );
+      }
+    }
+    return deleteScheduleTime;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
 const completeSchedule = async (
   scheduleId: mongoose.Types.ObjectId
 ): Promise<ScheduleInfo | null> => {
@@ -470,6 +511,7 @@ const updateScheduleCategory = async (
 export default {
   createSchedule,
   createTime,
+  deleteTime,
   completeSchedule,
   dayReschedule,
   getDailySchedules,
