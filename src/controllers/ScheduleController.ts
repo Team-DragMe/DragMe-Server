@@ -426,6 +426,53 @@ const updateScheduleOrder = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * @route PATCH /schedule/category
+ * @desc Update Schedule Category Color Code
+ * @access Public
+ */
+const updateScheduleCategory = async (req: Request, res: Response) => {
+  const { scheduleId, newCategoryColorCode } = req.body;
+
+  if (!scheduleId || !newCategoryColorCode) {
+    return res
+      .status(statusCode.BAD_REQUEST)
+      .send(util.fail(statusCode.BAD_REQUEST, message.NULL_VALUE));
+  }
+
+  const scheduleUpdateDto: ScheduleUpdateDto = {
+    categoryColorCode: newCategoryColorCode,
+  };
+
+  try {
+    const updatedSchedule = await ScheduleService.updateScheduleCategory(
+      scheduleId,
+      scheduleUpdateDto
+    );
+    if (!updatedSchedule) {
+      // scheduleId가 잘못된 경우, 404 return
+      return res
+        .status(statusCode.NOT_FOUND)
+        .send(util.fail(statusCode.NOT_FOUND, message.NOT_FOUND));
+    }
+    res
+      .status(statusCode.OK)
+      .send(
+        util.success(statusCode.OK, message.UPDATE_SCHEDULE_CATEGORY_SUCCESS)
+      );
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(statusCode.INTERNAL_SERVER_ERROR)
+      .send(
+        util.fail(
+          statusCode.INTERNAL_SERVER_ERROR,
+          message.INTERNAL_SERVER_ERROR
+        )
+      );
+  }
+};
+
 export default {
   createSchedule,
   completeSchedule,
@@ -438,4 +485,5 @@ export default {
   rescheduleDay,
   routineDay,
   updateScheduleOrder,
+  updateScheduleCategory,
 };
