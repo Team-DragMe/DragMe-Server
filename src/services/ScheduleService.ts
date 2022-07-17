@@ -402,6 +402,28 @@ const updateScheduleOrder = async (
   }
 };
 
+const updateScheduleCategory = async (
+  scheduleId: string,
+  scheduleUpdateDto: ScheduleUpdateDto
+): Promise<ScheduleInfo | null> => {
+  try {
+    const updatedSchedule = await Schedule.findOneAndUpdate(
+      {
+        _id: scheduleId,
+      },
+      {
+        categoryColorCode: scheduleUpdateDto.categoryColorCode,
+      },
+      { new: true }
+    );
+
+    return updatedSchedule;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
 export default {
   createSchedule,
   completeSchedule,
@@ -414,4 +436,5 @@ export default {
   rescheduleDay,
   routineDay,
   updateScheduleOrder,
+  updateScheduleCategory,
 };
