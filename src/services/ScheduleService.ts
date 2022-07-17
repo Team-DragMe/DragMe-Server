@@ -30,7 +30,9 @@ const createSchedule = async (
   }
 };
 
-const completeSchedule = async (scheduleId: mongoose.Types.ObjectId) => {
+const completeSchedule = async (
+  scheduleId: mongoose.Types.ObjectId
+): Promise<ScheduleInfo | null> => {
   try {
     // scheduleId로 계획블록 조회
     const checkCompleteSchedule = await Schedule.findById(scheduleId);
@@ -47,7 +49,7 @@ const completeSchedule = async (scheduleId: mongoose.Types.ObjectId) => {
           },
           { new: true }
         );
-      } else if (checkCompleteSchedule.isCompleted === false) {
+      } else {
         await Schedule.findOneAndUpdate(
           {
             _id: scheduleId,
@@ -58,6 +60,7 @@ const completeSchedule = async (scheduleId: mongoose.Types.ObjectId) => {
           { new: true }
         );
       }
+      return checkCompleteSchedule;
     }
   } catch (error) {
     console.log(error);
