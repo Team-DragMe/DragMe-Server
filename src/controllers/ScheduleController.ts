@@ -6,6 +6,7 @@ import { ScheduleCreateDto } from '../interfaces/schedule/ScheduleCreateDto';
 import ScheduleService from '../services/ScheduleService';
 import mongoose from 'mongoose';
 import { ScheduleUpdateDto } from '../interfaces/schedule/ScheduleUpdateDto';
+import { CreateTimeDto } from '../interfaces/schedule/CreateTimeDto';
 
 /**
  * @route POST /schedule
@@ -48,13 +49,9 @@ const createSchedule = async (req: Request, res: Response) => {
  * @access Public
  */
 const createTime = async (req: Request, res: Response) => {
-  let { scheduleId, isUsed, timeBlockNumbers } = req.body;
+  const createTimeDto: CreateTimeDto = req.body;
   try {
-    const createScheduleTime = await ScheduleService.createTime(
-      scheduleId,
-      isUsed,
-      timeBlockNumbers
-    );
+    const createScheduleTime = await ScheduleService.createTime(createTimeDto);
     if (!createScheduleTime) {
       // scheduleId가 잘못된 경우, 404 return
       return res
@@ -64,7 +61,7 @@ const createTime = async (req: Request, res: Response) => {
     res
       .status(statusCode.CREATED)
       .send(
-        util.success(statusCode.CREATED, message.CREATE_SCHEDULETIME_SUCCESS)
+        util.success(statusCode.CREATED, message.CREATE_SCHEDULE_TIME_SUCCESS)
       );
   } catch (error) {
     console.log(error);
