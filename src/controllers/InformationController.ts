@@ -6,7 +6,7 @@ import { InformationCreateDto } from '../interfaces/information/InformationCreat
 import InformationService from '../services/InformationService';
 
 /**
- * @route POST /information/days
+ * @route POST /information/memo
  * @desc Create Daily Memo
  * @access Public
  */
