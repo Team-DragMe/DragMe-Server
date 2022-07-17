@@ -344,6 +344,64 @@ const routineDay = async (
   }
 };
 
+const updateScheduleOrder = async (
+  scheduleId: string,
+  movedScheduleArray: string[]
+): Promise<ScheduleInfo | null> => {
+  // 순서 변경 이후 상태의 계획블록 ID들의 배열에서 변경된 계획블록 탐색
+  let movedScheduleIndex;
+  movedScheduleArray.forEach((movedScheduleId: string, index: number) => {
+    if (movedScheduleId === scheduleId) {
+      movedScheduleIndex = index;
+    }
+  });
+
+  try {
+    // 새로운 orderIndex 계산
+    let previousSchedule;
+    let nextSchedule;
+    let newOrderIndex;
+    if (movedScheduleIndex === 0) {
+      // 이동 후 계획블록이 영역의 맨 위에 위치할 때 : 기존 맨 위의 orderIndex / 2
+      nextSchedule = await Schedule.findById(
+        movedScheduleArray[movedScheduleIndex + 1]
+      );
+      newOrderIndex = nextSchedule!.orderIndex / 2; // nullable 제거 위해 타입 단언
+    } else if (movedScheduleIndex === movedScheduleArray.length - 1) {
+      // 이동 후 계획블록이 영역의 맨 아래에 위치할 때 : 기존 맨 아래의 orderIndex + 1024
+      previousSchedule = await Schedule.findById(
+        movedScheduleArray[movedScheduleIndex - 1]
+      );
+      newOrderIndex = previousSchedule!.orderIndex + 1024;
+    } else if (movedScheduleIndex) {
+      // undefined 방지 위해 else if 안에서 진행
+      previousSchedule = await Schedule.findById(
+        movedScheduleArray[movedScheduleIndex - 1]
+      );
+      nextSchedule = await Schedule.findById(
+        movedScheduleArray[movedScheduleIndex + 1]
+      );
+      newOrderIndex =
+        (previousSchedule!.orderIndex + nextSchedule!.orderIndex) / 2;
+    }
+
+    // 기존 계획블록의 orderIndex 변경
+    const updatedSchedule = await Schedule.findOneAndUpdate(
+      {
+        _id: scheduleId,
+      },
+      {
+        orderIndex: newOrderIndex,
+      },
+      { new: true }
+    );
+    return updatedSchedule;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
 export default {
   createSchedule,
   completeSchedule,
@@ -355,4 +413,5 @@ export default {
   getRoutines,
   rescheduleDay,
   routineDay,
+  updateScheduleOrder,
 };
