@@ -3,8 +3,7 @@ import { InformationController } from '../controllers';
 
 const router: Router = Router();
 
-router.post('/days', InformationController.createDailyMemo);
+router.post('/', InformationController.createInformation);
 router.get('/days', InformationController.getDailyInformation);
-router.post('/emoji', InformationController.createEmoji);
 
 export default router;
