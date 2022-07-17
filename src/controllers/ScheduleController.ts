@@ -132,8 +132,10 @@ const completeSchedule = async (req: Request, res: Response) => {
   scheduleId = new mongoose.Types.ObjectId(scheduleId);
 
   try {
-    await ScheduleService.completeSchedule(scheduleId);
-    if (!completeSchedule) {
+    const checkCompleteSchedule = await ScheduleService.completeSchedule(
+      scheduleId
+    );
+    if (!checkCompleteSchedule) {
       // scheduleId가 잘못된 경우, 404 return
       return res
         .status(statusCode.NOT_FOUND)
