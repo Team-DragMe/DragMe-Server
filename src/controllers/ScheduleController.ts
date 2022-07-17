@@ -226,9 +226,7 @@ const getReschedules = async (req: Request, res: Response) => {
  * @access Public
  */
 const updateScheduleTitle = async (req: Request, res: Response) => {
-  // let { scheduleId } = req.body; // 이후에 scheduleId까지 받기
-  const { newTitle } = req.body;
-  const scheduleId = new mongoose.Types.ObjectId('62cd876a77bc33d906978333');
+  const { scheduleId, newTitle } = req.body;
 
   if (!scheduleId || !newTitle) {
     return res
