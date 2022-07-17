@@ -111,4 +111,37 @@ const createEmoji = async (
     throw error;
   }
 };
-export default { createDailyMemo, getDailyInformation, createEmoji };
+
+const createDailyGoal = async (
+  informationCreateDto: InformationCreateDto
+): Promise<void> => {
+  try {
+    // 특정 날짜, 유저, 타입과 일치하는 information이 존재하는지 탐색
+    const existingDailyGoals = await Information.find({
+      userId: informationCreateDto.userId,
+      date: informationCreateDto.date,
+      type: informationCreateDto.type,
+    });
+    if (existingDailyGoals.length === 0) {
+      // 존재하지 않는 경우, 새로운 information 객체 생성
+      const newDailyGoal = new Information(informationCreateDto);
+      await newDailyGoal.save();
+    } else {
+      // 존재하는 경우, 기존의 information 객체에 정보 업데이트
+      await Information.findByIdAndUpdate(
+        existingDailyGoals[0]._id,
+        informationCreateDto
+      );
+    }
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export default {
+  createDailyMemo,
+  getDailyInformation,
+  createEmoji,
+  createDailyGoal,
+};
