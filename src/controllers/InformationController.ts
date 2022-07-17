@@ -88,4 +88,41 @@ const createEmoji = async (req: Request, res: Response) => {
       );
   }
 };
-export default { createDailyMemo, getDailyInformation, createEmoji };
+
+/**
+ * @route POST /information/days
+ * @desc Create Daily Goal
+ * @access Public
+ */
+const createDailyGoal = async (req: Request, res: Response) => {
+  let informationCreateDto: InformationCreateDto = req.body;
+  informationCreateDto.userId = '62cd6eb82b6b4e92c7fc08f1';
+  informationCreateDto.type = 'dailyGoal';
+
+  try {
+    await InformationService.createDailyGoal(informationCreateDto);
+
+    res
+      .status(statusCode.CREATED)
+      .send(
+        util.success(statusCode.CREATED, message.CREATE_DAILY_GOAL_SUCCESS)
+      );
+  } catch (error) {
+    console.log(error);
+    res
+      .status(statusCode.INTERNAL_SERVER_ERROR)
+      .send(
+        util.fail(
+          statusCode.INTERNAL_SERVER_ERROR,
+          message.INTERNAL_SERVER_ERROR
+        )
+      );
+  }
+};
+
+export default {
+  createDailyMemo,
+  getDailyInformation,
+  createEmoji,
+  createDailyGoal,
+};
