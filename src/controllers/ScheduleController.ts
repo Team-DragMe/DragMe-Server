@@ -6,7 +6,7 @@ import { ScheduleCreateDto } from '../interfaces/schedule/ScheduleCreateDto';
 import ScheduleService from '../services/ScheduleService';
 import mongoose from 'mongoose';
 import { ScheduleUpdateDto } from '../interfaces/schedule/ScheduleUpdateDto';
-import { CreateTimeDto } from '../interfaces/schedule/CreateTimeDto';
+import { TimeDto } from '../interfaces/schedule/TimeDto';
 
 /**
  * @route POST /schedule
@@ -49,9 +49,14 @@ const createSchedule = async (req: Request, res: Response) => {
  * @access Public
  */
 const createTime = async (req: Request, res: Response) => {
-  const createTimeDto: CreateTimeDto = req.body;
+  let { scheduleId } = req.body;
+  const timeDto: TimeDto = req.body;
+  scheduleId = new mongoose.Types.ObjectId(scheduleId);
   try {
-    const createScheduleTime = await ScheduleService.createTime(createTimeDto);
+    const createScheduleTime = await ScheduleService.createTime(
+      scheduleId,
+      timeDto
+    );
     if (!createScheduleTime) {
       // scheduleId가 잘못된 경우, 404 return
       return res

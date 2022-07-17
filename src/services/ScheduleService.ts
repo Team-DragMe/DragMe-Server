@@ -6,7 +6,7 @@ import { RescheduleListGetDto } from '../interfaces/schedule/RescheduleListGetDt
 import { ScheduleUpdateDto } from '../interfaces/schedule/ScheduleUpdateDto';
 import { ScheduleInfo } from '../interfaces/schedule/ScheduleInfo';
 import { calculateOrderIndex } from '../modules/calculateOrderIndex';
-import { CreateTimeDto } from '../interfaces/schedule/CreateTimeDto';
+import { TimeDto } from '../interfaces/schedule/TimeDto';
 
 const createSchedule = async (
   scheduleCreateDto: ScheduleCreateDto
@@ -32,22 +32,21 @@ const createSchedule = async (
 };
 
 const createTime = async (
-  createTimeDto: CreateTimeDto
+  scheduleId: mongoose.Types.ObjectId,
+  timeDto: TimeDto
 ): Promise<ScheduleInfo | null> => {
   try {
-    const createScheduleTime = await Schedule.findById(
-      createTimeDto.scheduleId
-    );
+    const createScheduleTime = await Schedule.findById(scheduleId);
     if (!createScheduleTime) {
       return null;
     } else {
-      if (createTimeDto.isUsed === false) {
+      if (timeDto.isUsed === false) {
         await Schedule.findByIdAndUpdate(
           {
-            _id: createTimeDto.scheduleId,
+            _id: scheduleId,
           },
           {
-            $push: { estimatedTime: { $each: createTimeDto.timeBlockNumbers } },
+            $push: { estimatedTime: { $each: timeDto.timeBlockNumbers } },
           },
           {
             new: true,
@@ -56,10 +55,10 @@ const createTime = async (
       } else {
         await Schedule.findByIdAndUpdate(
           {
-            _id: createTimeDto.scheduleId,
+            _id: scheduleId,
           },
           {
-            $push: { usedTime: { $each: createTimeDto.timeBlockNumbers } },
+            $push: { usedTime: { $each: timeDto.timeBlockNumbers } },
           },
           {
             new: true,
