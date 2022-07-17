@@ -508,6 +508,33 @@ const updateScheduleCategory = async (
   }
 };
 
+const getCalendar = async (month: string): Promise<number[]> => {
+  const regex = (pattern: string) => new RegExp(`.*${pattern}.*`);
+  try {
+    // date field 키워드 검색을 통해 특정 년-월에 해당하는 계획들 find
+    const dateRegex = regex(month);
+    const allMonthSchedules = await Schedule.find({
+      date: { $regex: dateRegex },
+    }).sort({ date: 1 });
+
+    // promise.all을 통해 전체 계획들의 날짜들을 형식에 맞는 number 배열로 변환
+    let days = await Promise.all(
+      allMonthSchedules.map((schedule: any) => {
+        let date = schedule.date.substr(8, 2);
+        date *= 1;
+        return date;
+      })
+    );
+
+    // 배열 내 중복 제거
+    days = Array.from(new Set(days));
+    return days;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
 export default {
   createSchedule,
   createTime,
@@ -523,4 +550,5 @@ export default {
   routineDay,
   updateScheduleOrder,
   updateScheduleCategory,
+  getCalendar,
 };
