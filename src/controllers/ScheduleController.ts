@@ -6,6 +6,7 @@ import { ScheduleCreateDto } from '../interfaces/schedule/ScheduleCreateDto';
 import ScheduleService from '../services/ScheduleService';
 import mongoose from 'mongoose';
 import { ScheduleUpdateDto } from '../interfaces/schedule/ScheduleUpdateDto';
+import { TimeDto } from '../interfaces/schedule/TimeDto';
 
 /**
  * @route POST /schedule
@@ -29,6 +30,44 @@ const createSchedule = async (req: Request, res: Response) => {
     res
       .status(statusCode.CREATED)
       .send(util.success(statusCode.CREATED, message.CREATE_SCHEDULE_SUCCESS));
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(statusCode.INTERNAL_SERVER_ERROR)
+      .send(
+        util.fail(
+          statusCode.INTERNAL_SERVER_ERROR,
+          message.INTERNAL_SERVER_ERROR
+        )
+      );
+  }
+};
+
+/**
+ * @route POST /schedule/time
+ * @desc Create Schedule Time
+ * @access Public
+ */
+const createTime = async (req: Request, res: Response) => {
+  let { scheduleId } = req.body;
+  const timeDto: TimeDto = req.body;
+  scheduleId = new mongoose.Types.ObjectId(scheduleId);
+  try {
+    const createScheduleTime = await ScheduleService.createTime(
+      scheduleId,
+      timeDto
+    );
+    if (!createScheduleTime) {
+      // scheduleId가 잘못된 경우, 404 return
+      return res
+        .status(statusCode.NOT_FOUND)
+        .send(util.fail(statusCode.NOT_FOUND, message.NOT_FOUND));
+    }
+    res
+      .status(statusCode.CREATED)
+      .send(
+        util.success(statusCode.CREATED, message.CREATE_SCHEDULE_TIME_SUCCESS)
+      );
   } catch (error) {
     console.log(error);
     return res
@@ -475,6 +514,7 @@ const updateScheduleCategory = async (req: Request, res: Response) => {
 
 export default {
   createSchedule,
+  createTime,
   completeSchedule,
   dayReschedule,
   getDailySchedules,
