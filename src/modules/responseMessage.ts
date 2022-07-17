@@ -8,6 +8,7 @@ const message = {
   // Information
   CREATE_MEMO_SUCCESS: '하루 메모 작성 성공',
   CREATE_EMOJI_SUCCESS: '감정 이모티콘 설정 성공',
+  CREATE_DAILY_GOAL_SUCCESS: '일간 목표 작성 성공',
 
   // Schedule
   CREATE_SCHEDULE_SUCCESS: '계획블록 생성 성공',
