@@ -30,6 +30,53 @@ const createSchedule = async (
   }
 };
 
+const createTime = async (
+  scheduleId: mongoose.Types.ObjectId,
+  isUsed: boolean,
+  timeBlockNumbers: [number]
+): Promise<ScheduleInfo | null> => {
+  try {
+    const createScheduleTime = await Schedule.findById(scheduleId);
+    if (!createScheduleTime) {
+      return null;
+    } else {
+      if (isUsed === false) {
+        for (const timeBlockNumber of timeBlockNumbers) {
+          await Schedule.findByIdAndUpdate(
+            {
+              _id: scheduleId,
+            },
+            {
+              $push: { estimatedTime: timeBlockNumber },
+            },
+            {
+              new: true,
+            }
+          );
+        }
+      } else {
+        for (const timeBlockNumber of timeBlockNumbers) {
+          await Schedule.findByIdAndUpdate(
+            {
+              _id: scheduleId,
+            },
+            {
+              $push: { usedTime: timeBlockNumber },
+            },
+            {
+              new: true,
+            }
+          );
+        }
+      }
+    }
+    return createScheduleTime;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
 const completeSchedule = async (
   scheduleId: mongoose.Types.ObjectId
 ): Promise<ScheduleInfo | null> => {
@@ -426,6 +473,7 @@ const updateScheduleCategory = async (
 
 export default {
   createSchedule,
+  createTime,
   completeSchedule,
   dayReschedule,
   getDailySchedules,
