@@ -6,9 +6,7 @@ const message = {
   INTERNAL_SERVER_ERROR: '서버 내부 오류',
 
   // Information
-  CREATE_MEMO_SUCCESS: '하루 메모 작성 성공',
-  CREATE_EMOJI_SUCCESS: '감정 이모티콘 설정 성공',
-  CREATE_DAILY_GOAL_SUCCESS: '일간 목표 작성 성공',
+  CREATE_INFORMATION_SUCCESS: '정보 생성 성공',
   GET_DAILY_INFORMATION_SUCCESS: '일간계획 정보 조회 성공',
 
   // Schedule
