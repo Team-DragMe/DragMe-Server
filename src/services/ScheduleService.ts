@@ -6,6 +6,7 @@ import { RescheduleListGetDto } from '../interfaces/schedule/RescheduleListGetDt
 import { ScheduleUpdateDto } from '../interfaces/schedule/ScheduleUpdateDto';
 import { ScheduleInfo } from '../interfaces/schedule/ScheduleInfo';
 import { calculateOrderIndex } from '../modules/calculateOrderIndex';
+import { TimeDto } from '../interfaces/schedule/TimeDto';
 
 const createSchedule = async (
   scheduleCreateDto: ScheduleCreateDto
@@ -24,6 +25,48 @@ const createSchedule = async (
     // scheduleCreateDto를 바탕으로 새로운 계획블록 생성
     const schedule = new Schedule(scheduleCreateDto);
     await schedule.save();
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+const createTime = async (
+  scheduleId: mongoose.Types.ObjectId,
+  timeDto: TimeDto
+): Promise<ScheduleInfo | null> => {
+  try {
+    const createScheduleTime = await Schedule.findById(scheduleId);
+    if (!createScheduleTime) {
+      return null;
+    } else {
+      if (timeDto.isUsed === false) {
+        await Schedule.findByIdAndUpdate(
+          {
+            _id: scheduleId,
+          },
+          {
+            $push: { estimatedTime: { $each: timeDto.timeBlockNumbers } },
+          },
+          {
+            new: true,
+          }
+        );
+      } else {
+        await Schedule.findByIdAndUpdate(
+          {
+            _id: scheduleId,
+          },
+          {
+            $push: { usedTime: { $each: timeDto.timeBlockNumbers } },
+          },
+          {
+            new: true,
+          }
+        );
+      }
+    }
+    return createScheduleTime;
   } catch (error) {
     console.log(error);
     throw error;
@@ -426,6 +469,7 @@ const updateScheduleCategory = async (
 
 export default {
   createSchedule,
+  createTime,
   completeSchedule,
   dayReschedule,
   getDailySchedules,
