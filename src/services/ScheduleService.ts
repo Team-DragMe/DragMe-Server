@@ -6,6 +6,7 @@ import { RescheduleListGetDto } from '../interfaces/schedule/RescheduleListGetDt
 import { ScheduleUpdateDto } from '../interfaces/schedule/ScheduleUpdateDto';
 import { ScheduleInfo } from '../interfaces/schedule/ScheduleInfo';
 import { calculateOrderIndex } from '../modules/calculateOrderIndex';
+import { CreateTimeDto } from '../interfaces/schedule/CreateTimeDto';
 
 const createSchedule = async (
   scheduleCreateDto: ScheduleCreateDto
@@ -31,43 +32,39 @@ const createSchedule = async (
 };
 
 const createTime = async (
-  scheduleId: mongoose.Types.ObjectId,
-  isUsed: boolean,
-  timeBlockNumbers: [number]
+  createTimeDto: CreateTimeDto
 ): Promise<ScheduleInfo | null> => {
   try {
-    const createScheduleTime = await Schedule.findById(scheduleId);
+    const createScheduleTime = await Schedule.findById(
+      createTimeDto.scheduleId
+    );
     if (!createScheduleTime) {
       return null;
     } else {
-      if (isUsed === false) {
-        for (const timeBlockNumber of timeBlockNumbers) {
-          await Schedule.findByIdAndUpdate(
-            {
-              _id: scheduleId,
-            },
-            {
-              $push: { estimatedTime: timeBlockNumber },
-            },
-            {
-              new: true,
-            }
-          );
-        }
+      if (createTimeDto.isUsed === false) {
+        await Schedule.findByIdAndUpdate(
+          {
+            _id: createTimeDto.scheduleId,
+          },
+          {
+            $push: { estimatedTime: { $each: createTimeDto.timeBlockNumbers } },
+          },
+          {
+            new: true,
+          }
+        );
       } else {
-        for (const timeBlockNumber of timeBlockNumbers) {
-          await Schedule.findByIdAndUpdate(
-            {
-              _id: scheduleId,
-            },
-            {
-              $push: { usedTime: timeBlockNumber },
-            },
-            {
-              new: true,
-            }
-          );
-        }
+        await Schedule.findByIdAndUpdate(
+          {
+            _id: createTimeDto.scheduleId,
+          },
+          {
+            $push: { usedTime: { $each: createTimeDto.timeBlockNumbers } },
+          },
+          {
+            new: true,
+          }
+        );
       }
     }
     return createScheduleTime;
