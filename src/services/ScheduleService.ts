@@ -237,23 +237,39 @@ const getDailySchedules = async (
 
 const getSubSchedules = async (
   scheduleId: string
-): Promise<ScheduleListGetDto | undefined | null> => {
+): Promise<ScheduleListGetDto | null | undefined> => {
   try {
     // 상위 계획 조회
-    const checkSchedule = await Schedule.findById(scheduleId).populate({
+    const parentSchedule = await Schedule.findById(scheduleId).populate({
       path: 'subSchedules',
       model: 'Schedule',
     });
-    if (!checkSchedule) {
+    if (!parentSchedule) {
       return null;
     }
-    const makeGetSubSchedules = await Promise.all(
-      checkSchedule.subSchedules.map((SubSchedule: any) => {
+
+    const childSchedules = await Promise.all(
+      parentSchedule.subSchedules.map((SubSchedule: any) => {
         const result = SubSchedule;
         return result;
       })
     );
-    return { schedules: makeGetSubSchedules };
+
+    //하위 계획 orderIndex 기준으로 정렬
+    childSchedules.sort(function (
+      childSchedule: any,
+      anotherChildSchedule: any
+    ) {
+      if (childSchedule.orderIndex > anotherChildSchedule.orderIndex) {
+        return 1;
+      }
+      if (childSchedule.orderIndex < anotherChildSchedule.orderIndex) {
+        return -1;
+      }
+      return 0;
+    });
+
+    return { schedules: childSchedules };
   } catch (error) {
     console.log(error);
   }
