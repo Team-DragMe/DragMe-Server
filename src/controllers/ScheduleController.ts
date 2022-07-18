@@ -54,13 +54,8 @@ const deleteSchedule = async (req: Request, res: Response) => {
   try {
     await ScheduleService.deleteSchedule(scheduleId);
     res
-      .status(statusCode.NO_CONTENT)
-      .send(
-        util.success(
-          statusCode.NO_CONTENT,
-          message.DELETE_SCHEDULE_TIME_SUCCESS
-        )
-      );
+      .status(statusCode.OK)
+      .send(util.success(statusCode.OK, message.DELETE_SCHEDULE_TIME_SUCCESS));
   } catch (error) {
     console.log(error);
     return res
