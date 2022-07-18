@@ -603,6 +603,36 @@ const getCalendar = async (month: string): Promise<number[]> => {
   }
 };
 
+const moveDays = async (
+  scheduleId: string,
+  date: string
+): Promise<ScheduleInfo | null> => {
+  try {
+    // date로 요일 계획블록 조회
+    const moveSchedule = await Schedule.find({
+      date: date,
+    }).sort({ orderIndex: 1 });
+
+    // 새로운 orderIndex 생성
+    const newIndex = calculateOrderIndex(moveSchedule);
+
+    // date와 orderIndex 수정
+    const moveScheduleToOtherDays = await Schedule.findByIdAndUpdate(
+      {
+        _id: scheduleId,
+      },
+      {
+        $set: { date: date, orderIndex: newIndex },
+      },
+      { new: true }
+    );
+
+    return moveScheduleToOtherDays;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
 export default {
   createSchedule,
   deleteSchedule,
@@ -621,4 +651,5 @@ export default {
   updateScheduleOrder,
   updateScheduleCategory,
   getCalendar,
+  moveDays,
 };
