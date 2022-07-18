@@ -10,6 +10,7 @@ router.delete('/time', ScheduleController.deleteTime);
 router.patch('/complete', ScheduleController.completeSchedule);
 router.patch('/day-reschedule', ScheduleController.dayReschedule);
 router.get('/days', ScheduleController.getDailySchedules);
+router.get('/subschedule', ScheduleController.getSubSchedules);
 router.get('/delay', ScheduleController.getReschedules);
 router.patch('/title', ScheduleController.updateScheduleTitle);
 router.post('/day-routine', ScheduleController.createRoutine);
