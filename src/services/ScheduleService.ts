@@ -31,7 +31,9 @@ const createSchedule = async (
   }
 };
 
-const deleteSchedule = async (scheduleId: mongoose.Types.ObjectId) => {
+const deleteSchedule = async (
+  scheduleId: mongoose.Types.ObjectId
+): Promise<void | null> => {
   try {
     // 삭제할 계획블록 조회
     const checkDeleteSchedule = await Schedule.findById(scheduleId).populate({
@@ -45,22 +47,17 @@ const deleteSchedule = async (scheduleId: mongoose.Types.ObjectId) => {
       const existingDeleteSchedule = checkDeleteSchedule.subSchedules;
       if (existingDeleteSchedule.length !== 0) {
         // 상위 계획이 하위 계획도 있을 경우 하위계획 삭제
-        for (const deleteSubSchedule of checkDeleteSchedule.subSchedules) {
-          await Schedule.findByIdAndDelete(deleteSubSchedule._id);
-        }
-
-        // 상위 계획 삭제
-        await Schedule.findByIdAndDelete(scheduleId);
-      } else {
-        // 상위 계획만 있을 경우 상위 계획만 삭제
-        await Schedule.findByIdAndDelete(scheduleId);
+        await Schedule.deleteMany({ _id: { $in: existingDeleteSchedule } });
       }
+      // 상위 계획 삭제
+      await Schedule.findByIdAndDelete(scheduleId);
     }
   } catch (error) {
     console.log(error);
     throw error;
   }
 };
+
 const completeSchedule = async (
   scheduleId: mongoose.Types.ObjectId
 ): Promise<ScheduleInfo | null> => {
@@ -555,6 +552,33 @@ const updateScheduleCategory = async (
   }
 };
 
+const getCalendar = async (month: string): Promise<number[]> => {
+  const regex = (pattern: string) => new RegExp(`.*${pattern}.*`);
+  try {
+    // date field 키워드 검색을 통해 특정 년-월에 해당하는 계획들 find
+    const dateRegex = regex(month);
+    const allMonthSchedules = await Schedule.find({
+      date: { $regex: dateRegex },
+    }).sort({ date: 1 });
+
+    // promise.all을 통해 전체 계획들의 날짜들을 형식에 맞는 number 배열로 변환
+    let days = await Promise.all(
+      allMonthSchedules.map((schedule: any) => {
+        let date = schedule.date.substr(8, 2);
+        date *= 1;
+        return date;
+      })
+    );
+
+    // 배열 내 중복 제거
+    days = Array.from(new Set(days));
+    return days;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
 export default {
   createSchedule,
   deleteSchedule,
@@ -572,4 +596,5 @@ export default {
   routineDay,
   updateScheduleOrder,
   updateScheduleCategory,
+  getCalendar,
 };

@@ -54,13 +54,8 @@ const deleteSchedule = async (req: Request, res: Response) => {
   try {
     await ScheduleService.deleteSchedule(scheduleId);
     res
-      .status(statusCode.NO_CONTENT)
-      .send(
-        util.success(
-          statusCode.NO_CONTENT,
-          message.DELETE_SCHEDULE_TIME_SUCCESS
-        )
-      );
+      .status(statusCode.OK)
+      .send(util.success(statusCode.OK, message.DELETE_SCHEDULE_TIME_SUCCESS));
   } catch (error) {
     console.log(error);
     return res
@@ -617,6 +612,38 @@ const updateScheduleCategory = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * @route GET /schedule/calendar
+ * @desc Get Calendar with Schedules
+ * @access Public
+ */
+const getCalendar = async (req: Request, res: Response) => {
+  const { month } = req.query;
+  try {
+    const calendarDays = await ScheduleService.getCalendar(month as string);
+
+    res
+      .status(statusCode.OK)
+      .send(
+        util.success(
+          statusCode.OK,
+          message.GET_CALENDAR_WITH_SCHEDULES_SUCCESS,
+          calendarDays
+        )
+      );
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(statusCode.INTERNAL_SERVER_ERROR)
+      .send(
+        util.fail(
+          statusCode.INTERNAL_SERVER_ERROR,
+          message.INTERNAL_SERVER_ERROR
+        )
+      );
+  }
+};
+
 export default {
   createSchedule,
   createTime,
@@ -634,4 +661,5 @@ export default {
   routineDay,
   updateScheduleOrder,
   updateScheduleCategory,
+  getCalendar,
 };
