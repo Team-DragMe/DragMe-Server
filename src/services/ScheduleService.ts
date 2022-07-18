@@ -255,10 +255,10 @@ const getSubSchedules = async (
       })
     );
 
-    //하위 계획 orderIndex 기준으로 정렬
+    // 하위 계획 orderIndex 기준으로 정렬
     childSchedules.sort(function (
-      childSchedule: any,
-      anotherChildSchedule: any
+      childSchedule: ScheduleInfo,
+      anotherChildSchedule: ScheduleInfo
     ) {
       if (childSchedule.orderIndex > anotherChildSchedule.orderIndex) {
         return 1;
