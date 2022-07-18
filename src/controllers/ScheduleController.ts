@@ -223,7 +223,7 @@ const getDailySchedules = async (req: Request, res: Response) => {
  * @access Public
  */
 const getSubSchedules = async (req: Request, res: Response) => {
-  const { scheduleId } = req.body;
+  const { scheduleId } = req.query;
   if (!scheduleId || scheduleId.length != 24) {
     // 유효하지 않은 scheduleId인 경우 : 400 error
     return res
@@ -232,7 +232,9 @@ const getSubSchedules = async (req: Request, res: Response) => {
   }
 
   try {
-    const subSchedules = await ScheduleService.getSubSchedules(scheduleId);
+    const subSchedules = await ScheduleService.getSubSchedules(
+      scheduleId as string
+    );
     res
       .status(statusCode.OK)
       .send(
