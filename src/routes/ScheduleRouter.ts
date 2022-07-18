@@ -4,6 +4,7 @@ import ScheduleController from '../controllers/ScheduleController';
 const router: Router = Router();
 
 router.post('/', ScheduleController.createSchedule);
+router.delete('/', ScheduleController.deleteSchedule);
 router.post('/time', ScheduleController.createTime);
 router.delete('/time', ScheduleController.deleteTime);
 router.patch('/complete', ScheduleController.completeSchedule);

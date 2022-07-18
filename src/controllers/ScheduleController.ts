@@ -44,6 +44,32 @@ const createSchedule = async (req: Request, res: Response) => {
 };
 
 /**
+ * @route Delete /schedule
+ * @desc Delete Schedule Time
+ * @access Public
+ */
+const deleteSchedule = async (req: Request, res: Response) => {
+  let { scheduleId } = req.body;
+  scheduleId = new mongoose.Types.ObjectId(scheduleId);
+  try {
+    await ScheduleService.deleteSchedule(scheduleId);
+    res
+      .status(statusCode.OK)
+      .send(util.success(statusCode.OK, message.DELETE_SCHEDULE_TIME_SUCCESS));
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(statusCode.INTERNAL_SERVER_ERROR)
+      .send(
+        util.fail(
+          statusCode.INTERNAL_SERVER_ERROR,
+          message.INTERNAL_SERVER_ERROR
+        )
+      );
+  }
+};
+
+/**
  * @route POST /schedule/time
  * @desc Create Schedule Time
  * @access Public
@@ -584,6 +610,7 @@ export default {
   createSchedule,
   createTime,
   deleteTime,
+  deleteSchedule,
   completeSchedule,
   dayReschedule,
   getDailySchedules,

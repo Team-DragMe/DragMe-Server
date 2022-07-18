@@ -31,6 +31,71 @@ const createSchedule = async (
   }
 };
 
+const deleteSchedule = async (
+  scheduleId: mongoose.Types.ObjectId
+): Promise<void | null> => {
+  try {
+    // 삭제할 계획블록 조회
+    const checkDeleteSchedule = await Schedule.findById(scheduleId).populate({
+      path: 'subSchedules',
+      model: 'Schedule',
+    });
+
+    if (!checkDeleteSchedule) {
+      return null;
+    } else {
+      const existingDeleteSchedule = checkDeleteSchedule.subSchedules;
+      if (existingDeleteSchedule.length !== 0) {
+        // 상위 계획이 하위 계획도 있을 경우 하위계획 삭제
+        await Schedule.deleteMany({ _id: { $in: existingDeleteSchedule } });
+      }
+      // 상위 계획 삭제
+      await Schedule.findByIdAndDelete(scheduleId);
+    }
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+const completeSchedule = async (
+  scheduleId: mongoose.Types.ObjectId
+): Promise<ScheduleInfo | null> => {
+  try {
+    // scheduleId로 계획블록 조회
+    const checkCompleteSchedule = await Schedule.findById(scheduleId);
+    if (!checkCompleteSchedule) {
+      return null;
+    } else {
+      if (checkCompleteSchedule.isCompleted === true) {
+        await Schedule.findOneAndUpdate(
+          {
+            _id: scheduleId,
+          },
+          {
+            $set: { isCompleted: false, usedTime: [] },
+          },
+          { new: true }
+        );
+      } else {
+        await Schedule.findOneAndUpdate(
+          {
+            _id: scheduleId,
+          },
+          {
+            isCompleted: true,
+          },
+          { new: true }
+        );
+      }
+      return checkCompleteSchedule;
+    }
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
 const createTime = async (
   scheduleId: mongoose.Types.ObjectId,
   timeDto: TimeDto
@@ -109,43 +174,6 @@ const deleteTime = async (
       }
     }
     return deleteScheduleTime;
-  } catch (error) {
-    console.log(error);
-    throw error;
-  }
-};
-const completeSchedule = async (
-  scheduleId: mongoose.Types.ObjectId
-): Promise<ScheduleInfo | null> => {
-  try {
-    // scheduleId로 계획블록 조회
-    const checkCompleteSchedule = await Schedule.findById(scheduleId);
-    if (!checkCompleteSchedule) {
-      return null;
-    } else {
-      if (checkCompleteSchedule.isCompleted === true) {
-        await Schedule.findOneAndUpdate(
-          {
-            _id: scheduleId,
-          },
-          {
-            $set: { isCompleted: false, usedTime: [] },
-          },
-          { new: true }
-        );
-      } else {
-        await Schedule.findOneAndUpdate(
-          {
-            _id: scheduleId,
-          },
-          {
-            isCompleted: true,
-          },
-          { new: true }
-        );
-      }
-      return checkCompleteSchedule;
-    }
   } catch (error) {
     console.log(error);
     throw error;
@@ -537,6 +565,7 @@ const getCalendar = async (month: string): Promise<number[]> => {
 
 export default {
   createSchedule,
+  deleteSchedule,
   createTime,
   deleteTime,
   completeSchedule,
