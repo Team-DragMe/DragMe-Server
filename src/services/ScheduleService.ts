@@ -238,6 +238,22 @@ const getDailySchedules = async (
   }
 };
 
+const getSubSchedules = async (scheduleId: mongoose.Types.ObjectId) => {
+  try {
+    //상위 계획 조회
+    const checkSchedule = await Schedule.findById(scheduleId).populate({
+      path: 'subSchedules',
+      model: 'Schedule',
+    });
+    if (!checkSchedule) {
+      return null;
+    }
+
+    return checkSchedule.subSchedules;
+  } catch (error) {
+    console.log(error);
+  }
+};
 const getReschedules = async (
   userId: mongoose.Types.ObjectId
 ): Promise<RescheduleListGetDto> => {
@@ -547,6 +563,7 @@ export default {
   completeSchedule,
   dayReschedule,
   getDailySchedules,
+  getSubSchedules,
   getReschedules,
   updateScheduleTitle,
   createRoutine,
