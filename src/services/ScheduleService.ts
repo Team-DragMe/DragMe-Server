@@ -235,9 +235,11 @@ const getDailySchedules = async (
   }
 };
 
-const getSubSchedules = async (scheduleId: mongoose.Types.ObjectId) => {
+const getSubSchedules = async (
+  scheduleId: string
+): Promise<ScheduleListGetDto | undefined | null> => {
   try {
-    //상위 계획 조회
+    // 상위 계획 조회
     const checkSchedule = await Schedule.findById(scheduleId).populate({
       path: 'subSchedules',
       model: 'Schedule',
@@ -245,12 +247,18 @@ const getSubSchedules = async (scheduleId: mongoose.Types.ObjectId) => {
     if (!checkSchedule) {
       return null;
     }
-
-    return checkSchedule.subSchedules;
+    const makeGetSubSchedules = await Promise.all(
+      checkSchedule.subSchedules.map((SubSchedule: any) => {
+        const result = SubSchedule;
+        return result;
+      })
+    );
+    return { schedules: makeGetSubSchedules };
   } catch (error) {
     console.log(error);
   }
 };
+
 const getReschedules = async (
   userId: mongoose.Types.ObjectId
 ): Promise<RescheduleListGetDto> => {
