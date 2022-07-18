@@ -235,6 +235,46 @@ const getDailySchedules = async (
   }
 };
 
+const getSubSchedules = async (
+  scheduleId: string
+): Promise<ScheduleListGetDto | null | undefined> => {
+  try {
+    // 상위 계획 조회
+    const parentSchedule = await Schedule.findById(scheduleId).populate({
+      path: 'subSchedules',
+      model: 'Schedule',
+    });
+    if (!parentSchedule) {
+      return null;
+    }
+
+    const childSchedules = await Promise.all(
+      parentSchedule.subSchedules.map((SubSchedule: any) => {
+        const result = SubSchedule;
+        return result;
+      })
+    );
+
+    // 하위 계획 orderIndex 기준으로 정렬
+    childSchedules.sort(function (
+      childSchedule: ScheduleInfo,
+      anotherChildSchedule: ScheduleInfo
+    ) {
+      if (childSchedule.orderIndex > anotherChildSchedule.orderIndex) {
+        return 1;
+      }
+      if (childSchedule.orderIndex < anotherChildSchedule.orderIndex) {
+        return -1;
+      }
+      return 0;
+    });
+
+    return { schedules: childSchedules };
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const getReschedules = async (
   userId: mongoose.Types.ObjectId
 ): Promise<RescheduleListGetDto> => {
@@ -571,6 +611,7 @@ export default {
   completeSchedule,
   dayReschedule,
   getDailySchedules,
+  getSubSchedules,
   getReschedules,
   updateScheduleTitle,
   createRoutine,
