@@ -49,7 +49,7 @@ const deleteSchedule = async (
         // 상위 계획이 하위 계획도 있을 경우 하위계획 삭제
         await Schedule.deleteMany({ _id: { $in: existingDeleteSchedule } });
       }
-      //상위 계획 삭제
+      // 상위 계획 삭제
       await Schedule.findByIdAndDelete(scheduleId);
     }
   } catch (error) {
