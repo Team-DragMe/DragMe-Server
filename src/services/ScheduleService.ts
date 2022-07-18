@@ -31,7 +31,9 @@ const createSchedule = async (
   }
 };
 
-const deleteSchedule = async (scheduleId: mongoose.Types.ObjectId) => {
+const deleteSchedule = async (
+  scheduleId: mongoose.Types.ObjectId
+): Promise<void | null> => {
   try {
     // 삭제할 계획블록 조회
     const checkDeleteSchedule = await Schedule.findById(scheduleId).populate({
@@ -45,22 +47,17 @@ const deleteSchedule = async (scheduleId: mongoose.Types.ObjectId) => {
       const existingDeleteSchedule = checkDeleteSchedule.subSchedules;
       if (existingDeleteSchedule.length !== 0) {
         // 상위 계획이 하위 계획도 있을 경우 하위계획 삭제
-        for (const deleteSubSchedule of checkDeleteSchedule.subSchedules) {
-          await Schedule.findByIdAndDelete(deleteSubSchedule._id);
-        }
-
-        // 상위 계획 삭제
-        await Schedule.findByIdAndDelete(scheduleId);
-      } else {
-        // 상위 계획만 있을 경우 상위 계획만 삭제
-        await Schedule.findByIdAndDelete(scheduleId);
+        await Schedule.deleteMany({ _id: { $in: existingDeleteSchedule } });
       }
+      //상위 계획 삭제
+      await Schedule.findByIdAndDelete(scheduleId);
     }
   } catch (error) {
     console.log(error);
     throw error;
   }
 };
+
 const completeSchedule = async (
   scheduleId: mongoose.Types.ObjectId
 ): Promise<ScheduleInfo | null> => {
