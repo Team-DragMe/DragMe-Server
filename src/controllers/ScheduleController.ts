@@ -45,15 +45,14 @@ const createSchedule = async (req: Request, res: Response) => {
 };
 
 /**
- * @route Delete /schedule
+ * @route Delete /schedule?scheduleId
  * @desc Delete Schedule Time
  * @access Public
  */
 const deleteSchedule = async (req: Request, res: Response) => {
-  let { scheduleId } = req.body;
-  scheduleId = new mongoose.Types.ObjectId(scheduleId);
+  let { scheduleId } = req.query;
   try {
-    await ScheduleService.deleteSchedule(scheduleId);
+    await ScheduleService.deleteSchedule(scheduleId as string);
     res
       .status(statusCode.OK)
       .send(util.success(statusCode.OK, message.DELETE_SCHEDULE_TIME_SUCCESS));
