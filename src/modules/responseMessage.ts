@@ -8,6 +8,7 @@ const message = {
   // Information
   CREATE_INFORMATION_SUCCESS: '정보 작성 성공',
   GET_DAILY_INFORMATION_SUCCESS: '일간계획 정보 조회 성공',
+  GET_MONTHLY_GOAL_SUCCESS: '월간 목표 조회 성공',
 
   // Schedule
   CREATE_SCHEDULE_SUCCESS: '계획블록 생성 성공',

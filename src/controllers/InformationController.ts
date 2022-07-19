@@ -1,9 +1,10 @@
-import express, { Request, response, Response } from 'express';
+import express, { Request, Response } from 'express';
 import statusCode from '../modules/statusCode';
 import message from '../modules/responseMessage';
 import util from '../modules/util';
 import { InformationCreateDto } from '../interfaces/information/InformationCreateDto';
 import InformationService from '../services/InformationService';
+import mongoose from 'mongoose';
 
 /**
  * @route POST /information/
@@ -66,7 +67,43 @@ const getDailyInformation = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * @route GET /information/months?date
+ * @desc GET MonthlyGoal Information
+ * @access Public
+ */
+const getMonthlyGoal = async (req: Request, res: Response) => {
+  const { date } = req.query;
+  const userId = new mongoose.Types.ObjectId('62cd6eb82b6b4e92c7fc08f1');
+  if (!date) {
+    return res
+      .status(statusCode.BAD_REQUEST)
+      .send(util.fail(statusCode.BAD_REQUEST, message.NULL_VALUE));
+  }
+  try {
+    const data = await InformationService.getMonthlyGoal(
+      date as string,
+      userId
+    );
+    res
+      .status(statusCode.OK)
+      .send(
+        util.success(statusCode.OK, message.GET_MONTHLY_GOAL_SUCCESS, data)
+      );
+  } catch (error) {
+    console.log(error);
+    res
+      .status(statusCode.INTERNAL_SERVER_ERROR)
+      .send(
+        util.fail(
+          statusCode.INTERNAL_SERVER_ERROR,
+          message.INTERNAL_SERVER_ERROR
+        )
+      );
+  }
+};
 export default {
   createInformation,
   getDailyInformation,
+  getMonthlyGoal,
 };
