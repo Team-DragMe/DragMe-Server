@@ -10,19 +10,19 @@ const createInformation = async (
 ): Promise<void> => {
   try {
     // 특정 날짜, 유저, 타입과 일치하는 information이 존재하는지 탐색
-    const existingInformation = await Information.find({
+    const existingInformation = await Information.findOne({
       userId: informationCreateDto.userId,
       date: informationCreateDto.date,
       type: informationCreateDto.type,
     });
-    if (existingInformation.length === 0) {
+    if (!existingInformation) {
       // 존재하지 않는 경우, 새로운 information 객체 생성
       const newDailyGoal = new Information(informationCreateDto);
       await newDailyGoal.save();
     } else {
       // 존재하는 경우, 기존의 information 객체에 정보 업데이트
       await Information.findByIdAndUpdate(
-        existingInformation[0]._id,
+        existingInformation._id,
         informationCreateDto
       );
     }
