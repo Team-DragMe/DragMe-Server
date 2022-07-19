@@ -31,9 +31,7 @@ const createSchedule = async (
   }
 };
 
-const deleteSchedule = async (
-  scheduleId: mongoose.Types.ObjectId
-): Promise<void | null> => {
+const deleteSchedule = async (scheduleId: string): Promise<void | null> => {
   try {
     // 삭제할 계획블록 조회
     const checkDeleteSchedule = await Schedule.findById(scheduleId).populate({
