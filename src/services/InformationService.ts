@@ -87,13 +87,11 @@ const getMonthlyGoal = async (
         },
       ],
     });
-
     const data: InformationResponseDto = {
       date: findMonthlyGoal[0].date,
       type: findMonthlyGoal[0].type,
       value: findMonthlyGoal[0].value,
     };
-
     return data;
   } catch (error) {
     console.log(error);
@@ -141,9 +139,53 @@ const getWeeklyEmojis = async (
   }
 };
 
+const getWeeklyGoal = async (
+  date: string
+): Promise<InformationResponseDto[]> => {
+  try {
+    const initWeeklyGoalArray: string[] = [
+      'weeklyGoal0',
+      'weeklyGoal1',
+      'weeklyGoal2',
+      'weeklyGoal3',
+      'weeklyGoal4',
+      'weeklyGoal5',
+      'weeklyGoal6',
+    ];
+    const weeklyGoalArray = await Promise.all(
+      initWeeklyGoalArray.map(async (weeklyGoal: string) => {
+        const getWeeklyGoal = await Information.findOne({
+          date: date,
+          type: weeklyGoal,
+        });
+        let weeklyGoalResponse: InformationResponseDto;
+        if (getWeeklyGoal) {
+          weeklyGoalResponse = {
+            date: getWeeklyGoal.date,
+            type: getWeeklyGoal.type,
+            value: getWeeklyGoal.value,
+          };
+        } else {
+          // 객체가 null인 경우에도 response type은 InformationResponseDto이므로, 형식을 맞춰줌
+          weeklyGoalResponse = {
+            date: date,
+            type: weeklyGoal,
+            value: '',
+          };
+        }
+        return weeklyGoalResponse;
+      })
+    );
+    return weeklyGoalArray;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
 export default {
   createInformation,
   getDailyInformation,
   getMonthlyGoal,
   getWeeklyEmojis,
+  getWeeklyGoal,
 };

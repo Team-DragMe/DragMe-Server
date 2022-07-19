@@ -10,6 +10,7 @@ const message = {
   GET_DAILY_INFORMATION_SUCCESS: '일간계획 정보 조회 성공',
   GET_MONTHLY_GOAL_SUCCESS: '월간 목표 조회 성공',
   GET_WEEKLY_EMOJIS_SUCCESS: '주간 이모지 리스트 조회 성공',
+  GET_WEEKLY_GOAL_SUCCESS: '주간 목표 조회 성공',
 
   // Schedule
   CREATE_SCHEDULE_SUCCESS: '계획블록 생성 성공',
