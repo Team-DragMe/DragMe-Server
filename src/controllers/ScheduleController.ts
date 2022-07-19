@@ -8,6 +8,8 @@ import mongoose from 'mongoose';
 import { ScheduleUpdateDto } from '../interfaces/schedule/ScheduleUpdateDto';
 import { TimeDto } from '../interfaces/schedule/TimeDto';
 import { SubScheduleIdTitleListDto } from '../interfaces/schedule/SubScheduleIdTitleListDto';
+import { slackMessage } from '../modules/returnToSlackMessage';
+import { sendMessagesToSlack } from '../modules/slackAPI';
 
 /**
  * @route POST /schedule
@@ -682,6 +684,50 @@ const updateSchedule = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * @route GET /schedule/weeks?startDate=&endDate=
+ * @desc Get Weekly Schedules
+ * @access Public
+ */
+const getWeeklySchedules = async (req: Request, res: Response) => {
+  const { startDate, endDate } = req.query;
+  const userId: string = '62cd27ae39f42cfbf520009a';
+  try {
+    const schedulesOfWeek = await ScheduleService.getWeeklySchedules(
+      userId,
+      startDate as string,
+      endDate as string
+    );
+
+    res
+      .status(statusCode.OK)
+      .send(
+        util.success(
+          statusCode.OK,
+          message.GET_WEEKLY_SCHEDULES_SUCCESS,
+          schedulesOfWeek
+        )
+      );
+  } catch (error) {
+    console.log(error);
+    const errorMessage: string = slackMessage(
+      req.method.toUpperCase(),
+      req.originalUrl,
+      error,
+      req.body.user?.id
+    );
+    sendMessagesToSlack(errorMessage);
+    return res
+      .status(statusCode.INTERNAL_SERVER_ERROR)
+      .send(
+        util.fail(
+          statusCode.INTERNAL_SERVER_ERROR,
+          message.INTERNAL_SERVER_ERROR
+        )
+      );
+  }
+};
+
 export default {
   createSchedule,
   createTime,
@@ -701,4 +747,5 @@ export default {
   updateScheduleCategory,
   getCalendar,
   updateSchedule,
+  getWeeklySchedules,
 };
