@@ -143,7 +143,7 @@ const getWeeklyGoal = async (
   date: string
 ): Promise<InformationResponseDto[]> => {
   try {
-    const initWeeklyGoalArray = [
+    const initWeeklyGoalArray: string[] = [
       'weeklyGoal0',
       'weeklyGoal1',
       'weeklyGoal2',
@@ -153,7 +153,7 @@ const getWeeklyGoal = async (
       'weeklyGoal6',
     ];
     const weeklyGoalArray = await Promise.all(
-      initWeeklyGoalArray.map(async (weeklyGoal: any) => {
+      initWeeklyGoalArray.map(async (weeklyGoal: string) => {
         const getWeeklyGoal = await Information.findOne({
           date: date,
           type: weeklyGoal,
