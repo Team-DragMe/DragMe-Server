@@ -50,14 +50,6 @@ const createSchedule = async (req: Request, res: Response) => {
           message.INTERNAL_SERVER_ERROR
         )
       );
-    return res
-      .status(statusCode.INTERNAL_SERVER_ERROR)
-      .send(
-        util.fail(
-          statusCode.INTERNAL_SERVER_ERROR,
-          message.INTERNAL_SERVER_ERROR
-        )
-      );
   }
 };
 
