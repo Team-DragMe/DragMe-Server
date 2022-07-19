@@ -651,18 +651,21 @@ const getCalendar = async (req: Request, res: Response) => {
  * @desc Move Schedule to Other Days
  * @access Public
  */
-const moveDays = async (req: Request, res: Response) => {
+const updateScheduleDate = async (req: Request, res: Response) => {
   const { scheduleId, date } = req.body;
   if (!scheduleId || !date) {
     return res
       .status(statusCode.BAD_REQUEST)
       .send(util.fail(statusCode.BAD_REQUEST, message.NULL_VALUE));
   }
+  const scheduleUpdateDto: ScheduleUpdateDto = {
+    date: date,
+  };
 
   try {
-    const moveScheduleToOtherDays = await ScheduleService.moveDays(
+    const moveScheduleToOtherDays = await ScheduleService.updateScheduleDate(
       scheduleId,
-      date
+      scheduleUpdateDto
     );
     if (!moveScheduleToOtherDays) {
       // scheduleId가 잘못된 경우, 404 return
@@ -672,7 +675,7 @@ const moveDays = async (req: Request, res: Response) => {
     }
     res
       .status(statusCode.OK)
-      .send(util.success(statusCode.OK, message.MOVE_DAYS_SUCCESS));
+      .send(util.success(statusCode.OK, message.UPDATE_SCHEDULE_DATE_SUCCESS));
   } catch (error) {
     console.log(error);
     return res
@@ -703,5 +706,5 @@ export default {
   updateScheduleOrder,
   updateScheduleCategory,
   getCalendar,
-  moveDays,
+  updateScheduleDate,
 };
