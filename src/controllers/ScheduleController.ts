@@ -319,7 +319,7 @@ const completeSchedule = async (req: Request, res: Response) => {
  * @access Public
  */
 const getReschedules = async (req: Request, res: Response) => {
-  const userId = new mongoose.Types.ObjectId('62cd27ae39f42cfbf520009a');
+  const userId = '62cd27ae39f42cfbf520009a';
   try {
     const data = await ScheduleService.getReschedules(userId);
     return res
@@ -400,7 +400,7 @@ const createRoutine = async (req: Request, res: Response) => {
   }
 
   scheduleId = new mongoose.Types.ObjectId(scheduleId);
-  const userId = new mongoose.Types.ObjectId('62cd27ae39f42cfbf520009a');
+  const userId = '62cd27ae39f42cfbf520009a';
 
   try {
     const newRoutine = await ScheduleService.createRoutine(userId, scheduleId);
@@ -434,7 +434,7 @@ const createRoutine = async (req: Request, res: Response) => {
  * @access Public
  */
 const getRoutines = async (req: Request, res: Response) => {
-  const userId = new mongoose.Types.ObjectId('62cd27ae39f42cfbf520009a');
+  const userId = '62cd27ae39f42cfbf520009a';
   try {
     const routines = await ScheduleService.getRoutines(userId);
     res
@@ -515,7 +515,7 @@ const routineDay = async (req: Request, res: Response) => {
   }
 
   scheduleId = new mongoose.Types.ObjectId(scheduleId);
-  const userId = new mongoose.Types.ObjectId('62cd27ae39f42cfbf520009a');
+  const userId = '62cd27ae39f42cfbf520009a';
   try {
     const moveRoutineToSchedule = await ScheduleService.routineDay(
       userId,

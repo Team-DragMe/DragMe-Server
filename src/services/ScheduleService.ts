@@ -293,7 +293,7 @@ const getSubSchedules = async (
 };
 
 const getReschedules = async (
-  userId: mongoose.Types.ObjectId
+  userId: string
 ): Promise<RescheduleListGetDto> => {
   try {
     const delaySchedules = await Schedule.find({
@@ -331,7 +331,7 @@ const updateScheduleTitle = async (
 };
 
 const createRoutine = async (
-  userId: mongoose.Types.ObjectId,
+  userId: string,
   scheduleId: mongoose.Types.ObjectId
 ): Promise<ScheduleInfo | null> => {
   try {
@@ -357,7 +357,7 @@ const createRoutine = async (
       date: '',
       title: originalSchedule.title,
       categoryColorCode: originalSchedule.categoryColorCode,
-      userId: originalSchedule.userId,
+      userId: originalSchedule.userId.toString(),
       orderIndex: newIndex,
       isRoutine: true,
       subSchedules: [],
@@ -395,9 +395,7 @@ const createRoutine = async (
   }
 };
 
-const getRoutines = async (
-  userId: mongoose.Types.ObjectId
-): Promise<ScheduleListGetDto> => {
+const getRoutines = async (userId: string): Promise<ScheduleListGetDto> => {
   try {
     const routines = await Schedule.find({
       userId: userId,
@@ -443,7 +441,7 @@ const rescheduleDay = async (
 };
 
 const routineDay = async (
-  userId: mongoose.Types.ObjectId,
+  userId: string,
   scheduleId: mongoose.Types.ObjectId,
   date: string
 ): Promise<ScheduleInfo | null> => {
@@ -469,7 +467,7 @@ const routineDay = async (
       date: date,
       title: moveRoutineToSchedule.title,
       categoryColorCode: moveRoutineToSchedule.categoryColorCode,
-      userId: moveRoutineToSchedule.userId,
+      userId: moveRoutineToSchedule.userId.toString(),
       orderIndex: newIndex,
       isRoutine: false,
       subSchedules: [],
@@ -662,7 +660,7 @@ const updateSchedule = async (
             date: existingSchedule.date,
             title: newSubSchedule.title,
             categoryColorCode: scheduleUpdateDto.categoryColorCode!,
-            userId: existingSchedule.userId,
+            userId: existingSchedule.userId.toString(),
             orderIndex: newSubScheduleOrderIndex,
           };
           newSubScheduleOrderIndex += 1024;
