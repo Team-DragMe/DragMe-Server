@@ -124,7 +124,7 @@ const getWeeklyEmojis = async (req: Request, res: Response) => {
       .send(
         util.success(
           statusCode.OK,
-          message.GET_WEEKLY_SCHEDULES_SUCCESS,
+          message.GET_WEEKLY_EMOJIS_SUCCESS,
           weeklyEmojis
         )
       );
