@@ -29,6 +29,7 @@ const message = {
   GET_CALENDAR_WITH_SCHEDULES_SUCCESS: '날짜별 일정 존재 여부 조회 성공',
   UPDATE_SCHEDULE_SUCCESS: '계획블록 수정 성공',
   UPDATE_SCHEDULE_DATE_SUCCESS: '계획블록 요일 이동 성공',
+  GET_WEEKLY_SCHEDULES_SUCCESS: '주간 계획블록 리스트 조회 성공',
 };
 
 export default message;

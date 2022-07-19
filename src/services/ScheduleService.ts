@@ -9,6 +9,7 @@ import { calculateOrderIndex } from '../modules/calculateOrderIndex';
 import { TimeDto } from '../interfaces/schedule/TimeDto';
 import { SubScheduleIdTitleListDto } from '../interfaces/schedule/SubScheduleIdTitleListDto';
 import _ from 'lodash';
+import { calculateDaysOfWeek } from '../modules/calculateDaysOfWeek';
 
 const createSchedule = async (
   scheduleCreateDto: ScheduleCreateDto
@@ -697,7 +698,7 @@ const updateSchedule = async (
         _id: scheduleId,
       },
       {
-        $set: { date: scheduleUpdateDto.date, orderIndex: newIndex },
+        $push: { subSchedules: { $each: newSubScheduleIds } },
       },
       { new: true }
     );
@@ -722,20 +723,47 @@ const updateScheduleDate = async (
 
     // date와 orderIndex 수정
     const moveScheduleToOtherDays = await Schedule.findByIdAndUpdate(
-        $push: { subSchedules: { $each: newSubScheduleIds } },
+      {
+        _id: scheduleId,
+      },
+      {
+        $set: { date: scheduleUpdateDto.date, orderIndex: newIndex },
       },
       {
         new: true,
       }
     );
-   
+
     return moveScheduleToOtherDays;
   } catch (error) {
     console.log(error);
     throw error;
   }
 };
-  
+
+const getWeeklySchedules = async (
+  userId: string,
+  startDate: string,
+  endDate: string
+): Promise<ScheduleListGetDto[]> => {
+  try {
+    const daysOfWeek = calculateDaysOfWeek(startDate, endDate);
+    const schedulesOfWeek = await Promise.all(
+      daysOfWeek.map(async (day: string) => {
+        const schedulesOfDay = await Schedule.find({
+          date: day,
+          userId: userId,
+        }).sort({ orderIndex: 1 });
+        return { schedules: schedulesOfDay };
+      })
+    );
+    return schedulesOfWeek;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
 export default {
   createSchedule,
   deleteSchedule,
@@ -756,4 +784,5 @@ export default {
   getCalendar,
   updateSchedule,
   updateScheduleDate,
+  getWeeklySchedules,
 };
