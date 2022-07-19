@@ -603,14 +603,14 @@ const getCalendar = async (month: string): Promise<number[]> => {
   }
 };
 
-const moveDays = async (
+const updateScheduleDate = async (
   scheduleId: string,
-  date: string
+  scheduleUpdateDto: ScheduleUpdateDto
 ): Promise<ScheduleInfo | null> => {
   try {
     // date로 요일 계획블록 조회
     const moveSchedule = await Schedule.find({
-      date: date,
+      date: scheduleUpdateDto.date,
     }).sort({ orderIndex: 1 });
 
     // 새로운 orderIndex 생성
@@ -622,7 +622,7 @@ const moveDays = async (
         _id: scheduleId,
       },
       {
-        $set: { date: date, orderIndex: newIndex },
+        $set: { date: scheduleUpdateDto.date, orderIndex: newIndex },
       },
       { new: true }
     );
@@ -651,5 +651,5 @@ export default {
   updateScheduleOrder,
   updateScheduleCategory,
   getCalendar,
-  moveDays,
+  updateScheduleDate,
 };
