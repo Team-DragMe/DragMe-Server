@@ -698,7 +698,7 @@ const updateSchedule = async (
         _id: scheduleId,
       },
       {
-        $set: { date: scheduleUpdateDto.date, orderIndex: newIndex },
+        $push: { subSchedules: { $each: newSubScheduleIds } },
       },
       { new: true }
     );
@@ -723,13 +723,17 @@ const updateScheduleDate = async (
 
     // date와 orderIndex 수정
     const moveScheduleToOtherDays = await Schedule.findByIdAndUpdate(
-        $push: { subSchedules: { $each: newSubScheduleIds } },
+      {
+        _id: scheduleId,
+      },
+      {
+        $set: { date: scheduleUpdateDto.date, orderIndex: newIndex },
       },
       {
         new: true,
       }
     );
-   
+
     return moveScheduleToOtherDays;
   } catch (error) {
     console.log(error);

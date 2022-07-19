@@ -648,7 +648,8 @@ const getCalendar = async (req: Request, res: Response) => {
   }
 };
 
-* @route PATCH /schedule
+/**
+ * @route PATCH /schedule
  * @desc Update Schedule
  * @access Public
  */
@@ -713,7 +714,7 @@ const updateScheduleDate = async (req: Request, res: Response) => {
     res
       .status(statusCode.OK)
       .send(util.success(statusCode.OK, message.UPDATE_SCHEDULE_DATE_SUCCESS));
- } catch (error) {
+  } catch (error) {
     console.log(error);
     return res
       .status(statusCode.INTERNAL_SERVER_ERROR)
