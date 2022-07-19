@@ -483,6 +483,13 @@ const rescheduleDay = async (req: Request, res: Response) => {
       .send(util.success(statusCode.OK, message.MOVE_BACK_SCHEDULE_SUCCESS));
   } catch (error) {
     console.log(error);
+    const errorMessage: string = slackMessage(
+      req.method.toUpperCase(),
+      req.originalUrl,
+      error,
+      req.body.user?.id
+    );
+    sendMessagesToSlack(errorMessage);
     return res
       .status(statusCode.INTERNAL_SERVER_ERROR)
       .send(
