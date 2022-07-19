@@ -327,6 +327,13 @@ const getReschedules = async (req: Request, res: Response) => {
       .send(util.success(statusCode.OK, message.GET_RESCHEDULES_SUCCESS, data));
   } catch (error) {
     console.log(error);
+    const errorMessage: string = slackMessage(
+      req.method.toUpperCase(),
+      req.originalUrl,
+      error,
+      req.body.user?.id
+    );
+    sendMessagesToSlack(errorMessage);
     return res
       .status(statusCode.INTERNAL_SERVER_ERROR)
       .send(
