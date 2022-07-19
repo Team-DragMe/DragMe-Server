@@ -7,6 +7,7 @@ import ScheduleService from '../services/ScheduleService';
 import mongoose from 'mongoose';
 import { ScheduleUpdateDto } from '../interfaces/schedule/ScheduleUpdateDto';
 import { TimeDto } from '../interfaces/schedule/TimeDto';
+import { SubScheduleIdTitleListDto } from '../interfaces/schedule/SubScheduleIdTitleListDto';
 
 /**
  * @route POST /schedule
@@ -44,15 +45,14 @@ const createSchedule = async (req: Request, res: Response) => {
 };
 
 /**
- * @route Delete /schedule
+ * @route Delete /schedule?scheduleId
  * @desc Delete Schedule Time
  * @access Public
  */
 const deleteSchedule = async (req: Request, res: Response) => {
-  let { scheduleId } = req.body;
-  scheduleId = new mongoose.Types.ObjectId(scheduleId);
+  let { scheduleId } = req.query;
   try {
-    await ScheduleService.deleteSchedule(scheduleId);
+    await ScheduleService.deleteSchedule(scheduleId as string);
     res
       .status(statusCode.OK)
       .send(util.success(statusCode.OK, message.DELETE_SCHEDULE_TIME_SUCCESS));
@@ -646,7 +646,41 @@ const getCalendar = async (req: Request, res: Response) => {
   }
 };
 
-/**
+* @route PATCH /schedule
+ * @desc Update Schedule
+ * @access Public
+ */
+const updateSchedule = async (req: Request, res: Response) => {
+  const { scheduleId, title, categoryColorCode, subSchedules } = req.body;
+  const scheduleUpdateDto: ScheduleUpdateDto = {
+    title: title,
+    categoryColorCode: categoryColorCode,
+  };
+  const subScheduleIdTitleListDto: SubScheduleIdTitleListDto = {
+    subSchedules: subSchedules,
+  };
+  try {
+    await ScheduleService.updateSchedule(
+      scheduleId,
+      scheduleUpdateDto,
+      subScheduleIdTitleListDto
+    );
+    res
+      .status(statusCode.OK)
+      .send(util.success(statusCode.OK, message.UPDATE_SCHEDULE_SUCCESS));
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(statusCode.INTERNAL_SERVER_ERROR)
+      .send(
+        util.fail(
+          statusCode.INTERNAL_SERVER_ERROR,
+          message.INTERNAL_SERVER_ERROR
+        )
+      );
+  }
+};
+
  * @route PATCH /schedule/days
  * @desc Move Schedule to Other Days
  * @access Public
@@ -676,7 +710,7 @@ const updateScheduleDate = async (req: Request, res: Response) => {
     res
       .status(statusCode.OK)
       .send(util.success(statusCode.OK, message.UPDATE_SCHEDULE_DATE_SUCCESS));
-  } catch (error) {
+ } catch (error) {
     console.log(error);
     return res
       .status(statusCode.INTERNAL_SERVER_ERROR)
@@ -688,6 +722,8 @@ const updateScheduleDate = async (req: Request, res: Response) => {
       );
   }
 };
+ 
+
 export default {
   createSchedule,
   createTime,
@@ -706,5 +742,6 @@ export default {
   updateScheduleOrder,
   updateScheduleCategory,
   getCalendar,
+  updateSchedule,
   updateScheduleDate,
 };

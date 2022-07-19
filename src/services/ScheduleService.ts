@@ -7,6 +7,8 @@ import { ScheduleUpdateDto } from '../interfaces/schedule/ScheduleUpdateDto';
 import { ScheduleInfo } from '../interfaces/schedule/ScheduleInfo';
 import { calculateOrderIndex } from '../modules/calculateOrderIndex';
 import { TimeDto } from '../interfaces/schedule/TimeDto';
+import { SubScheduleIdTitleListDto } from '../interfaces/schedule/SubScheduleIdTitleListDto';
+import _ from 'lodash';
 
 const createSchedule = async (
   scheduleCreateDto: ScheduleCreateDto
@@ -31,9 +33,7 @@ const createSchedule = async (
   }
 };
 
-const deleteSchedule = async (
-  scheduleId: mongoose.Types.ObjectId
-): Promise<void | null> => {
+const deleteSchedule = async (scheduleId: string): Promise<void | null> => {
   try {
     // 삭제할 계획블록 조회
     const checkDeleteSchedule = await Schedule.findById(scheduleId).populate({
@@ -44,13 +44,29 @@ const deleteSchedule = async (
     if (!checkDeleteSchedule) {
       return null;
     } else {
-      const existingDeleteSchedule = checkDeleteSchedule.subSchedules;
-      if (existingDeleteSchedule.length !== 0) {
-        // 상위 계획이 하위 계획도 있을 경우 하위계획 삭제
-        await Schedule.deleteMany({ _id: { $in: existingDeleteSchedule } });
+      const existingDeleteSubSchedule = checkDeleteSchedule.subSchedules;
+      if (existingDeleteSubSchedule.length !== 0) {
+        await Schedule.deleteMany({ _id: { $in: existingDeleteSubSchedule } }); // 상위 계획이 하위 계획도 있을 경우 하위계획 삭제
+        await Schedule.findByIdAndDelete(scheduleId); // 상위 계획 삭제
+      } else {
+        // 상위 계획인지, 하위 계획인지 판별
+        const isParentSchedule = await Schedule.find({
+          subSchedules: scheduleId,
+        });
+
+        if (isParentSchedule.length !== 0) {
+          // 하위계획일 경우 삭제 상위계획 subSchdule[]에 포함된 id 삭제
+          await Schedule.findByIdAndUpdate(
+            {
+              _id: isParentSchedule[0]._id,
+            },
+            {
+              $pull: { subSchedules: scheduleId },
+            }
+          );
+        }
+        await Schedule.findByIdAndDelete(scheduleId); // 상위 계획, 혹은 하위 계획 삭제
       }
-      // 상위 계획 삭제
-      await Schedule.findByIdAndDelete(scheduleId);
     }
   } catch (error) {
     console.log(error);
@@ -603,6 +619,94 @@ const getCalendar = async (month: string): Promise<number[]> => {
   }
 };
 
+const updateSchedule = async (
+  scheduleId: string,
+  scheduleUpdateDto: ScheduleUpdateDto,
+  newSubSchedules: SubScheduleIdTitleListDto
+) => {
+  try {
+    // 상위 계획블록의 제목, 카테고리 색상 먼저 덮어 쓰고, 기존의 하위 계획 탐색
+    const existingSchedule = await Schedule.findByIdAndUpdate(
+      scheduleId,
+      scheduleUpdateDto
+    ).populate({
+      path: 'subSchedules',
+      model: 'Schedule',
+    });
+
+    if (!existingSchedule) {
+      // scheduleId에 해당하는 원본 계획블록이 없는 경우, null을 return
+      return existingSchedule;
+    }
+
+    // 기존 하위 계획 블록들로 새로운 하위 계획 블록의 orderIndex 계산
+    let existingSubSchedules = await Promise.all(
+      existingSchedule.subSchedules.map((existingSubSchedule: any) => {
+        const result = {
+          date: '',
+          title: existingSubSchedule.title,
+          categoryColorCode: existingSubSchedule.categoryColorCode,
+          userId: existingSubSchedule.userId,
+          orderIndex: existingSubSchedule.orderIndex,
+          isRoutine: true,
+        };
+        return result;
+      })
+    );
+    existingSubSchedules = existingSubSchedules.sort(
+      (a, b) => a.orderIndex - b.orderIndex
+    );
+    let newSubScheduleOrderIndex = calculateOrderIndex(
+      existingSubSchedules as ScheduleInfo[]
+    );
+
+    // promise.all로 하위 계획 생성 / 업데이트 처리
+    let newSubScheduleIds = await Promise.all(
+      newSubSchedules.subSchedules.map(async (newSubSchedule: any) => {
+        if (!newSubSchedule.scheduleId) {
+          // id가 존재하지 않는 경우 : 새로 생성할 하위 계획 : 새로운 계획 생성 및 id 배열에 push
+          const scheduleCreateDto: ScheduleCreateDto = {
+            date: existingSchedule.date,
+            title: newSubSchedule.title,
+            categoryColorCode: scheduleUpdateDto.categoryColorCode!,
+            userId: existingSchedule.userId,
+            orderIndex: newSubScheduleOrderIndex,
+          };
+          newSubScheduleOrderIndex += 1024;
+          const schedule = new Schedule(scheduleCreateDto);
+          await schedule.save();
+          return schedule._id;
+        } else {
+          // id가 존재하는 경우 : 이미 존재하는 하위 계획 : 기존 하위 계획 title, categoryColorCode 업데이트
+          const subScheduleUpdateDto: ScheduleUpdateDto = {
+            title: newSubSchedule.title,
+            categoryColorCode: scheduleUpdateDto.categoryColorCode,
+          };
+          await Schedule.findByIdAndUpdate(
+            newSubSchedule.scheduleId,
+            subScheduleUpdateDto
+          );
+        }
+      })
+    );
+    newSubScheduleIds = _.compact(newSubScheduleIds); // id 배열에서 undefined 삭제
+
+    // 상위 계획블록의 subSchedules 배열에 새로 만든 하위 계획의 id 삽입
+    await Schedule.findByIdAndUpdate(
+      {
+        _id: scheduleId,
+      },
+      {
+        $set: { date: scheduleUpdateDto.date, orderIndex: newIndex },
+      },
+      { new: true }
+    );
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
 const updateScheduleDate = async (
   scheduleId: string,
   scheduleUpdateDto: ScheduleUpdateDto
@@ -618,21 +722,20 @@ const updateScheduleDate = async (
 
     // date와 orderIndex 수정
     const moveScheduleToOtherDays = await Schedule.findByIdAndUpdate(
-      {
-        _id: scheduleId,
+        $push: { subSchedules: { $each: newSubScheduleIds } },
       },
       {
-        $set: { date: scheduleUpdateDto.date, orderIndex: newIndex },
-      },
-      { new: true }
+        new: true,
+      }
     );
-
+   
     return moveScheduleToOtherDays;
   } catch (error) {
     console.log(error);
     throw error;
   }
 };
+  
 export default {
   createSchedule,
   deleteSchedule,
@@ -651,5 +754,6 @@ export default {
   updateScheduleOrder,
   updateScheduleCategory,
   getCalendar,
+  updateSchedule,
   updateScheduleDate,
 };
