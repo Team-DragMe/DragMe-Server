@@ -35,6 +35,21 @@ const createSchedule = async (req: Request, res: Response) => {
       .send(util.success(statusCode.CREATED, message.CREATE_SCHEDULE_SUCCESS));
   } catch (error) {
     console.log(error);
+    const errorMessage: string = slackMessage(
+      req.method.toUpperCase(),
+      req.originalUrl,
+      error,
+      req.body.user?.id
+    );
+    sendMessagesToSlack(errorMessage);
+    return res
+      .status(statusCode.INTERNAL_SERVER_ERROR)
+      .send(
+        util.fail(
+          statusCode.INTERNAL_SERVER_ERROR,
+          message.INTERNAL_SERVER_ERROR
+        )
+      );
     return res
       .status(statusCode.INTERNAL_SERVER_ERROR)
       .send(
