@@ -412,17 +412,15 @@ const getRoutines = async (
 };
 
 const rescheduleDay = async (
-  scheduleId: mongoose.Types.ObjectId,
-  date: string
+  scheduleId: string,
+  scheduleUpdateDto: ScheduleUpdateDto
 ): Promise<ScheduleInfo | null> => {
   try {
     // 계획블록의 isReschedule false로 전환, date 지정
-    const moveBackSchedule = await Schedule.findOneAndUpdate(
+    const moveBackSchedule = await Schedule.findByIdAndUpdate(
+      scheduleId,
       {
-        _id: scheduleId,
-      },
-      {
-        $set: { isReschedule: false, date: date },
+        $set: { isReschedule: false, date: scheduleUpdateDto.date },
       },
       { new: true }
     );
@@ -432,15 +430,9 @@ const rescheduleDay = async (
     } else {
       // 하위 계획블록도 동일하게 처리
       for (const moveBackSubSchedule of moveBackSchedule.subSchedules) {
-        await Schedule.findOneAndUpdate(
-          {
-            _id: moveBackSubSchedule._id,
-          },
-          {
-            $set: { isReschedule: false, date: date },
-          },
-          { new: true }
-        );
+        await Schedule.findByIdAndUpdate(moveBackSubSchedule._id, {
+          $set: { isReschedule: false, date: scheduleUpdateDto.date },
+        });
       }
     }
     return moveBackSchedule;
