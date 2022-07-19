@@ -1,18 +1,18 @@
 ---
 name: API Check
 about: Check Implemented API
-title: "[IMPROVE]"
-labels: ["enhancement", "fix"]
+title: '[IMPROVE] API 점검 및 보완'
+labels: 'enhancement'
 assignees: ''
-
 ---
 
 **About API**
-API 설명 : 
+API 설명 :
 
 **To-Do List**
+
 - [ ] id 길이 체크하는 로직 확인 후 삭제
-- [ ] Controller에 Slack Error Tracking 코드 추가
+- [ ] Controller에 Slack Error Monitoring 코드 추가
 - [ ] request query, body 점검 (id처럼 자원 식별용이면 query)
 - [ ] scheduleId도 type string으로 통일
 - [ ] userId는 무조건 Controller단에서 string으로 만들고 넘기기
