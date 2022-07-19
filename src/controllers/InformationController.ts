@@ -26,7 +26,14 @@ const createInformation = async (req: Request, res: Response) => {
       );
   } catch (error) {
     console.log(error);
-    res
+    const errorMessage: string = slackMessage(
+      req.method.toUpperCase(),
+      req.originalUrl,
+      error,
+      req.body.user?.id
+    );
+    sendMessagesToSlack(errorMessage);
+    return res
       .status(statusCode.INTERNAL_SERVER_ERROR)
       .send(
         util.fail(
