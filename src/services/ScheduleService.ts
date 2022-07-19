@@ -697,11 +697,9 @@ const updateSchedule = async (
         _id: scheduleId,
       },
       {
-        $push: { subSchedules: { $each: newSubScheduleIds } },
+        $set: { date: scheduleUpdateDto.date, orderIndex: newIndex },
       },
-      {
-        new: true,
-      }
+      { new: true }
     );
   } catch (error) {
     console.log(error);
@@ -709,6 +707,35 @@ const updateSchedule = async (
   }
 };
 
+const updateScheduleDate = async (
+  scheduleId: string,
+  scheduleUpdateDto: ScheduleUpdateDto
+): Promise<ScheduleInfo | null> => {
+  try {
+    // date로 요일 계획블록 조회
+    const moveSchedule = await Schedule.find({
+      date: scheduleUpdateDto.date,
+    }).sort({ orderIndex: 1 });
+
+    // 새로운 orderIndex 생성
+    const newIndex = calculateOrderIndex(moveSchedule);
+
+    // date와 orderIndex 수정
+    const moveScheduleToOtherDays = await Schedule.findByIdAndUpdate(
+        $push: { subSchedules: { $each: newSubScheduleIds } },
+      },
+      {
+        new: true,
+      }
+    );
+   
+    return moveScheduleToOtherDays;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+  
 export default {
   createSchedule,
   deleteSchedule,
@@ -728,4 +755,5 @@ export default {
   updateScheduleCategory,
   getCalendar,
   updateSchedule,
+  updateScheduleDate,
 };

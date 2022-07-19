@@ -646,8 +646,7 @@ const getCalendar = async (req: Request, res: Response) => {
   }
 };
 
-/**
- * @route PATCH /schedule
+* @route PATCH /schedule
  * @desc Update Schedule
  * @access Public
  */
@@ -682,6 +681,49 @@ const updateSchedule = async (req: Request, res: Response) => {
   }
 };
 
+ * @route PATCH /schedule/days
+ * @desc Move Schedule to Other Days
+ * @access Public
+ */
+const updateScheduleDate = async (req: Request, res: Response) => {
+  const { scheduleId, date } = req.body;
+  if (!scheduleId || !date) {
+    return res
+      .status(statusCode.BAD_REQUEST)
+      .send(util.fail(statusCode.BAD_REQUEST, message.NULL_VALUE));
+  }
+  const scheduleUpdateDto: ScheduleUpdateDto = {
+    date: date,
+  };
+
+  try {
+    const moveScheduleToOtherDays = await ScheduleService.updateScheduleDate(
+      scheduleId,
+      scheduleUpdateDto
+    );
+    if (!moveScheduleToOtherDays) {
+      // scheduleId가 잘못된 경우, 404 return
+      return res
+        .status(statusCode.NOT_FOUND)
+        .send(util.fail(statusCode.NOT_FOUND, message.NOT_FOUND));
+    }
+    res
+      .status(statusCode.OK)
+      .send(util.success(statusCode.OK, message.UPDATE_SCHEDULE_DATE_SUCCESS));
+ } catch (error) {
+    console.log(error);
+    return res
+      .status(statusCode.INTERNAL_SERVER_ERROR)
+      .send(
+        util.fail(
+          statusCode.INTERNAL_SERVER_ERROR,
+          message.INTERNAL_SERVER_ERROR
+        )
+      );
+  }
+};
+ 
+
 export default {
   createSchedule,
   createTime,
@@ -701,4 +743,5 @@ export default {
   updateScheduleCategory,
   getCalendar,
   updateSchedule,
+  updateScheduleDate,
 };
