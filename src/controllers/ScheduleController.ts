@@ -18,9 +18,7 @@ import { sendMessagesToSlack } from '../modules/slackAPI';
  */
 const createSchedule = async (req: Request, res: Response) => {
   let scheduleCreateDto: ScheduleCreateDto = req.body;
-  const userId = '62cd27ae39f42cfbf520009a'; // 임시 구현
-  // const userId = req.user;
-  scheduleCreateDto.userId = new mongoose.Types.ObjectId(userId);
+  scheduleCreateDto.userId = '62cd27ae39f42cfbf520009a';
   if (!scheduleCreateDto.title || !scheduleCreateDto.date) {
     return res
       .status(statusCode.BAD_REQUEST)
