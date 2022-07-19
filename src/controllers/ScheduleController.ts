@@ -200,7 +200,7 @@ const dayReschedule = async (req: Request, res: Response) => {
  */
 const getDailySchedules = async (req: Request, res: Response) => {
   const { date } = req.query;
-  const userId = new mongoose.Types.ObjectId('62cd27ae39f42cfbf520009a'); // 임시 구현
+  const userId: string = '62cd27ae39f42cfbf520009a';
   if (!date) {
     return res
       .status(statusCode.BAD_REQUEST)
