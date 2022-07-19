@@ -461,13 +461,14 @@ const getRoutines = async (req: Request, res: Response) => {
  * @access Public
  */
 const rescheduleDay = async (req: Request, res: Response) => {
-  let { scheduleId } = req.body;
-  const { date } = req.body;
-  scheduleId = new mongoose.Types.ObjectId(scheduleId);
+  const { scheduleId } = req.query;
+  const scheduleUpdateDto: ScheduleUpdateDto = req.body;
+  console.log(scheduleUpdateDto);
+
   try {
     const moveBackSchedule = await ScheduleService.rescheduleDay(
-      scheduleId,
-      date
+      scheduleId as string,
+      scheduleUpdateDto
     );
     if (!moveBackSchedule) {
       // scheduleId가 잘못된 경우, 404 return
@@ -480,6 +481,13 @@ const rescheduleDay = async (req: Request, res: Response) => {
       .send(util.success(statusCode.OK, message.MOVE_BACK_SCHEDULE_SUCCESS));
   } catch (error) {
     console.log(error);
+    const errorMessage: string = slackMessage(
+      req.method.toUpperCase(),
+      req.originalUrl,
+      error,
+      req.body.user?.id
+    );
+    sendMessagesToSlack(errorMessage);
     return res
       .status(statusCode.INTERNAL_SERVER_ERROR)
       .send(
