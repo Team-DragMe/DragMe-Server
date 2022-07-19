@@ -237,7 +237,7 @@ const dayReschedule = async (
 
 const getDailySchedules = async (
   date: string,
-  userId: mongoose.Types.ObjectId
+  userId: string
 ): Promise<ScheduleListGetDto> => {
   try {
     const dailySchedules = await Schedule.find({

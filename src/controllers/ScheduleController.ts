@@ -35,6 +35,21 @@ const createSchedule = async (req: Request, res: Response) => {
       .send(util.success(statusCode.CREATED, message.CREATE_SCHEDULE_SUCCESS));
   } catch (error) {
     console.log(error);
+    const errorMessage: string = slackMessage(
+      req.method.toUpperCase(),
+      req.originalUrl,
+      error,
+      req.body.user?.id
+    );
+    sendMessagesToSlack(errorMessage);
+    return res
+      .status(statusCode.INTERNAL_SERVER_ERROR)
+      .send(
+        util.fail(
+          statusCode.INTERNAL_SERVER_ERROR,
+          message.INTERNAL_SERVER_ERROR
+        )
+      );
     return res
       .status(statusCode.INTERNAL_SERVER_ERROR)
       .send(
@@ -185,7 +200,7 @@ const dayReschedule = async (req: Request, res: Response) => {
  */
 const getDailySchedules = async (req: Request, res: Response) => {
   const { date } = req.query;
-  const userId = new mongoose.Types.ObjectId('62cd27ae39f42cfbf520009a'); // 임시 구현
+  const userId: string = '62cd27ae39f42cfbf520009a';
   if (!date) {
     return res
       .status(statusCode.BAD_REQUEST)
