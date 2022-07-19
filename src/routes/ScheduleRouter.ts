@@ -21,5 +21,6 @@ router.patch('/order', ScheduleController.updateScheduleOrder);
 router.patch('/category', ScheduleController.updateScheduleCategory);
 router.get('/calendar', ScheduleController.getCalendar);
 router.patch('/', ScheduleController.updateSchedule);
+router.get('/weeks', ScheduleController.getWeeklySchedules);
 
 export default router;
