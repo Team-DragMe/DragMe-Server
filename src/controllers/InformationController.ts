@@ -5,6 +5,8 @@ import util from '../modules/util';
 import { InformationCreateDto } from '../interfaces/information/InformationCreateDto';
 import InformationService from '../services/InformationService';
 import mongoose from 'mongoose';
+import { slackMessage } from '../modules/returnToSlackMessage';
+import { sendMessagesToSlack } from '../modules/slackAPI';
 
 /**
  * @route POST /information/
@@ -102,8 +104,53 @@ const getMonthlyGoal = async (req: Request, res: Response) => {
       );
   }
 };
+
+/**
+ * @route GET /information/emoji?startDate=&endDate=
+ * @desc GET Weekly Emojis
+ * @access Public
+ */
+const getWeeklyEmojis = async (req: Request, res: Response) => {
+  const { startDate, endDate } = req.query;
+  const userId: string = '62cd6eb82b6b4e92c7fc08f1';
+  try {
+    const weeklyEmojis = await InformationService.getWeeklyEmojis(
+      userId,
+      startDate as string,
+      endDate as string
+    );
+    res
+      .status(statusCode.OK)
+      .send(
+        util.success(
+          statusCode.OK,
+          message.GET_WEEKLY_EMOJIS_SUCCESS,
+          weeklyEmojis
+        )
+      );
+  } catch (error) {
+    console.log(error);
+    const errorMessage: string = slackMessage(
+      req.method.toUpperCase(),
+      req.originalUrl,
+      error,
+      req.body.user?.id
+    );
+    sendMessagesToSlack(errorMessage);
+    return res
+      .status(statusCode.INTERNAL_SERVER_ERROR)
+      .send(
+        util.fail(
+          statusCode.INTERNAL_SERVER_ERROR,
+          message.INTERNAL_SERVER_ERROR
+        )
+      );
+  }
+};
+
 export default {
   createInformation,
   getDailyInformation,
   getMonthlyGoal,
+  getWeeklyEmojis,
 };
