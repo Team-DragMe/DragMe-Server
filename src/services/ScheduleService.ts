@@ -9,6 +9,7 @@ import { calculateOrderIndex } from '../modules/calculateOrderIndex';
 import { TimeDto } from '../interfaces/schedule/TimeDto';
 import { SubScheduleIdTitleListDto } from '../interfaces/schedule/SubScheduleIdTitleListDto';
 import _ from 'lodash';
+import { calculateDaysOfWeek } from '../modules/calculateDaysOfWeek';
 
 const createSchedule = async (
   scheduleCreateDto: ScheduleCreateDto
@@ -709,6 +710,29 @@ const updateSchedule = async (
   }
 };
 
+const getWeeklySchedules = async (
+  userId: string,
+  startDate: string,
+  endDate: string
+): Promise<ScheduleListGetDto[]> => {
+  try {
+    const daysOfWeek = calculateDaysOfWeek(startDate, endDate);
+    const schedulesOfWeek = await Promise.all(
+      daysOfWeek.map(async (day: string) => {
+        const schedulesOfDay = await Schedule.find({
+          date: day,
+          userId: userId,
+        }).sort({ orderIndex: 1 });
+        return { schedules: schedulesOfDay };
+      })
+    );
+    return schedulesOfWeek;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
 export default {
   createSchedule,
   deleteSchedule,
@@ -728,4 +752,5 @@ export default {
   updateScheduleCategory,
   getCalendar,
   updateSchedule,
+  getWeeklySchedules,
 };
