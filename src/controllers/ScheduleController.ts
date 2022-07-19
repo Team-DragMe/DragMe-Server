@@ -7,6 +7,7 @@ import ScheduleService from '../services/ScheduleService';
 import mongoose from 'mongoose';
 import { ScheduleUpdateDto } from '../interfaces/schedule/ScheduleUpdateDto';
 import { TimeDto } from '../interfaces/schedule/TimeDto';
+import { SubScheduleIdTitleListDto } from '../interfaces/schedule/SubScheduleIdTitleListDto';
 
 /**
  * @route POST /schedule
@@ -645,6 +646,42 @@ const getCalendar = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * @route PATCH /schedule
+ * @desc Update Schedule
+ * @access Public
+ */
+const updateSchedule = async (req: Request, res: Response) => {
+  const { scheduleId, title, categoryColorCode, subSchedules } = req.body;
+  const scheduleUpdateDto: ScheduleUpdateDto = {
+    title: title,
+    categoryColorCode: categoryColorCode,
+  };
+  const subScheduleIdTitleListDto: SubScheduleIdTitleListDto = {
+    subSchedules: subSchedules,
+  };
+  try {
+    await ScheduleService.updateSchedule(
+      scheduleId,
+      scheduleUpdateDto,
+      subScheduleIdTitleListDto
+    );
+    res
+      .status(statusCode.OK)
+      .send(util.success(statusCode.OK, message.UPDATE_SCHEDULE_SUCCESS));
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(statusCode.INTERNAL_SERVER_ERROR)
+      .send(
+        util.fail(
+          statusCode.INTERNAL_SERVER_ERROR,
+          message.INTERNAL_SERVER_ERROR
+        )
+      );
+  }
+};
+
 export default {
   createSchedule,
   createTime,
@@ -663,4 +700,5 @@ export default {
   updateScheduleOrder,
   updateScheduleCategory,
   getCalendar,
+  updateSchedule,
 };

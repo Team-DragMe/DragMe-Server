@@ -27,6 +27,7 @@ const message = {
   UPDATE_SCHEDULE_ORDER_SUCCESS: '계획블록 순서 변경 성공',
   UPDATE_SCHEDULE_CATEGORY_SUCCESS: '계획블록 카테고리 변경 성공',
   GET_CALENDAR_WITH_SCHEDULES_SUCCESS: '날짜별 일정 존재 여부 조회 성공',
+  UPDATE_SCHEDULE_SUCCESS: '계획블록 수정 성공',
 };
 
 export default message;
