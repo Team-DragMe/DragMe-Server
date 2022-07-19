@@ -1,6 +1,9 @@
+import mongoose from 'mongoose';
 import { InformationCreateDto } from '../interfaces/information/InformationCreateDto';
-import { InformationResponseDto } from '../interfaces/information/InformationResponseDto';
+import { InformationInfo } from '../interfaces/information/InformationInfo';
+import { DailyInformationResponseDto } from '../interfaces/information/DailyInformationResponseDto';
 import Information from '../models/Information';
+import { InformationResponseDto } from '../interfaces/information/InformationResponseDto';
 
 const createInformation = async (
   informationCreateDto: InformationCreateDto
@@ -31,7 +34,7 @@ const createInformation = async (
 
 const getDailyInformation = async (
   date: string
-): Promise<InformationResponseDto> => {
+): Promise<DailyInformationResponseDto> => {
   try {
     const emoji = await Information.findOne({
       $and: [{ date: date }, { type: 'emoji' }],
@@ -43,7 +46,7 @@ const getDailyInformation = async (
       $and: [{ date: date }, { type: 'memo' }],
     });
 
-    let data: InformationResponseDto = {
+    let data: DailyInformationResponseDto = {
       emoji: null,
       dailyGoal: null,
       memo: null,
@@ -65,11 +68,17 @@ const getDailyInformation = async (
   }
 };
 
-const getMonthlyGoal = async (date: string) => {
-  const dateRegex = date.substr(0, 7);
+const getMonthlyGoal = async (
+  date: string,
+  userId: mongoose.Types.ObjectId
+): Promise<InformationResponseDto> => {
+  const dateRegex = date.substring(0, 7);
   try {
     const findMonthlyGoal = await Information.find({
       $and: [
+        {
+          userId: userId,
+        },
         {
           date: { $regex: dateRegex },
         },
@@ -79,8 +88,11 @@ const getMonthlyGoal = async (date: string) => {
       ],
     });
 
-    const data = {
+    const data: InformationResponseDto = {
+      date: findMonthlyGoal[0].date,
+      type: findMonthlyGoal[0].type,
       value: findMonthlyGoal[0].value,
+      userId: findMonthlyGoal[0].userId,
     };
 
     return data;
