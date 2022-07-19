@@ -463,13 +463,14 @@ const getRoutines = async (req: Request, res: Response) => {
  * @access Public
  */
 const rescheduleDay = async (req: Request, res: Response) => {
-  let { scheduleId } = req.body;
-  const { date } = req.body;
-  scheduleId = new mongoose.Types.ObjectId(scheduleId);
+  const { scheduleId } = req.query;
+  const scheduleUpdateDto: ScheduleUpdateDto = req.body;
+  console.log(scheduleUpdateDto);
+
   try {
     const moveBackSchedule = await ScheduleService.rescheduleDay(
-      scheduleId,
-      date
+      scheduleId as string,
+      scheduleUpdateDto
     );
     if (!moveBackSchedule) {
       // scheduleId가 잘못된 경우, 404 return
