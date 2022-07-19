@@ -1,9 +1,9 @@
 import mongoose from 'mongoose';
 import { InformationCreateDto } from '../interfaces/information/InformationCreateDto';
-import { InformationInfo } from '../interfaces/information/InformationInfo';
 import { DailyInformationResponseDto } from '../interfaces/information/DailyInformationResponseDto';
 import Information from '../models/Information';
 import { InformationResponseDto } from '../interfaces/information/InformationResponseDto';
+import { calculateDaysOfWeek } from '../modules/calculateDaysOfWeek';
 
 const createInformation = async (
   informationCreateDto: InformationCreateDto
@@ -92,7 +92,6 @@ const getMonthlyGoal = async (
       date: findMonthlyGoal[0].date,
       type: findMonthlyGoal[0].type,
       value: findMonthlyGoal[0].value,
-      userId: findMonthlyGoal[0].userId,
     };
 
     return data;
@@ -101,8 +100,50 @@ const getMonthlyGoal = async (
     throw error;
   }
 };
+
+const getWeeklyEmojis = async (
+  userId: string,
+  startDate: string,
+  endDate: string
+): Promise<InformationResponseDto[]> => {
+  try {
+    const daysOfWeek: string[] = calculateDaysOfWeek(startDate, endDate);
+    const weeklyEmojis = await Promise.all(
+      daysOfWeek.map(async (day: string) => {
+        const emojiOfDay = await Information.findOne({
+          // 특정 유저, 날짜의 이모지는 하나만 존재하므로 findOne을 사용해 배열이 아니라 객체만 받아옴
+          userId: userId,
+          date: day,
+          type: 'emoji',
+        });
+        let emojiResponse: InformationResponseDto;
+        if (emojiOfDay) {
+          emojiResponse = {
+            date: emojiOfDay.date,
+            type: emojiOfDay.type,
+            value: emojiOfDay.value,
+          };
+        } else {
+          // 객체가 null인 경우에도 response type은 InformationResponseDto이므로, 형식을 맞춰줌
+          emojiResponse = {
+            date: day,
+            type: '',
+            value: '',
+          };
+        }
+        return emojiResponse;
+      })
+    );
+    return weeklyEmojis;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
 export default {
   createInformation,
   getDailyInformation,
   getMonthlyGoal,
+  getWeeklyEmojis,
 };
