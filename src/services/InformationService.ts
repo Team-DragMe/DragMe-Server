@@ -43,11 +43,7 @@ const getDailyInformation = async (
       $and: [{ date: date }, { type: 'memo' }],
     });
 
-    let data: {
-      emoji: string | null;
-      dailyGoal: string | null;
-      memo: string | null;
-    } = {
+    let data: InformationResponseDto = {
       emoji: null,
       dailyGoal: null,
       memo: null,
@@ -69,7 +65,32 @@ const getDailyInformation = async (
   }
 };
 
+const getMonthlyGoal = async (date: string) => {
+  const dateRegex = date.substr(0, 7);
+  try {
+    const findMonthlyGoal = await Information.find({
+      $and: [
+        {
+          date: { $regex: dateRegex },
+        },
+        {
+          type: 'monthlyGoal',
+        },
+      ],
+    });
+
+    const data = {
+      value: findMonthlyGoal[0].value,
+    };
+
+    return data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
 export default {
   createInformation,
   getDailyInformation,
+  getMonthlyGoal,
 };
