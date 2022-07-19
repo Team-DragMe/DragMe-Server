@@ -1,8 +1,8 @@
 ---
-name: API CHECK
+name: API Check
 about: Check Implemented API
 title: "[IMPROVE]"
-labels: enhancement, fix
+labels: ["enhancement", "fix"]
 assignees: ''
 
 ---
