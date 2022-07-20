@@ -711,9 +711,7 @@ const updateScheduleDate = async (
 
     // date와 orderIndex 수정
     const moveScheduleToOtherDays = await Schedule.findByIdAndUpdate(
-      {
-        _id: scheduleId,
-      },
+      scheduleId,
       {
         $set: { date: scheduleUpdateDto.date, orderIndex: newIndex },
       },
