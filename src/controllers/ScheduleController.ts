@@ -787,19 +787,16 @@ const updateSchedule = async (req: Request, res: Response) => {
  * @access Public
  */
 const updateScheduleDate = async (req: Request, res: Response) => {
-  const { scheduleId, date } = req.body;
-  if (!scheduleId || !date) {
+  const { scheduleId } = req.query;
+  const scheduleUpdateDto = req.body;
+  if (!scheduleUpdateDto) {
     return res
       .status(statusCode.BAD_REQUEST)
       .send(util.fail(statusCode.BAD_REQUEST, message.NULL_VALUE));
   }
-  const scheduleUpdateDto: ScheduleUpdateDto = {
-    date: date,
-  };
-
   try {
     const moveScheduleToOtherDays = await ScheduleService.updateScheduleDate(
-      scheduleId,
+      scheduleId as string,
       scheduleUpdateDto
     );
     if (!moveScheduleToOtherDays) {
@@ -813,6 +810,13 @@ const updateScheduleDate = async (req: Request, res: Response) => {
       .send(util.success(statusCode.OK, message.UPDATE_SCHEDULE_DATE_SUCCESS));
   } catch (error) {
     console.log(error);
+    const errorMessage: string = slackMessage(
+      req.method.toUpperCase(),
+      req.originalUrl,
+      error,
+      req.body.user?.id
+    );
+    sendMessagesToSlack(errorMessage);
     return res
       .status(statusCode.INTERNAL_SERVER_ERROR)
       .send(
