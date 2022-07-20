@@ -678,9 +678,19 @@ const updateScheduleCategory = async (req: Request, res: Response) => {
  * @access Public
  */
 const getCalendar = async (req: Request, res: Response) => {
+  const userId: string = '62cd27ae39f42cfbf520009a';
   const { month } = req.query;
+
+  if (!month) {
+    return res
+      .status(statusCode.BAD_REQUEST)
+      .send(util.fail(statusCode.BAD_REQUEST, message.NULL_VALUE));
+  }
   try {
-    const calendarDays = await ScheduleService.getCalendar(month as string);
+    const calendarDays = await ScheduleService.getCalendar(
+      userId,
+      month as string
+    );
 
     res
       .status(statusCode.OK)
@@ -693,6 +703,13 @@ const getCalendar = async (req: Request, res: Response) => {
       );
   } catch (error) {
     console.log(error);
+    const errorMessage: string = slackMessage(
+      req.method.toUpperCase(),
+      req.originalUrl,
+      error,
+      req.body.user?.id
+    );
+    sendMessagesToSlack(errorMessage);
     return res
       .status(statusCode.INTERNAL_SERVER_ERROR)
       .send(
