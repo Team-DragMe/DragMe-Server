@@ -110,7 +110,7 @@ const completeSchedule = async (
 };
 
 const createTime = async (
-  scheduleId: mongoose.Types.ObjectId,
+  scheduleId: string,
   timeDto: TimeDto
 ): Promise<ScheduleInfo | null> => {
   try {
@@ -120,9 +120,7 @@ const createTime = async (
     } else {
       if (timeDto.isUsed === false) {
         await Schedule.findByIdAndUpdate(
-          {
-            _id: scheduleId,
-          },
+          scheduleId,
           {
             $push: { estimatedTime: { $each: timeDto.timeBlockNumbers } },
           },
@@ -132,9 +130,7 @@ const createTime = async (
         );
       } else {
         await Schedule.findByIdAndUpdate(
-          {
-            _id: scheduleId,
-          },
+          scheduleId,
           {
             $push: { usedTime: { $each: timeDto.timeBlockNumbers } },
           },

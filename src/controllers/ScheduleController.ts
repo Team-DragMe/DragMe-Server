@@ -97,12 +97,11 @@ const deleteSchedule = async (req: Request, res: Response) => {
  * @access Public
  */
 const createTime = async (req: Request, res: Response) => {
-  let { scheduleId } = req.body;
+  let { scheduleId } = req.query;
   const timeDto: TimeDto = req.body;
-  scheduleId = new mongoose.Types.ObjectId(scheduleId);
   try {
     const createScheduleTime = await ScheduleService.createTime(
-      scheduleId,
+      scheduleId as string,
       timeDto
     );
     if (!createScheduleTime) {
@@ -118,6 +117,12 @@ const createTime = async (req: Request, res: Response) => {
       );
   } catch (error) {
     console.log(error);
+    const errorMessage: string = slackMessage(
+      req.method.toUpperCase(),
+      req.originalUrl,
+      error,
+      req.body.user?.id
+    );
     return res
       .status(statusCode.INTERNAL_SERVER_ERROR)
       .send(
