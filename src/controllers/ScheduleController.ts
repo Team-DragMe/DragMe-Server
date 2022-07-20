@@ -267,6 +267,7 @@ const getSubSchedules = async (req: Request, res: Response) => {
       error,
       req.body.user?.id
     );
+    sendMessagesToSlack(errorMessage);
     return res
       .status(statusCode.INTERNAL_SERVER_ERROR)
       .send(
