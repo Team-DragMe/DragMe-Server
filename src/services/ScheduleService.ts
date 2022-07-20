@@ -660,6 +660,8 @@ const updateSchedule = async (
             categoryColorCode: scheduleUpdateDto.categoryColorCode!,
             userId: existingSchedule.userId.toString(),
             orderIndex: newSubScheduleOrderIndex,
+            isReschedule: existingSchedule.isReschedule,
+            isRoutine: existingSchedule.isRoutine,
           };
           newSubScheduleOrderIndex += 1024;
           const schedule = new Schedule(scheduleCreateDto);
@@ -681,15 +683,9 @@ const updateSchedule = async (
     newSubScheduleIds = _.compact(newSubScheduleIds); // id 배열에서 undefined 삭제
 
     // 상위 계획블록의 subSchedules 배열에 새로 만든 하위 계획의 id 삽입
-    await Schedule.findByIdAndUpdate(
-      {
-        _id: scheduleId,
-      },
-      {
-        $push: { subSchedules: { $each: newSubScheduleIds } },
-      },
-      { new: true }
-    );
+    await Schedule.findByIdAndUpdate(scheduleId, {
+      $push: { subSchedules: { $each: newSubScheduleIds } },
+    });
   } catch (error) {
     console.log(error);
     throw error;
