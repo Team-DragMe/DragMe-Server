@@ -447,7 +447,7 @@ const routineDay = async (
 
     // 새로운 계획블록 생성
     const newSchedule: ScheduleCreateDto = {
-      date: scheduleUpdateDto.date!,
+      date: '',
       title: moveRoutineToSchedule.title,
       categoryColorCode: moveRoutineToSchedule.categoryColorCode,
       userId: moveRoutineToSchedule.userId.toString(),
