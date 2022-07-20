@@ -623,7 +623,7 @@ const updateSchedule = async (
   scheduleId: string,
   scheduleUpdateDto: ScheduleUpdateDto,
   newSubSchedules: SubScheduleIdTitleListDto
-) => {
+): Promise<void | null> => {
   try {
     // 상위 계획블록의 제목, 카테고리 색상 먼저 덮어 쓰고, 기존의 하위 계획 탐색
     const existingSchedule = await Schedule.findByIdAndUpdate(
