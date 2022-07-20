@@ -401,27 +401,22 @@ const updateScheduleTitle = async (req: Request, res: Response) => {
 };
 
 /**
- * @route POST /schedule/day-routine
+ * @route POST /schedule/day-routine?scheduleId=
  * @desc Create Routine with Schedule
  * @access Public
  */
 const createRoutine = async (req: Request, res: Response) => {
-  let { scheduleId } = req.body;
-  if (!scheduleId || scheduleId.length != 24) {
-    // 유효하지 않은 scheduleId인 경우 : 400 error
-    return res
-      .status(statusCode.BAD_REQUEST)
-      .send(util.fail(statusCode.BAD_REQUEST, message.NULL_VALUE));
-  }
-
-  scheduleId = new mongoose.Types.ObjectId(scheduleId);
+  const { scheduleId } = req.query;
   const userId = '62cd27ae39f42cfbf520009a';
 
   try {
-    const newRoutine = await ScheduleService.createRoutine(userId, scheduleId);
+    const newRoutine = await ScheduleService.createRoutine(
+      userId,
+      scheduleId as string
+    );
 
     if (!newRoutine) {
-      // newRoutine으로 null이 반환 된 경우(scheduleId에 해당하는 원본 계획블록이 없는 경우) :  404 error
+      // newRoutine으로 null이 반환 된 경우 (scheduleId에 해당하는 원본 계획블록이 없는 경우) :  404 error
       return res
         .status(statusCode.NOT_FOUND)
         .send(util.fail(statusCode.NOT_FOUND, message.NOT_FOUND));
@@ -432,6 +427,13 @@ const createRoutine = async (req: Request, res: Response) => {
       .send(util.success(statusCode.CREATED, message.CREATE_ROUTINE_SUCCESS));
   } catch (error) {
     console.log(error);
+    const errorMessage: string = slackMessage(
+      req.method.toUpperCase(),
+      req.originalUrl,
+      error,
+      req.body.user?.id
+    );
+    sendMessagesToSlack(errorMessage);
     return res
       .status(statusCode.INTERNAL_SERVER_ERROR)
       .send(
