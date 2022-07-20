@@ -658,7 +658,7 @@ const updateSchedule = async (
         if (!newSubSchedule.scheduleId) {
           // id가 존재하지 않는 경우 : 새로 생성할 하위 계획 : 새로운 계획 생성 및 id 배열에 push
           const scheduleCreateDto: ScheduleCreateDto = {
-            date: existingSchedule.date,
+            date: '',
             title: newSubSchedule.title,
             categoryColorCode: scheduleUpdateDto.categoryColorCode!,
             userId: existingSchedule.userId.toString(),
