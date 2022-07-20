@@ -280,7 +280,7 @@ const getSubSchedules = async (req: Request, res: Response) => {
 };
 
 /**
- * @route PATCH /schedule/complete
+ * @route PATCH /schedule/complete?scheduleId=
  * @desc Complete Schedule
  * @access Public
  */
