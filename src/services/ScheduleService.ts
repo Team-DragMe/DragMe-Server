@@ -431,8 +431,8 @@ const rescheduleDay = async (
 
 const routineDay = async (
   userId: string,
-  scheduleId: mongoose.Types.ObjectId,
-  date: string
+  scheduleId: string,
+  scheduleUpdateDto: ScheduleUpdateDto
 ): Promise<ScheduleInfo | null> => {
   try {
     // 계획표로 이동할 자주 사용하는 계획블록 find
@@ -447,13 +447,14 @@ const routineDay = async (
 
     // 계획표 내에서 orderIndex 계산
     const existingSchedules = await Schedule.find({
-      date: date,
+      date: scheduleUpdateDto.date,
       userId: userId,
     }).sort({ orderIndex: 1 });
     const newIndex = calculateOrderIndex(existingSchedules);
+
     // 새로운 계획블록 생성
     const newSchedule: ScheduleCreateDto = {
-      date: date,
+      date: scheduleUpdateDto.date!,
       title: moveRoutineToSchedule.title,
       categoryColorCode: moveRoutineToSchedule.categoryColorCode,
       userId: moveRoutineToSchedule.userId.toString(),
@@ -466,7 +467,7 @@ const routineDay = async (
     const newSubSchedules = await Promise.all(
       moveRoutineToSchedule.subSchedules.map((RoutineSubSchedule: any) => {
         const result = {
-          date: date,
+          date: scheduleUpdateDto.date,
           title: RoutineSubSchedule.title,
           categoryColorCode: RoutineSubSchedule.categoryColorCode,
           userId: RoutineSubSchedule.userId,
