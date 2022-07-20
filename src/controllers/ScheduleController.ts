@@ -536,27 +536,19 @@ const rescheduleDay = async (req: Request, res: Response) => {
 };
 
 /**
- * @route POST /schedule/reschedule-day
+ * @route POST /schedule/routine-day?scheduleId=
  * @desc Move Routine to Schedules
  * @access Public
  */
 const routineDay = async (req: Request, res: Response) => {
-  let { scheduleId } = req.body;
-  const { date } = req.body;
-  if (!scheduleId || scheduleId.length != 24) {
-    // 유효하지 않은 scheduleId인 경우 : 400 error
-    return res
-      .status(statusCode.BAD_REQUEST)
-      .send(util.fail(statusCode.BAD_REQUEST, message.NULL_VALUE));
-  }
-
-  scheduleId = new mongoose.Types.ObjectId(scheduleId);
+  let { scheduleId } = req.query;
+  const scheduleUpdateDto: ScheduleUpdateDto = req.body;
   const userId = '62cd27ae39f42cfbf520009a';
   try {
     const moveRoutineToSchedule = await ScheduleService.routineDay(
       userId,
-      scheduleId,
-      date
+      scheduleId as string,
+      scheduleUpdateDto
     );
     if (!moveRoutineToSchedule) {
       // scheduleId가 잘못된 경우, 404 return
@@ -571,6 +563,13 @@ const routineDay = async (req: Request, res: Response) => {
       );
   } catch (error) {
     console.log(error);
+    const errorMessage: string = slackMessage(
+      req.method.toUpperCase(),
+      req.originalUrl,
+      error,
+      req.body.user?.id
+    );
+    sendMessagesToSlack(errorMessage);
     return res
       .status(statusCode.INTERNAL_SERVER_ERROR)
       .send(
