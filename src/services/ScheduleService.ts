@@ -329,7 +329,7 @@ const updateScheduleTitle = async (
 
 const createRoutine = async (
   userId: string,
-  scheduleId: mongoose.Types.ObjectId
+  scheduleId: string
 ): Promise<ScheduleInfo | null> => {
   try {
     // 자주 사용하는 계획으로 등록 할 원본 계획블록 find
