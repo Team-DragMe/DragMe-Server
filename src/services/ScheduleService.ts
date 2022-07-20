@@ -207,7 +207,7 @@ const dayReschedule = async (
         _id: scheduleId,
       },
       {
-        $set: { isReschedule: true, estimateTime: [], usedTime: [] },
+        $set: { isReschedule: true, estimatedTime: [], usedTime: [] },
       },
       { new: true }
     );
