@@ -732,7 +732,7 @@ const getCalendar = async (req: Request, res: Response) => {
 };
 
 /**
- * @route PATCH /schedule
+ * @route PATCH /schedule?scheduleId=
  * @desc Update Schedule
  * @access Public
  */
