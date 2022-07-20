@@ -461,6 +461,13 @@ const getRoutines = async (req: Request, res: Response) => {
       );
   } catch (error) {
     console.log(error);
+    const errorMessage: string = slackMessage(
+      req.method.toUpperCase(),
+      req.originalUrl,
+      error,
+      req.body.user?.id
+    );
+    sendMessagesToSlack(errorMessage);
     return res
       .status(statusCode.INTERNAL_SERVER_ERROR)
       .send(
@@ -691,7 +698,8 @@ const getCalendar = async (req: Request, res: Response) => {
  * @access Public
  */
 const updateSchedule = async (req: Request, res: Response) => {
-  const { scheduleId, title, categoryColorCode, subSchedules } = req.body;
+  const { scheduleId } = req.query;
+  const { title, categoryColorCode, subSchedules } = req.body;
   const scheduleUpdateDto: ScheduleUpdateDto = {
     title: title,
     categoryColorCode: categoryColorCode,
@@ -700,16 +708,29 @@ const updateSchedule = async (req: Request, res: Response) => {
     subSchedules: subSchedules,
   };
   try {
-    await ScheduleService.updateSchedule(
-      scheduleId,
+    const updatedSchedule = await ScheduleService.updateSchedule(
+      scheduleId as string,
       scheduleUpdateDto,
       subScheduleIdTitleListDto
     );
+    if (!updatedSchedule) {
+      // scheduleId가 잘못된 경우, 404 return
+      return res
+        .status(statusCode.NOT_FOUND)
+        .send(util.fail(statusCode.NOT_FOUND, message.NOT_FOUND));
+    }
     res
       .status(statusCode.OK)
       .send(util.success(statusCode.OK, message.UPDATE_SCHEDULE_SUCCESS));
   } catch (error) {
     console.log(error);
+    const errorMessage: string = slackMessage(
+      req.method.toUpperCase(),
+      req.originalUrl,
+      error,
+      req.body.user?.id
+    );
+    sendMessagesToSlack(errorMessage);
     return res
       .status(statusCode.INTERNAL_SERVER_ERROR)
       .send(
