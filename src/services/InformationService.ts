@@ -151,6 +151,9 @@ const getWeeklyGoal = async (
       'weeklyGoal4',
       'weeklyGoal5',
       'weeklyGoal6',
+      'weeklyGoal7',
+      'weeklyGoal8',
+      'weeklyGoal9',
     ];
     const weeklyGoalArray = await Promise.all(
       initWeeklyGoalArray.map(async (weeklyGoal: string) => {
