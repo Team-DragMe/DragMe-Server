@@ -8,7 +8,12 @@ require('dotenv').config();
 
 connectDB();
 
-const allowedOrigins = ['http://localhost:3000', config.EC2URL];
+const allowedOrigins = [
+  'http://localhost:3000',
+  config.EC2URL,
+  'https://dragme.kr',
+  'https://server.dragme.kr',
+];
 const corsOptions = {
   origin: allowedOrigins,
   credentials: true,
