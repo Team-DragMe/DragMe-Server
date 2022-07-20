@@ -302,17 +302,13 @@ const getReschedules = async (
 };
 
 const updateScheduleTitle = async (
-  scheduleId: mongoose.Types.ObjectId,
+  scheduleId: string,
   scheduleUpdateDto: ScheduleUpdateDto
 ): Promise<ScheduleInfo | null> => {
   try {
-    const updatedSchedule = await Schedule.findOneAndUpdate(
-      {
-        _id: scheduleId,
-      },
-      {
-        title: scheduleUpdateDto.title,
-      },
+    const updatedSchedule = await Schedule.findByIdAndUpdate(
+      scheduleId,
+      scheduleUpdateDto,
       { new: true }
     );
 
