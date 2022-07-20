@@ -572,12 +572,16 @@ const updateScheduleCategory = async (
   }
 };
 
-const getCalendar = async (month: string): Promise<number[]> => {
+const getCalendar = async (
+  userId: string,
+  month: string
+): Promise<number[]> => {
   const regex = (pattern: string) => new RegExp(`.*${pattern}.*`);
   try {
     // date field 키워드 검색을 통해 특정 년-월에 해당하는 계획들 find
     const dateRegex = regex(month);
     const allMonthSchedules = await Schedule.find({
+      userId: userId,
       date: { $regex: dateRegex },
     }).sort({ date: 1 });
 
