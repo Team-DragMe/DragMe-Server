@@ -52,19 +52,34 @@ const createSchedule = async (req: Request, res: Response) => {
 };
 
 /**
- * @route Delete /schedule?scheduleId
+ * @route Delete /schedule?scheduleId=
  * @desc Delete Schedule Time
  * @access Public
  */
 const deleteSchedule = async (req: Request, res: Response) => {
   let { scheduleId } = req.query;
   try {
-    await ScheduleService.deleteSchedule(scheduleId as string);
+    const deleteSchedules = await ScheduleService.deleteSchedule(
+      scheduleId as string
+    );
+    if (!deleteSchedules) {
+      // scheduleId가 잘못된 경우, 404 return
+      return res
+        .status(statusCode.NOT_FOUND)
+        .send(util.fail(statusCode.NOT_FOUND, message.NOT_FOUND));
+    }
     res
       .status(statusCode.OK)
       .send(util.success(statusCode.OK, message.DELETE_SCHEDULE_TIME_SUCCESS));
   } catch (error) {
     console.log(error);
+    const errorMessage: string = slackMessage(
+      req.method.toUpperCase(),
+      req.originalUrl,
+      error,
+      req.body.user?.id
+    );
+    sendMessagesToSlack(errorMessage);
     return res
       .status(statusCode.INTERNAL_SERVER_ERROR)
       .send(
