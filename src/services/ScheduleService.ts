@@ -76,7 +76,7 @@ const deleteSchedule = async (scheduleId: string): Promise<void | null> => {
 };
 
 const completeSchedule = async (
-  scheduleId: mongoose.Types.ObjectId
+  scheduleId: string
 ): Promise<ScheduleInfo | null> => {
   try {
     // scheduleId로 계획블록 조회
@@ -85,20 +85,16 @@ const completeSchedule = async (
       return null;
     } else {
       if (checkCompleteSchedule.isCompleted === true) {
-        await Schedule.findOneAndUpdate(
-          {
-            _id: scheduleId,
-          },
+        await Schedule.findByIdAndUpdate(
+          scheduleId,
           {
             $set: { isCompleted: false, usedTime: [] },
           },
           { new: true }
         );
       } else {
-        await Schedule.findOneAndUpdate(
-          {
-            _id: scheduleId,
-          },
+        await Schedule.findByIdAndUpdate(
+          scheduleId,
           {
             isCompleted: true,
           },
