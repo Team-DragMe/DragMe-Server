@@ -205,7 +205,7 @@ const dayReschedule = async (
     const delaySchedule = await Schedule.findByIdAndUpdate(
       scheduleId,
       {
-        $set: { isReschedule: true, estimatedTime: [], usedTime: [] },
+        $set: { date: '', isReschedule: true, estimatedTime: [], usedTime: [] },
       },
       { new: true }
     );
@@ -215,15 +215,14 @@ const dayReschedule = async (
     } else {
       // 하위 계획블록도 동일하게 처리
       for (const delaySubSchedule of delaySchedule.subSchedules) {
-        await Schedule.findOneAndUpdate(
-          {
-            _id: delaySubSchedule._id,
+        await Schedule.findByIdAndUpdate(delaySubSchedule._id, {
+          $set: {
+            date: '',
+            isReschedule: true,
+            estimatedTime: [],
+            usedTime: [],
           },
-          {
-            $set: { isReschedule: true, timeSets: [] },
-          },
-          { new: true }
-        );
+        });
       }
     }
     return delaySchedule;
