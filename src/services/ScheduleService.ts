@@ -202,12 +202,12 @@ const dayReschedule = async (
 ): Promise<ScheduleInfo | null> => {
   try {
     // 계획블록의 isReschedule true로 전환, 시간 데이터 삭제
-    const delaySchedule = await Schedule.findOneAndUpdate(
+    const delaySchedule = await Schedule.findByIdAndUpdate(
       {
         _id: scheduleId,
       },
       {
-        $set: { isReschedule: true, timeSets: [] },
+        $set: { isReschedule: true, estimateTime: [], usedTime: [] },
       },
       { new: true }
     );
