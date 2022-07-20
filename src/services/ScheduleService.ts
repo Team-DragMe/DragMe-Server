@@ -149,7 +149,7 @@ const createTime = async (
 };
 
 const deleteTime = async (
-  scheduleId: mongoose.Types.ObjectId,
+  scheduleId: string,
   timeDto: TimeDto
 ): Promise<ScheduleInfo | null> => {
   try {
@@ -159,9 +159,7 @@ const deleteTime = async (
     } else {
       if (timeDto.isUsed === false) {
         await Schedule.findByIdAndUpdate(
-          {
-            _id: scheduleId,
-          },
+          scheduleId,
           {
             $pull: { estimatedTime: { $in: timeDto.timeBlockNumbers } },
           },
@@ -171,9 +169,7 @@ const deleteTime = async (
         );
       } else {
         await Schedule.findByIdAndUpdate(
-          {
-            _id: scheduleId,
-          },
+          scheduleId,
           {
             $pull: { usedTime: { $in: timeDto.timeBlockNumbers } },
           },
