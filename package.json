@@ -7,7 +7,7 @@
     "dev": "nodemon",
     "build": "tsc && node dist",
     "prepare": "husky install",
-    "test": "jest --setupFiles dotenv/config --forceExit --detectOpenHandles"
+    "test": "cross-env NODE_ENV=test jest --setupFiles dotenv/config --forceExit --detectOpenHandles"
   },
   "author": "",
   "license": "ISC",
@@ -32,6 +32,7 @@
     "@types/lodash": "^4.14.182",
     "axios": "^0.27.2",
     "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
     "dotenv": "^16.0.1",
     "eslint": "^8.19.0",
     "eslint-config-prettier": "^8.5.0",
