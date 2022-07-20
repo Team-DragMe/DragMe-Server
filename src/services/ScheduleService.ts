@@ -411,7 +411,7 @@ const rescheduleDay = async (
       // 하위 계획블록도 동일하게 처리
       for (const moveBackSubSchedule of moveBackSchedule.subSchedules) {
         await Schedule.findByIdAndUpdate(moveBackSubSchedule._id, {
-          $set: { isReschedule: false, date: scheduleUpdateDto.date },
+          $set: { isReschedule: false, date: '' },
         });
       }
     }
