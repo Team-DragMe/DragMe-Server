@@ -411,7 +411,7 @@ const rescheduleDay = async (
       // 하위 계획블록도 동일하게 처리
       for (const moveBackSubSchedule of moveBackSchedule.subSchedules) {
         await Schedule.findByIdAndUpdate(moveBackSubSchedule._id, {
-          $set: { isReschedule: false, date: scheduleUpdateDto.date },
+          $set: { isReschedule: false, date: '' },
         });
       }
     }
@@ -447,7 +447,7 @@ const routineDay = async (
 
     // 새로운 계획블록 생성
     const newSchedule: ScheduleCreateDto = {
-      date: scheduleUpdateDto.date!,
+      date: '',
       title: moveRoutineToSchedule.title,
       categoryColorCode: moveRoutineToSchedule.categoryColorCode,
       userId: moveRoutineToSchedule.userId.toString(),
@@ -615,7 +615,7 @@ const updateSchedule = async (
   scheduleId: string,
   scheduleUpdateDto: ScheduleUpdateDto,
   newSubSchedules: SubScheduleIdTitleListDto
-): Promise<void | null> => {
+): Promise<ScheduleInfo | null> => {
   try {
     // 상위 계획블록의 제목, 카테고리 색상 먼저 덮어 쓰고, 기존의 하위 계획 탐색
     const existingSchedule = await Schedule.findByIdAndUpdate(
@@ -658,7 +658,7 @@ const updateSchedule = async (
         if (!newSubSchedule.scheduleId) {
           // id가 존재하지 않는 경우 : 새로 생성할 하위 계획 : 새로운 계획 생성 및 id 배열에 push
           const scheduleCreateDto: ScheduleCreateDto = {
-            date: existingSchedule.date,
+            date: '',
             title: newSubSchedule.title,
             categoryColorCode: scheduleUpdateDto.categoryColorCode!,
             userId: existingSchedule.userId.toString(),
@@ -689,6 +689,7 @@ const updateSchedule = async (
     await Schedule.findByIdAndUpdate(scheduleId, {
       $push: { subSchedules: { $each: newSubScheduleIds } },
     });
+    return existingSchedule;
   } catch (error) {
     console.log(error);
     throw error;

@@ -505,7 +505,7 @@ const getRoutines = async (req: Request, res: Response) => {
 };
 
 /**
- * @route PATCH /schedule/reschedule-day
+ * @route PATCH /schedule/reschedule-day?scheduleId=
  * @desc Move Reschedule back to Schedules
  * @access Public
  */
@@ -732,7 +732,7 @@ const getCalendar = async (req: Request, res: Response) => {
 };
 
 /**
- * @route PATCH /schedule
+ * @route PATCH /schedule?scheduleId=
  * @desc Update Schedule
  * @access Public
  */
