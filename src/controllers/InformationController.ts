@@ -187,6 +187,13 @@ const getWeeklyGoal = async (req: Request, res: Response) => {
       .send(util.success(statusCode.OK, message.GET_WEEKLY_GOAL_SUCCESS, data));
   } catch (error) {
     console.log(error);
+    const errorMessage: string = slackMessage(
+      req.method.toUpperCase(),
+      req.originalUrl,
+      error,
+      req.body.user?.id
+    );
+    sendMessagesToSlack(errorMessage);
     res
       .status(statusCode.INTERNAL_SERVER_ERROR)
       .send(
