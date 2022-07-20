@@ -553,14 +553,28 @@ const updateScheduleCategory = async (
   scheduleUpdateDto: ScheduleUpdateDto
 ): Promise<ScheduleInfo | null> => {
   try {
-    const updatedSchedule = await Schedule.findOneAndUpdate(
-      {
-        _id: scheduleId,
-      },
-      {
-        categoryColorCode: scheduleUpdateDto.categoryColorCode,
-      },
+    const updatedSchedule = await Schedule.findByIdAndUpdate(
+      scheduleId,
+      scheduleUpdateDto,
       { new: true }
+    ).populate({
+      path: 'subSchedules',
+      model: 'Schedule',
+    });
+
+    if (!updatedSchedule) {
+      // scheduleId에 해당하는 원본 계획블록이 없는 경우, null을 return
+      return updatedSchedule;
+    }
+
+    // 하위 계획 카테고리도 업데이트
+    await Promise.all(
+      updatedSchedule.subSchedules.map(async (updateSubSchedule: any) => {
+        await Schedule.findByIdAndUpdate(
+          updateSubSchedule._id,
+          scheduleUpdateDto
+        );
+      })
     );
 
     return updatedSchedule;
@@ -605,7 +619,7 @@ const updateSchedule = async (
   scheduleId: string,
   scheduleUpdateDto: ScheduleUpdateDto,
   newSubSchedules: SubScheduleIdTitleListDto
-) => {
+): Promise<void | null> => {
   try {
     // 상위 계획블록의 제목, 카테고리 색상 먼저 덮어 쓰고, 기존의 하위 계획 탐색
     const existingSchedule = await Schedule.findByIdAndUpdate(
