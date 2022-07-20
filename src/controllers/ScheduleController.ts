@@ -10,6 +10,7 @@ import { TimeDto } from '../interfaces/schedule/TimeDto';
 import { SubScheduleIdTitleListDto } from '../interfaces/schedule/SubScheduleIdTitleListDto';
 import { slackMessage } from '../modules/returnToSlackMessage';
 import { sendMessagesToSlack } from '../modules/slackAPI';
+import { objectIdListDto } from '../interfaces/common/objectIdListDto';
 
 /**
  * @route POST /schedule
@@ -588,20 +589,13 @@ const routineDay = async (req: Request, res: Response) => {
  * @access Public
  */
 const updateScheduleOrder = async (req: Request, res: Response) => {
-  let { scheduleId } = req.body;
-  const { movedScheduleArray } = req.body;
-
-  if (!scheduleId || scheduleId.length != 24) {
-    // 유효하지 않은 scheduleId인 경우 : 400 error
-    return res
-      .status(statusCode.BAD_REQUEST)
-      .send(util.fail(statusCode.BAD_REQUEST, message.NULL_VALUE));
-  }
+  const { scheduleId } = req.query;
+  const objectIdListDto: objectIdListDto = req.body;
 
   try {
     const updatedSchedule = await ScheduleService.updateScheduleOrder(
-      scheduleId,
-      movedScheduleArray
+      scheduleId as string,
+      objectIdListDto
     );
     if (!updatedSchedule) {
       // scheduleId가 잘못된 경우, 404 return
@@ -614,6 +608,13 @@ const updateScheduleOrder = async (req: Request, res: Response) => {
       .send(util.success(statusCode.OK, message.UPDATE_SCHEDULE_ORDER_SUCCESS));
   } catch (error) {
     console.log(error);
+    const errorMessage: string = slackMessage(
+      req.method.toUpperCase(),
+      req.originalUrl,
+      error,
+      req.body.user?.id
+    );
+    sendMessagesToSlack(errorMessage);
     return res
       .status(statusCode.INTERNAL_SERVER_ERROR)
       .send(
