@@ -92,7 +92,7 @@ const deleteSchedule = async (req: Request, res: Response) => {
 };
 
 /**
- * @route POST /schedule/time
+ * @route POST /schedule/time?scheduleId=
  * @desc Create Schedule Time
  * @access Public
  */
