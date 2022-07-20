@@ -595,7 +595,7 @@ const routineDay = async (req: Request, res: Response) => {
 };
 
 /**
- * @route PATCH /schedule/order
+ * @route PATCH /schedule/order?scheduleId=
  * @desc Reorder Schedules
  * @access Public
  */
@@ -638,26 +638,17 @@ const updateScheduleOrder = async (req: Request, res: Response) => {
 };
 
 /**
- * @route PATCH /schedule/category
+ * @route PATCH /schedule/category?scheduleId=
  * @desc Update Schedule Category Color Code
  * @access Public
  */
 const updateScheduleCategory = async (req: Request, res: Response) => {
-  const { scheduleId, newCategoryColorCode } = req.body;
-
-  if (!scheduleId || !newCategoryColorCode) {
-    return res
-      .status(statusCode.BAD_REQUEST)
-      .send(util.fail(statusCode.BAD_REQUEST, message.NULL_VALUE));
-  }
-
-  const scheduleUpdateDto: ScheduleUpdateDto = {
-    categoryColorCode: newCategoryColorCode,
-  };
+  const { scheduleId } = req.query;
+  const scheduleUpdateDto: ScheduleUpdateDto = req.body;
 
   try {
     const updatedSchedule = await ScheduleService.updateScheduleCategory(
-      scheduleId,
+      scheduleId as string,
       scheduleUpdateDto
     );
     if (!updatedSchedule) {
@@ -673,6 +664,13 @@ const updateScheduleCategory = async (req: Request, res: Response) => {
       );
   } catch (error) {
     console.log(error);
+    const errorMessage: string = slackMessage(
+      req.method.toUpperCase(),
+      req.originalUrl,
+      error,
+      req.body.user?.id
+    );
+    sendMessagesToSlack(errorMessage);
     return res
       .status(statusCode.INTERNAL_SERVER_ERROR)
       .send(
