@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "nodemon",
     "build": "tsc && node dist",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "test": "jest --setupFiles dotenv/config --forceExit --detectOpenHandles"
   },
   "author": "",
   "license": "ISC",
