@@ -156,10 +156,11 @@ const deleteTime = async (req: Request, res: Response) => {
  * @access Public
  */
 const dayReschedule = async (req: Request, res: Response) => {
-  let { scheduleId } = req.body;
-  scheduleId = new mongoose.Types.ObjectId(scheduleId);
+  let { scheduleId } = req.query;
   try {
-    const delaySchedule = await ScheduleService.dayReschedule(scheduleId);
+    const delaySchedule = await ScheduleService.dayReschedule(
+      scheduleId as string
+    );
 
     if (!delaySchedule) {
       // scheduleId가 잘못된 경우, 404 return
@@ -172,6 +173,13 @@ const dayReschedule = async (req: Request, res: Response) => {
       .send(util.success(statusCode.OK, message.DELAY_SCHEDULE_SUCCESS));
   } catch (error) {
     console.log(error);
+    const errorMessage: string = slackMessage(
+      req.method.toUpperCase(),
+      req.originalUrl,
+      error,
+      req.body.user?.id
+    );
+    sendMessagesToSlack(errorMessage);
     return res
       .status(statusCode.INTERNAL_SERVER_ERROR)
       .send(

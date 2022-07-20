@@ -198,16 +198,14 @@ const deleteTime = async (
 };
 
 const dayReschedule = async (
-  scheduleId: mongoose.Types.ObjectId
+  scheduleId: string
 ): Promise<ScheduleInfo | null> => {
   try {
     // 계획블록의 isReschedule true로 전환, 시간 데이터 삭제
-    const delaySchedule = await Schedule.findOneAndUpdate(
+    const delaySchedule = await Schedule.findByIdAndUpdate(
+      scheduleId,
       {
-        _id: scheduleId,
-      },
-      {
-        $set: { isReschedule: true, timeSets: [] },
+        $set: { isReschedule: true, estimatedTime: [], usedTime: [] },
       },
       { new: true }
     );
