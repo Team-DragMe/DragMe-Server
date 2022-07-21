@@ -35,6 +35,16 @@ describe('일간 계획블록 리스트 조회 [GET] /schedule/days?date=', () =
   });
 });
 
+describe('미뤄진 계획블록 목록 조회 [GET] /schedule/delay', () => {
+  it('200 - 미룬 계획블록 리스트 조회 성공', async () => {
+    await request(app)
+      .get('/schedule/delay')
+      .set('Content-Type', 'application/json')
+      .expect(200)
+      .expect('Content-Type', /json/);
+  });
+});
+
 afterAll(async () => {
   await mongoose.connection.close();
   console.log('Mongoose Disconnected!');
