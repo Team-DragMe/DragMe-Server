@@ -88,7 +88,7 @@ describe('계획블록 완료하기 [PATCH] /schedule/complete?scheduleId=', () 
     await request(app)
       .patch('/schedule/complete')
       .set('Content-Type', 'application/json')
-      .query({ scheduleId: '62d7cf0a5fb95366f7329552' })
+      .query({ scheduleId: '62d6619fdaa86965b4ca053e' })
       .expect(200)
       .expect('Content-Type', /json/);
   });
@@ -152,7 +152,7 @@ describe('계획블록 수정 [PATCH] /schedule?scheduleId=', () => {
     await request(app)
       .patch('/schedule')
       .set('Content-Type', 'application/json')
-      .query({ scheduleId: '62d8fd7f6e6f967cd9010f8a' })
+      .query({ scheduleId: '62d6e01bdaa86965b4ca0547' })
       .send({
         title: '수정 API 테스트',
         categoryColorCode: '#success',
@@ -305,6 +305,32 @@ describe('계획블록 순서 변경 [PATCH] /schedule/order?scheduleId=', () =>
       .expect('Content-Type', /json/);
   });
 });
+
+describe('계획블록 시간 설정 [POST] /schedule/time?scheduleId=', () => {
+  it('201 - 계획블록 시간 생성 성공', async () => {
+    await request(app)
+      .post('/schedule/time')
+      .set('Content-Type', 'application/json')
+      .query({ scheduleId: '62d9a6322674885b4f05fcb3' })
+      .send({ 
+        isUsed: false, 
+        timeBlockNumbers: [11, 12, 13, 14]})
+      .expect(201)
+      .expect('Content-Type', /json/);
+  });
+
+  it('404 - 존재하지 않는 데이터입니다', async () => {
+    await request(app)
+      .post('/schedule/routine-day')
+      .set('Content-Type', 'application/json')
+      .query({ scheduleId: '62d7cf0a5fb95366f7329556' })
+      .send({ 
+        isUsed: false, 
+        timeBlockNumbers: [11, 12, 13, 14]})
+      .expect(404);
+  });
+});
+
 
 afterAll(async () => {
   await mongoose.connection.close();
