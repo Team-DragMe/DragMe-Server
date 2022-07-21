@@ -311,7 +311,7 @@ describe('계획블록 시간 설정 [POST] /schedule/time?scheduleId=', () => {
     await request(app)
       .post('/schedule/time')
       .set('Content-Type', 'application/json')
-      .query({ scheduleId: '62d9a6322674885b4f05fcb3' })
+      .query({ scheduleId: '62d6e019daa86965b4ca0544' })
       .send({ 
         isUsed: false, 
         timeBlockNumbers: [11, 12, 13, 14]})
@@ -331,6 +331,28 @@ describe('계획블록 시간 설정 [POST] /schedule/time?scheduleId=', () => {
   });
 });
 
+describe('계획블록 시간 삭제 [PATCH] /schedule/time?scheduleId=', () => {
+  it('200 - 계획블록 시간 삭제 성공', async () => {
+    await request(app)
+      .patch('/schedule/time')
+      .set('Content-Type', 'application/json')
+      .query({ scheduleId: '62d596a7daa86965b4ca050b' })
+      .send({  
+        timeBlockNumbers: [7, 8]})
+      .expect(200)
+      .expect('Content-Type', /json/);
+  });
+
+  it('404 - 존재하지 않는 데이터입니다', async () => {
+    await request(app)
+      .post('/schedule/routine-day')
+      .set('Content-Type', 'application/json')
+      .query({ scheduleId: '62d7cf0a5fb95366f7329557' })
+      .send({ 
+        timeBlockNumbers: [7, 8]})
+      .expect(404);
+  });
+});
 
 afterAll(async () => {
   await mongoose.connection.close();
