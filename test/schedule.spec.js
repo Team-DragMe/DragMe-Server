@@ -147,6 +147,45 @@ describe('계획블록 생성 [POST] /schedule', () => {
 //   });
 // });
 
+describe('계획블록 수정 [PATCH] /schedule?scheduleId=', () => {
+  it('200 - 계획블록 수정 성공', async () => {
+    await request(app)
+      .patch('/schedule')
+      .set('Content-Type', 'application/json')
+      .query({ scheduleId: '62d8fd7f6e6f967cd9010f8a' })
+      .send({
+        title: '수정 API 테스트',
+        categoryColorCode: '#success',
+        subSchedules: [
+          {
+            scheduleId: '',
+            title: '모달짬뽕 테스트코드',
+          },
+        ],
+      })
+      .expect(200)
+      .expect('Content-Type', /json/);
+  });
+
+  it('404 - 존재하지 않는 데이터입니다', async () => {
+    await request(app)
+      .delete('/schedule')
+      .set('Content-Type', 'application/json')
+      .query({ scheduleId: '62d8fd7f6e6f967cd9010f8b' })
+      .send({
+        title: '수정 API 테스트',
+        categoryColorCode: '#success',
+        subSchedules: [
+          {
+            scheduleId: '',
+            title: '모달짬뽕 테스트코드',
+          },
+        ],
+      })
+      .expect(404);
+  });
+});
+
 afterAll(async () => {
   await mongoose.connection.close();
   console.log('Mongoose Disconnected!');
