@@ -78,7 +78,7 @@ describe('미뤄진 계획블록 계획표로 옮기기 [PATCH] /schedule/resche
     await request(app)
       .get('/schedule/reschedule-day')
       .set('Content-Type', 'application/json')
-      .query({ scheduleId: '62d7cf0a5fb95366f732955x' })
+      .query({ scheduleId: '62d7cf0a5fb95366f7329552' })
       .expect(404);
   });
 });
@@ -215,7 +215,7 @@ describe('자주 사용하는 계획블록 리스트 조회 [GET] /schedule/rout
   });
 });
 
-describe('자주 사용하는 계획블록 등록 [PATCH] /schedule/day-routine?scheduleId=', () => {
+describe('자주 사용하는 계획블록 등록 [POST] /schedule/day-routine?scheduleId=', () => {
   it('201 - 자주 사용하는 계획블록 등록 성공', async () => {
     await request(app)
       .post('/schedule/day-routine')
@@ -230,6 +230,25 @@ describe('자주 사용하는 계획블록 등록 [PATCH] /schedule/day-routine?
       .post('/schedule/day-routine')
       .set('Content-Type', 'application/json')
       .query({ scheduleId: '62d90dfa68059eb4c4979f32' })
+      .expect(404);
+  });
+});
+
+describe('자주 사용하는 계획블록 계획표로 옮기기 [POST] /schedule/routine-day?scheduleId=', () => {
+  it('200 - 자주 사용하는 계획블록 계획표로 옮기기 성공', async () => {
+    await request(app)
+      .post('/schedule/routine-day')
+      .set('Content-Type', 'application/json')
+      .query({ scheduleId: '62d7cf0a5fb95366f7329552' })
+      .expect(200)
+      .expect('Content-Type', /json/);
+  });
+
+  it('404 - 존재하지 않는 데이터입니다', async () => {
+    await request(app)
+      .post('/schedule/routine-day')
+      .set('Content-Type', 'application/json')
+      .query({ scheduleId: '62d7cf0a5fb95366f732955d' })
       .expect(404);
   });
 });

@@ -519,7 +519,6 @@ const getRoutines = async (req: Request, res: Response) => {
 const rescheduleDay = async (req: Request, res: Response) => {
   const { scheduleId } = req.query;
   const scheduleUpdateDto: ScheduleUpdateDto = req.body;
-  console.log(scheduleUpdateDto);
 
   try {
     const moveBackSchedule = await ScheduleService.rescheduleDay(
