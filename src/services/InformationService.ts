@@ -47,9 +47,9 @@ const getDailyInformation = async (
     });
 
     let data: DailyInformationResponseDto = {
-      emoji: null,
-      dailyGoal: null,
-      memo: null,
+      emoji: '',
+      dailyGoal: '',
+      memo: '',
     };
 
     if (emoji) {
