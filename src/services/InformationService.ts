@@ -90,7 +90,7 @@ const getMonthlyGoal = async (
     let data: InformationResponseDto = {
       date: date,
       type: 'monthlyGoal',
-      value: null,
+      value: '',
     };
 
     if (findMonthlyGoal) {
