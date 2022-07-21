@@ -47,9 +47,9 @@ const getDailyInformation = async (
     });
 
     let data: DailyInformationResponseDto = {
-      emoji: null,
-      dailyGoal: null,
-      memo: null,
+      emoji: '',
+      dailyGoal: '',
+      memo: '',
     };
 
     if (emoji) {
@@ -72,26 +72,31 @@ const getMonthlyGoal = async (
   date: string,
   userId: mongoose.Types.ObjectId
 ): Promise<InformationResponseDto> => {
-  const dateRegex = date.substring(0, 7);
   try {
-    const findMonthlyGoal = await Information.find({
+    const findMonthlyGoal = await Information.findOne({
       $and: [
         {
           userId: userId,
         },
         {
-          date: { $regex: dateRegex },
+          date: date,
         },
         {
           type: 'monthlyGoal',
         },
       ],
     });
-    const data: InformationResponseDto = {
-      date: findMonthlyGoal[0].date,
-      type: findMonthlyGoal[0].type,
-      value: findMonthlyGoal[0].value,
+
+    let data: InformationResponseDto = {
+      date: date,
+      type: 'monthlyGoal',
+      value: '',
     };
+
+    if (findMonthlyGoal) {
+      data.value = findMonthlyGoal.value;
+    }
+
     return data;
   } catch (error) {
     console.log(error);
