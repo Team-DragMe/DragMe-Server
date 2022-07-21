@@ -60,14 +60,10 @@ const ScheduleSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    subSchedules: [
-      {
-        subSchedule: {
-          type: [mongoose.Types.ObjectId],
-          ref: 'Schedule',
-        },
-      },
-    ],
+    subSchedules: {
+      type: [mongoose.Types.ObjectId],
+      ref: 'Schedule',
+    },
     categoryColorCode: {
       type: String,
     },
