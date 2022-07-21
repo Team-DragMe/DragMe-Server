@@ -6,7 +6,9 @@ import config from './config';
 import cors from 'cors';
 require('dotenv').config();
 
-connectDB();
+if (process.env.NODE_ENV !== 'test') {
+  connectDB();
+}
 
 const allowedOrigins = [
   'http://localhost:3000',
