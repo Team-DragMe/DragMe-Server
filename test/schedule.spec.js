@@ -45,6 +45,25 @@ describe('미뤄진 계획블록 목록 조회 [GET] /schedule/delay', () => {
   });
 });
 
+describe('계획블록 미루기 [PATCH] /schedule/day-reschedule?scheduleId=', () => {
+  it('200 - 계획블록 미루기 성공', async () => {
+    await request(app)
+      .patch('/schedule/day-reschedule')
+      .set('Content-Type', 'application/json')
+      .query({ scheduleId: '62d7cf0a5fb95366f7329552' })
+      .expect(200)
+      .expect('Content-Type', /json/);
+  });
+
+  it('404 - 존재하지 않는 데이터입니다', async () => {
+    await request(app)
+      .get('/schedule/day-reschedule')
+      .set('Content-Type', 'application/json')
+      .query({ scheduleId: '62d303f1a9ca1ad55fee2742' })
+      .expect(404);
+  });
+});
+
 afterAll(async () => {
   await mongoose.connection.close();
   console.log('Mongoose Disconnected!');
