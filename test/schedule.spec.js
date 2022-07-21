@@ -345,7 +345,7 @@ describe('계획블록 시간 삭제 [PATCH] /schedule/time?scheduleId=', () => 
 
   it('404 - 존재하지 않는 데이터입니다', async () => {
     await request(app)
-      .post('/schedule/routine-day')
+      .patch('/schedule/routine-day')
       .set('Content-Type', 'application/json')
       .query({ scheduleId: '62d7cf0a5fb95366f7329557' })
       .send({ 
@@ -354,6 +354,28 @@ describe('계획블록 시간 삭제 [PATCH] /schedule/time?scheduleId=', () => 
   });
 });
 
+describe('계획블록 카테고리 변경 [PATCH] /schedule/category?scheduleId=', () => {
+  it('200 - 계획블록 카테고리 변경 성공', async () => {
+    await request(app)
+      .patch('/schedule/time')
+      .set('Content-Type', 'application/json')
+      .query({ scheduleId: '62d6e686daa86965b4ca054a' })
+      .send({  
+        categoryColorCode: '날 죽여줘'})
+      .expect(200)
+      .expect('Content-Type', /json/);
+  });
+
+  it('404 - 존재하지 않는 데이터입니다', async () => {
+    await request(app)
+      .patch('/schedule/routine-day')
+      .set('Content-Type', 'application/json')
+      .query({ scheduleId: '62d7cf0a5fb95366f7329558' })
+      .send({ 
+        categoryColorCode: '날 죽여줘'})
+      .expect(404);
+  });
+});
 afterAll(async () => {
   await mongoose.connection.close();
   console.log('Mongoose Disconnected!');
