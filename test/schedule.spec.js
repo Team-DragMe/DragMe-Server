@@ -78,7 +78,7 @@ describe('미뤄진 계획블록 계획표로 옮기기 [PATCH] /schedule/resche
     await request(app)
       .get('/schedule/reschedule-day')
       .set('Content-Type', 'application/json')
-      .query({ scheduleId: '62d303f1a9ca1ad55fee2742' })
+      .query({ scheduleId: '62d7cf0a5fb95366f732955x' })
       .expect(404);
   });
 });
@@ -97,7 +97,7 @@ describe('계획블록 완료하기 [PATCH] /schedule/complete?scheduleId=', () 
     await request(app)
       .get('/schedule/complete')
       .set('Content-Type', 'application/json')
-      .query({ scheduleId: '62d303f1a9ca1ad55fee2742' })
+      .query({ scheduleId: '62d7cf0a5fb95366f732955x' })
       .expect(404);
   });
 });
@@ -133,7 +133,7 @@ describe('계획블록 완료하기 [PATCH] /schedule/complete?scheduleId=', () 
 //     await request(app)
 //       .delete('/schedule')
 //       .set('Content-Type', 'application/json')
-//       .query({ scheduleId: '62d8f980d664a69b88d735e9' })
+//       .query({ scheduleId: '62d905bb6aba4018b96a935b' })
 //       .expect(200)
 //       .expect('Content-Type', /json/);
 //   });
@@ -142,7 +142,7 @@ describe('계획블록 완료하기 [PATCH] /schedule/complete?scheduleId=', () 
 //     await request(app)
 //       .delete('/schedule')
 //       .set('Content-Type', 'application/json')
-//       .query({ scheduleId: '62d8f980d664a69b88d735e9' })
+//       .query({ scheduleId: '62d905bb6aba4018b96a9350' })
 //       .expect(404);
 //   });
 // });
@@ -171,7 +171,7 @@ describe('계획블록 수정 [PATCH] /schedule?scheduleId=', () => {
     await request(app)
       .delete('/schedule')
       .set('Content-Type', 'application/json')
-      .query({ scheduleId: '62d8fd7f6e6f967cd9010f8b' })
+      .query({ scheduleId: '62d8fd7f6e6f967cd9010f80' })
       .send({
         title: '수정 API 테스트',
         categoryColorCode: '#success',
@@ -200,8 +200,18 @@ describe('하위 계획블록 조회 [GET] /schedule/subschedule?scheduleId=', (
     await request(app)
       .get('/schedule/subschedule')
       .set('Content-Type', 'application/json')
-      .query({ scheduleId: '62d596a7daa86965b4ca050t' })
+      .query({ scheduleId: '62d596a7daa86965b4ca050c' })
       .expect(404);
+  });
+});
+
+describe('자주 사용하는 계획 리스트 조회 [GET] /schedule/routine', () => {
+  it('200 - 자주 사용하는 계획 리스트 조회 성공', async () => {
+    await request(app)
+      .get('/schedule/routine')
+      .set('Content-Type', 'application/json')
+      .expect(200)
+      .expect('Content-Type', /json/);
   });
 });
 
