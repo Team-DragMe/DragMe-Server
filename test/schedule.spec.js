@@ -376,6 +376,52 @@ describe('계획블록 카테고리 변경 [PATCH] /schedule/category?scheduleId
       .expect(404);
   });
 });
+
+describe('계획블록 카테고리 변경 [GET] /schedule/category?scheduleId=', () => {
+  it('200 - 계획블록 카테고리 변경 성공', async () => {
+    await request(app)
+      .patch('/schedule/time')
+      .set('Content-Type', 'application/json')
+      .query({ scheduleId: '62d6e686daa86965b4ca054a' })
+      .send({  
+        categoryColorCode: '날 죽여줘'})
+      .expect(200)
+      .expect('Content-Type', /json/);
+  });
+
+  it('404 - 존재하지 않는 데이터입니다', async () => {
+    await request(app)
+      .patch('/schedule/routine-day')
+      .set('Content-Type', 'application/json')
+      .query({ scheduleId: '62d7cf0a5fb95366f7329558' })
+      .send({ 
+        categoryColorCode: '날 죽여줘'})
+      .expect(404);
+  });
+});
+
+describe('주간 계획 계획블록 리스트 조회 [GET] /schedule/weeks?startDate=&endDate=', () => {
+  it('200 - 주간 계획블록 리스트 조회 성공', async () => {
+    await request(app)
+      .get('/schedule/weeks')
+      .set('Content-Type', 'application/json')
+      .query({ 
+        startDate : '2022-07-17', 
+        endDate : '2022-07-23'})
+      .expect(200)
+      .expect('Content-Type', /json/);
+  });
+
+  it('400 - 필요한 값이 없습니다.', async () => {
+    await request(app)
+      .get('/schedule/weeks')
+      .set('Content-Type', 'application/json')
+      .query({ 
+        startDate : '2022-07-17', 
+      })
+      .expect(400);
+  });
+});
 afterAll(async () => {
   await mongoose.connection.close();
   console.log('Mongoose Disconnected!');
