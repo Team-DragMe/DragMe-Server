@@ -274,6 +274,24 @@ describe('계획블록 이름 수정 [PATCH] /schedule/title?scheduleId=', () =>
   });
 });
 
+describe('날짜별 계획블록 존재 여부 조회 [GET] /schedule/calendar?month=', () => {
+  it('200 - 날짜별 계획블록 존재 여부 조회 성공', async () => {
+    await request(app)
+      .get('/schedule/calendar')
+      .set('Content-Type', 'application/json')
+      .query({ month: '2022-07' })
+      .expect(200)
+      .expect('Content-Type', /json/);
+  });
+
+  it('400 - 필요한 값이 없습니다', async () => {
+    await request(app)
+      .get('/schedule/calendar')
+      .set('Content-Type', 'application/json')
+      .expect(400);
+  });
+});
+
 afterAll(async () => {
   await mongoose.connection.close();
   console.log('Mongoose Disconnected!');
