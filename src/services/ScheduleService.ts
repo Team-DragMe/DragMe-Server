@@ -35,7 +35,9 @@ const createSchedule = async (
   }
 };
 
-const deleteSchedule = async (scheduleId: string): Promise<void | null> => {
+const deleteSchedule = async (
+  scheduleId: string
+): Promise<ScheduleInfo | null> => {
   try {
     // 삭제할 계획블록 조회
     const checkDeleteSchedule = await Schedule.findById(scheduleId).populate({
@@ -70,6 +72,7 @@ const deleteSchedule = async (scheduleId: string): Promise<void | null> => {
         await Schedule.findByIdAndDelete(scheduleId); // 상위 계획, 혹은 하위 계획 삭제
       }
     }
+    return checkDeleteSchedule;
   } catch (error) {
     console.log(error);
     throw error;
