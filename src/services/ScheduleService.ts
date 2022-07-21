@@ -159,28 +159,16 @@ const deleteTime = async (
     const deleteScheduleTime = await Schedule.findById(scheduleId);
     if (!deleteScheduleTime) {
       return null;
-    } else {
-      if (timeDto.isUsed === false) {
-        await Schedule.findByIdAndUpdate(
-          scheduleId,
-          {
-            $pull: { estimatedTime: { $in: timeDto.timeBlockNumbers } },
-          },
-          {
-            new: true,
-          }
-        );
-      } else {
-        await Schedule.findByIdAndUpdate(
-          scheduleId,
-          {
-            $pull: { usedTime: { $in: timeDto.timeBlockNumbers } },
-          },
-          {
-            new: true,
-          }
-        );
-      }
+    } else{
+      await Schedule.findByIdAndUpdate(
+        scheduleId,
+        {
+          $pull: { estimatedTime: { $in: timeDto.timeBlockNumbers } , usedTime: { $in: timeDto.timeBlockNumbers } },
+        },
+        {
+          new: true,
+        }
+      );
     }
     return deleteScheduleTime;
   } catch (error) {

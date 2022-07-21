@@ -1,4 +1,4 @@
 export interface TimeDto {
-  isUsed: boolean;
+  isUsed?: boolean;
   timeBlockNumbers: [number];
 }
