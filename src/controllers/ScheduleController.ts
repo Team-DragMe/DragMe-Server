@@ -848,6 +848,11 @@ const updateScheduleDate = async (req: Request, res: Response) => {
 const getWeeklySchedules = async (req: Request, res: Response) => {
   const { startDate, endDate } = req.query;
   const userId: string = '62cd27ae39f42cfbf520009a';
+  if (!startDate || !endDate) {
+    return res
+      .status(statusCode.BAD_REQUEST)
+      .send(util.fail(statusCode.BAD_REQUEST, message.NULL_VALUE));
+  }
   try {
     const schedulesOfWeek = await ScheduleService.getWeeklySchedules(
       userId,
