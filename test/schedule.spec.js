@@ -102,31 +102,31 @@ describe('계획블록 완료하기 [PATCH] /schedule/complete?scheduleId=', () 
   });
 });
 
-describe('계획블록 생성 [POST] /schedule', () => {
-  it('201 - 계획블록 생성 성공', async () => {
-    await request(app)
-      .post('/schedule')
-      .set('Content-Type', 'application/json')
-      .send({
-        date: '2022-07-21',
-        title: 'API 테스트',
-        categoryColorCode: '#apitest',
-      })
-      .expect(201)
-      .expect('Content-Type', /json/);
-  });
+// describe('계획블록 생성 [POST] /schedule', () => {
+//   it('201 - 계획블록 생성 성공', async () => {
+//     await request(app)
+//       .post('/schedule')
+//       .set('Content-Type', 'application/json')
+//       .send({
+//         date: '2022-07-21',
+//         title: 'API 테스트',
+//         categoryColorCode: '#apitest',
+//       })
+//       .expect(201)
+//       .expect('Content-Type', /json/);
+//   });
 
-  it('400 - 필요한 값이 없습니다', async () => {
-    await request(app)
-      .post('/schedule')
-      .set('Content-Type', 'application/json')
-      .send({
-        title: 'API 테스트',
-        categoryColorCode: '#apitest',
-      })
-      .expect(400);
-  });
-});
+//   it('400 - 필요한 값이 없습니다', async () => {
+//     await request(app)
+//       .post('/schedule')
+//       .set('Content-Type', 'application/json')
+//       .send({
+//         title: 'API 테스트',
+//         categoryColorCode: '#apitest',
+//       })
+//       .expect(400);
+//   });
+// });
 
 // describe('계획블록 삭제 [DELETE] /schedule?scheduleId=', () => {
 //   it('200 - 계획블록 삭제 성공', async () => {
