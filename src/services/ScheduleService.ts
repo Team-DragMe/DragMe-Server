@@ -118,7 +118,7 @@ const createTime = async (
         await Schedule.findByIdAndUpdate(
           scheduleId,
           {
-            $push: { estimatedTime: { $each: timeDto.timeBlockNumbers } },
+            $addToSet: { estimatedTime: { $each: timeDto.timeBlockNumbers } },
           },
           {
             new: true,
@@ -128,7 +128,7 @@ const createTime = async (
         await Schedule.findByIdAndUpdate(
           scheduleId,
           {
-            $push: { usedTime: { $each: timeDto.timeBlockNumbers } },
+            $addToSet: { usedTime: { $each: timeDto.timeBlockNumbers } },
           },
           {
             new: true,
