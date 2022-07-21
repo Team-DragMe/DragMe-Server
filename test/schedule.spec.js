@@ -57,15 +57,15 @@ describe('계획블록 미루기 [PATCH] /schedule/day-reschedule?scheduleId=', 
 
   it('404 - 존재하지 않는 데이터입니다', async () => {
     await request(app)
-      .get('/schedule/day-reschedule')
+      .patch('/schedule/day-reschedule')
       .set('Content-Type', 'application/json')
       .query({ scheduleId: '62d303f1a9ca1ad55fee2742' })
       .expect(404);
   });
 });
 
-describe('미뤄진 계획블록 계획표로 옮기기 [PATCH] /schedule/reschedule-day?scheduleId=', () => {
-  it('200 - 미뤄진 계획블록 계획표로 옮기기 성공', async () => {
+describe('미룬 계획블록 계획표로 옮기기 [PATCH] /schedule/reschedule-day?scheduleId=', () => {
+  it('200 - 미룬 계획블록 계획표로 옮기기 성공', async () => {
     await request(app)
       .patch('/schedule/reschedule-day')
       .set('Content-Type', 'application/json')
@@ -76,9 +76,9 @@ describe('미뤄진 계획블록 계획표로 옮기기 [PATCH] /schedule/resche
 
   it('404 - 존재하지 않는 데이터입니다', async () => {
     await request(app)
-      .get('/schedule/reschedule-day')
+      .patch('/schedule/reschedule-day')
       .set('Content-Type', 'application/json')
-      .query({ scheduleId: '62d7cf0a5fb95366f7329552' })
+      .query({ scheduleId: '62d7cf0a5fb95366f7329557' })
       .expect(404);
   });
 });
@@ -95,9 +95,9 @@ describe('계획블록 완료하기 [PATCH] /schedule/complete?scheduleId=', () 
 
   it('404 - 존재하지 않는 데이터입니다', async () => {
     await request(app)
-      .get('/schedule/complete')
+      .patch('/schedule/complete')
       .set('Content-Type', 'application/json')
-      .query({ scheduleId: '62d7cf0a5fb95366f732955x' })
+      .query({ scheduleId: '62d7cf0a5fb95366f7329557' })
       .expect(404);
   });
 });
@@ -169,7 +169,7 @@ describe('계획블록 수정 [PATCH] /schedule?scheduleId=', () => {
 
   it('404 - 존재하지 않는 데이터입니다', async () => {
     await request(app)
-      .delete('/schedule')
+      .patch('/schedule')
       .set('Content-Type', 'application/json')
       .query({ scheduleId: '62d8fd7f6e6f967cd9010f80' })
       .send({
