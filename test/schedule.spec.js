@@ -35,7 +35,7 @@ describe('일간 계획블록 리스트 조회 [GET] /schedule/days?date=', () =
   });
 });
 
-describe('미뤄진 계획블록 목록 조회 [GET] /schedule/delay', () => {
+describe('미룬 계획블록 리스트 조회 [GET] /schedule/delay', () => {
   it('200 - 미룬 계획블록 리스트 조회 성공', async () => {
     await request(app)
       .get('/schedule/delay')
@@ -186,8 +186,8 @@ describe('계획블록 수정 [PATCH] /schedule?scheduleId=', () => {
   });
 });
 
-describe('하위 계획블록 조회 [GET] /schedule/subschedule?scheduleId=', () => {
-  it('200 - 하위 계획블록 조회 성공', async () => {
+describe('하위 계획블록 리스트 조회 [GET] /schedule/subschedule?scheduleId=', () => {
+  it('200 - 하위 계획블록 리스트 조회 성공', async () => {
     await request(app)
       .get('/schedule/subschedule')
       .set('Content-Type', 'application/json')
@@ -205,8 +205,8 @@ describe('하위 계획블록 조회 [GET] /schedule/subschedule?scheduleId=', (
   });
 });
 
-describe('자주 사용하는 계획 리스트 조회 [GET] /schedule/routine', () => {
-  it('200 - 자주 사용하는 계획 리스트 조회 성공', async () => {
+describe('자주 사용하는 계획블록 리스트 조회 [GET] /schedule/routine', () => {
+  it('200 - 자주 사용하는 계획블록 리스트 조회 성공', async () => {
     await request(app)
       .get('/schedule/routine')
       .set('Content-Type', 'application/json')
