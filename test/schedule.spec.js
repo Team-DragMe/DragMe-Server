@@ -133,7 +133,7 @@ describe('계획블록 삭제 [DELETE] /schedule?scheduleId=', () => {
     await request(app)
       .delete('/schedule')
       .set('Content-Type', 'application/json')
-      .query({ scheduleId: '62d91b02734792d673b44b06' })
+      .query({ scheduleId: '62d91de6c5ccbfc40dfa54db' })
       .expect(200)
       .expect('Content-Type', /json/);
   });
