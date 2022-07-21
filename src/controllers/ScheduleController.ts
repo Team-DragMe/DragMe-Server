@@ -71,7 +71,7 @@ const deleteSchedule = async (req: Request, res: Response) => {
     }
     res
       .status(statusCode.OK)
-      .send(util.success(statusCode.OK, message.DELETE_SCHEDULE_TIME_SUCCESS));
+      .send(util.success(statusCode.OK, message.DELETE_SCHEDULE_SUCCESS));
   } catch (error) {
     console.log(error);
     const errorMessage: string = slackMessage(

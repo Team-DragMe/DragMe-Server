@@ -14,6 +14,7 @@ const message = {
 
   // Schedule
   CREATE_SCHEDULE_SUCCESS: '계획블록 생성 성공',
+  DELETE_SCHEDULE_SUCCESS: '계획블록 삭제 성공',
   CREATE_SCHEDULE_TIME_SUCCESS: '계획블록 시간 생성 성공',
   DELETE_SCHEDULE_TIME_SUCCESS: '계획블록 시간 삭제 성공',
   COMPLETE_SCHEDULE_SUCCESS: '계획블록 완료 성공',
