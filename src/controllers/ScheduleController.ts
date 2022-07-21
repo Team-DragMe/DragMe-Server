@@ -801,17 +801,12 @@ const updateSchedule = async (req: Request, res: Response) => {
 const updateScheduleDate = async (req: Request, res: Response) => {
   const { scheduleId } = req.query;
   const scheduleUpdateDto = req.body;
-  if (!scheduleUpdateDto) {
-    return res
-      .status(statusCode.BAD_REQUEST)
-      .send(util.fail(statusCode.BAD_REQUEST, message.NULL_VALUE));
-  }
   try {
     const moveScheduleToOtherDays = await ScheduleService.updateScheduleDate(
       scheduleId as string,
       scheduleUpdateDto
     );
-    if (!moveScheduleToOtherDays) {
+    if (!scheduleId) {
       // scheduleId가 잘못된 경우, 404 return
       return res
         .status(statusCode.NOT_FOUND)

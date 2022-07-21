@@ -422,6 +422,31 @@ describe('주간 계획 계획블록 리스트 조회 [GET] /schedule/weeks?star
       .expect(400);
   });
 });
+
+describe('계획블록 요일 이동 [PATCH] /schedule/days?schedulId=', () => {
+  it('200 - 계획블록 요일 이동', async () => {
+    await request(app)
+      .patch('/schedule/days')
+      .set('Content-Type', 'application/json')
+      .query({ scheduleId:'62d5bd1ef19a880599c0bb4c' })
+      .send({
+        date: '2022-07-23'
+      })
+      .expect(200)
+      .expect('Content-Type', /json/);
+  });
+
+  it('404 - 존재하지 않는 데이터입니다.', async () => {
+    await request(app)
+      .patch('/schedule/weeks')
+      .set('Content-Type', 'application/json')
+      .query({ 
+        scheduleId:'62d5bd1ef19a880599c0bb4z'
+      })
+      .expect(404);
+  });
+});
+
 afterAll(async () => {
   await mongoose.connection.close();
   console.log('Mongoose Disconnected!');
