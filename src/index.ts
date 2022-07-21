@@ -6,7 +6,9 @@ import config from './config';
 import cors from 'cors';
 require('dotenv').config();
 
-connectDB();
+if (process.env.NODE_ENV !== 'test') {
+  connectDB();
+}
 
 const allowedOrigins = [
   'http://localhost:3000',
@@ -58,15 +60,4 @@ app.use(function (
   res.render('error');
 });
 
-app
-  .listen(process.env.PORT, () => {
-    console.log(`
-    ################################################
-          🛡️  Server listening on port ${config.port} 🛡️
-    ################################################
-  `);
-  })
-  .on('error', (err) => {
-    console.error(err);
-    process.exit(1);
-  });
+module.exports = app;

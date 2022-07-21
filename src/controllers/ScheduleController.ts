@@ -71,7 +71,7 @@ const deleteSchedule = async (req: Request, res: Response) => {
     }
     res
       .status(statusCode.OK)
-      .send(util.success(statusCode.OK, message.DELETE_SCHEDULE_TIME_SUCCESS));
+      .send(util.success(statusCode.OK, message.DELETE_SCHEDULE_SUCCESS));
   } catch (error) {
     console.log(error);
     const errorMessage: string = slackMessage(
@@ -278,6 +278,13 @@ const getSubSchedules = async (req: Request, res: Response) => {
     const subSchedules = await ScheduleService.getSubSchedules(
       scheduleId as string
     );
+
+    if (!subSchedules) {
+      // scheduleId가 잘못된 경우, 404 return
+      return res
+        .status(statusCode.NOT_FOUND)
+        .send(util.fail(statusCode.NOT_FOUND, message.NOT_FOUND));
+    }
     res
       .status(statusCode.OK)
       .send(
@@ -512,7 +519,6 @@ const getRoutines = async (req: Request, res: Response) => {
 const rescheduleDay = async (req: Request, res: Response) => {
   const { scheduleId } = req.query;
   const scheduleUpdateDto: ScheduleUpdateDto = req.body;
-  console.log(scheduleUpdateDto);
 
   try {
     const moveBackSchedule = await ScheduleService.rescheduleDay(
