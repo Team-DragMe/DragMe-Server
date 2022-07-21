@@ -278,6 +278,13 @@ const getSubSchedules = async (req: Request, res: Response) => {
     const subSchedules = await ScheduleService.getSubSchedules(
       scheduleId as string
     );
+
+    if (!subSchedules) {
+      // scheduleId가 잘못된 경우, 404 return
+      return res
+        .status(statusCode.NOT_FOUND)
+        .send(util.fail(statusCode.NOT_FOUND, message.NOT_FOUND));
+    }
     res
       .status(statusCode.OK)
       .send(
