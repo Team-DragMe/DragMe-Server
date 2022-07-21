@@ -253,6 +253,27 @@ describe('자주 사용하는 계획블록 계획표로 옮기기 [POST] /schedu
   });
 });
 
+describe('계획블록 이름 수정 [PATCH] /schedule/title?scheduleId=', () => {
+  it('200 - 계획블록 이름 수정 성공', async () => {
+    await request(app)
+      .patch('/schedule/title')
+      .set('Content-Type', 'application/json')
+      .query({ scheduleId: '62d7cf0a5fb95366f7329552' })
+      .send({ title: '코드 테스트' })
+      .expect(200)
+      .expect('Content-Type', /json/);
+  });
+
+  it('404 - 존재하지 않는 데이터입니다', async () => {
+    await request(app)
+      .patch('/schedule/title')
+      .set('Content-Type', 'application/json')
+      .query({ scheduleId: '62d303f1a9ca1ad55fee2749' })
+      .send({ title: '코드 테스트' })
+      .expect(404);
+  });
+});
+
 afterAll(async () => {
   await mongoose.connection.close();
   console.log('Mongoose Disconnected!');
