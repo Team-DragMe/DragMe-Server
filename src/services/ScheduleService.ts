@@ -80,31 +80,23 @@ const deleteSchedule = async (
 };
 
 const completeSchedule = async (
-  scheduleId: string
+  scheduleId: string,
+  isCompleted: string
 ): Promise<ScheduleInfo | null> => {
   try {
     // scheduleId로 계획블록 조회
     const checkCompleteSchedule = await Schedule.findById(scheduleId);
+    const isCompletedToBool = isCompleted === 'true';
     if (!checkCompleteSchedule) {
       return null;
     } else {
-      if (checkCompleteSchedule.isCompleted === true) {
         await Schedule.findByIdAndUpdate(
           scheduleId,
           {
-            $set: { isCompleted: false, usedTime: [] },
+            $set: { isCompleted: isCompletedToBool, usedTime: [] },
           },
           { new: true }
-        );
-      } else {
-        await Schedule.findByIdAndUpdate(
-          scheduleId,
-          {
-            isCompleted: true,
-          },
-          { new: true }
-        );
-      }
+        )
       return checkCompleteSchedule;
     }
   } catch (error) {

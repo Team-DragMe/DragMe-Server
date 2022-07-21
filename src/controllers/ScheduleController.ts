@@ -320,17 +320,23 @@ const getSubSchedules = async (req: Request, res: Response) => {
  * @access Public
  */
 const completeSchedule = async (req: Request, res: Response) => {
-  let { scheduleId } = req.query;
+  let { scheduleId, isCompleted } = req.query;
 
   try {
     const checkCompleteSchedule = await ScheduleService.completeSchedule(
-      scheduleId as string
+      scheduleId as string,
+      isCompleted as string
     );
     if (!checkCompleteSchedule) {
       // scheduleId가 잘못된 경우, 404 return
       return res
         .status(statusCode.NOT_FOUND)
         .send(util.fail(statusCode.NOT_FOUND, message.NOT_FOUND));
+    }
+    if (isCompleted !== 'true' && isCompleted !== 'false'){
+      return res
+        .status(statusCode.NOT_FOUND)
+        .send(util.fail(statusCode.NOT_FOUND, message.NOT_FOUND));      
     }
     res
       .status(statusCode.OK)
