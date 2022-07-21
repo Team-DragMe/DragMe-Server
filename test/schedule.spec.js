@@ -186,6 +186,25 @@ describe('계획블록 수정 [PATCH] /schedule?scheduleId=', () => {
   });
 });
 
+describe('하위 계획블록 조회 [GET] /schedule/subschedule?scheduleId=', () => {
+  it('200 - 하위 계획블록 조회 성공', async () => {
+    await request(app)
+      .get('/schedule/subschedule')
+      .set('Content-Type', 'application/json')
+      .query({ scheduleId: '62d596a7daa86965b4ca050b' })
+      .expect(200)
+      .expect('Content-Type', /json/);
+  });
+
+  it('404 - 존재하지 않는 데이터입니다', async () => {
+    await request(app)
+      .get('/schedule/subschedule')
+      .set('Content-Type', 'application/json')
+      .query({ scheduleId: '62d596a7daa86965b4ca050t' })
+      .expect(404);
+  });
+});
+
 afterAll(async () => {
   await mongoose.connection.close();
   console.log('Mongoose Disconnected!');
