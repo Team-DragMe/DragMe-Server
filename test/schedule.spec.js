@@ -128,6 +128,25 @@ describe('계획블록 생성 [POST] /schedule', () => {
   });
 });
 
+describe('계획블록 삭제 [DELETE] /schedule', () => {
+  it('200 - 계획블록 삭제 성공', async () => {
+    await request(app)
+      .delete('/schedule')
+      .set('Content-Type', 'application/json')
+      .query({ scheduleId: '62d8f980d664a69b88d735e9' })
+      .expect(200)
+      .expect('Content-Type', /json/);
+  });
+
+  it('404 - 존재하지 않는 데이터입니다', async () => {
+    await request(app)
+      .delete('/schedule')
+      .set('Content-Type', 'application/json')
+      .query({ scheduleId: '62d8f980d664a69b88d735e9' })
+      .expect(404);
+  });
+});
+
 afterAll(async () => {
   await mongoose.connection.close();
   console.log('Mongoose Disconnected!');
