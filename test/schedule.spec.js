@@ -215,6 +215,25 @@ describe('자주 사용하는 계획블록 리스트 조회 [GET] /schedule/rout
   });
 });
 
+describe('자주 사용하는 계획블록 등록 [PATCH] /schedule/day-routine?scheduleId=', () => {
+  it('201 - 자주 사용하는 계획블록 등록 성공', async () => {
+    await request(app)
+      .post('/schedule/day-routine')
+      .set('Content-Type', 'application/json')
+      .query({ scheduleId: '62d6619fdaa86965b4ca053e' })
+      .expect(201)
+      .expect('Content-Type', /json/);
+  });
+
+  it('404 - 존재하지 않는 데이터입니다', async () => {
+    await request(app)
+      .post('/schedule/day-routine')
+      .set('Content-Type', 'application/json')
+      .query({ scheduleId: '62d90dfa68059eb4c4979f32' })
+      .expect(404);
+  });
+});
+
 afterAll(async () => {
   await mongoose.connection.close();
   console.log('Mongoose Disconnected!');
