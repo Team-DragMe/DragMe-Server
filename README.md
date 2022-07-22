@@ -375,6 +375,8 @@ feature, fix 이하 번호는 issue 번호에 맞게 생성
   }
 }
 ```
+### ⚙️ Server Architecture
+![server_architecture](https://user-images.githubusercontent.com/21357387/180463796-c8271fcf-16e1-4783-a56c-52e014123caa.png)
 
 ### 💼 Roles (API) & Progess Status
 
