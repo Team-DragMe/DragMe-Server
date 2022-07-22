@@ -15,6 +15,7 @@ const allowedOrigins = [
   config.EC2URL,
   'https://dragme.kr',
   'https://server.dragme.kr',
+  'https://drag-me-client.vercel.app',
 ];
 const corsOptions = {
   origin: allowedOrigins,
