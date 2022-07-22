@@ -35,7 +35,7 @@ describe('일간 계획 정보 조회 [GET] /information/days?date=', () => {
     });
   });
 
-  describe('정보 작성 [POST] /information', () => {
+describe('정보 작성 [POST] /information', () => {
     it('201 - 정보 작성 성공', async () => {
       await request(app)
         .post('/information')
@@ -50,6 +50,23 @@ describe('일간 계획 정보 조회 [GET] /information/days?date=', () => {
     });
   });
 
+describe('월간 목표 조회 [GET] /information/months?date=', () => {
+    it('200 - 월간 목표 조회 성공', async () => {
+      await request(app)
+        .get('/information/months')
+        .set('Content-Type', 'application/json')
+        .query({ date: '2022-07-01'})
+        .expect(200)
+        .expect('Content-Type', /json/);
+    });
+  
+    it('400 - 필요한 값이 없습니다', async () => {
+      await request(app)
+        .get('/information/months')
+        .set('Content-Type', 'application/json')
+        .expect(400);
+    });
+  });
 
 afterAll(async () => {
     await mongoose.connection.close();
