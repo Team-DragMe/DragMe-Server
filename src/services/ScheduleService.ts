@@ -349,7 +349,7 @@ const createRoutine = async (
     const newSubSchedules = await Promise.all(
       originalSchedule.subSchedules.map((originalSubSchedule: any) => {
         const result = {
-          date: '',
+          date: 'subSchedule',
           title: originalSubSchedule.title,
           categoryColorCode: originalSubSchedule.categoryColorCode,
           userId: originalSubSchedule.userId,
