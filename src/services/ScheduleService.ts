@@ -198,15 +198,14 @@ const dayReschedule = async (
       },
       { new: true }
     );
-
     if (!delaySchedule) {
       return null;
     } else {
-      // 하위 계획블록도 동일하게 처리
+      // 하위 계획블록도 처리
       for (const delaySubSchedule of delaySchedule.subSchedules) {
         await Schedule.findByIdAndUpdate(delaySubSchedule._id, {
           $set: {
-            date: '',
+            date: 'subSchedule',
             isReschedule: true,
             estimatedTime: [],
             usedTime: [],
