@@ -333,10 +333,10 @@ const completeSchedule = async (req: Request, res: Response) => {
         .status(statusCode.NOT_FOUND)
         .send(util.fail(statusCode.NOT_FOUND, message.NOT_FOUND));
     }
-    if (isCompleted !== 'true' && isCompleted !== 'false'){
+    if (isCompleted !== 'true' && isCompleted !== 'false') {
       return res
         .status(statusCode.NOT_FOUND)
-        .send(util.fail(statusCode.NOT_FOUND, message.NOT_FOUND));      
+        .send(util.fail(statusCode.NOT_FOUND, message.NOT_FOUND));
     }
     res
       .status(statusCode.OK)
