@@ -173,14 +173,28 @@ const deleteTime = async (
 };
 
 const dayReschedule = async (
-  scheduleId: string
+  scheduleId: string,
+  userId: string
 ): Promise<ScheduleInfo | null> => {
   try {
-    // 계획블록의 isReschedule true로 전환, 시간 데이터 삭제
+    // 미룬 계획블록 영역에서의 orderIndex 계산
+    const existingReschedules = await Schedule.find({
+      userId: userId,
+      isReschedule: true,
+    }).sort({ orderIndex: 1 });
+    const newOrderIndex = calculateOrderIndex(existingReschedules);
+
+    // 계획블록의 isReschedule true로 전환, 시간 데이터 삭제, 새로운 orderIndex 입력
     const delaySchedule = await Schedule.findByIdAndUpdate(
       scheduleId,
       {
-        $set: { date: '', isReschedule: true, estimatedTime: [], usedTime: [] },
+        $set: {
+          date: '',
+          orderIndex: newOrderIndex,
+          isReschedule: true,
+          estimatedTime: [],
+          usedTime: [],
+        },
       },
       { new: true }
     );
@@ -380,15 +394,27 @@ const getRoutines = async (userId: string): Promise<ScheduleListGetDto> => {
 };
 
 const rescheduleDay = async (
+  userId: string,
   scheduleId: string,
   scheduleUpdateDto: ScheduleUpdateDto
 ): Promise<ScheduleInfo | null> => {
   try {
-    // 계획블록의 isReschedule false로 전환, date 지정
+    // 일간 계획블록 영역에서의 orderIndex 계산
+    const existingSchedules = await Schedule.find({
+      userId: userId,
+      date: scheduleUpdateDto.date,
+    }).sort({ orderIndex: 1 });
+    const newOrderIndex = calculateOrderIndex(existingSchedules);
+
+    // 계획블록의 isReschedule false로 전환, date 지정, 새로운 orderIndex 지정
     const moveBackSchedule = await Schedule.findByIdAndUpdate(
       scheduleId,
       {
-        $set: { isReschedule: false, date: scheduleUpdateDto.date },
+        $set: {
+          isReschedule: false,
+          date: scheduleUpdateDto.date,
+          orderIndex: newOrderIndex,
+        },
       },
       { new: true }
     );
