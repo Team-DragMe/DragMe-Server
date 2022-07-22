@@ -424,7 +424,7 @@ const rescheduleDay = async (
       // 하위 계획블록도 동일하게 처리
       for (const moveBackSubSchedule of moveBackSchedule.subSchedules) {
         await Schedule.findByIdAndUpdate(moveBackSubSchedule._id, {
-          $set: { isReschedule: false, date: '' },
+          $set: { isReschedule: false, date: 'subSchedule' },
         });
       }
     }
@@ -460,7 +460,7 @@ const routineDay = async (
 
     // 새로운 계획블록 생성
     const newSchedule: ScheduleCreateDto = {
-      date: '',
+      date: scheduleUpdateDto.date!,
       title: moveRoutineToSchedule.title,
       categoryColorCode: moveRoutineToSchedule.categoryColorCode,
       userId: moveRoutineToSchedule.userId.toString(),
@@ -473,7 +473,7 @@ const routineDay = async (
     const newSubSchedules = await Promise.all(
       moveRoutineToSchedule.subSchedules.map((RoutineSubSchedule: any) => {
         const result = {
-          date: scheduleUpdateDto.date,
+          date: 'subSchedule',
           title: RoutineSubSchedule.title,
           categoryColorCode: RoutineSubSchedule.categoryColorCode,
           userId: RoutineSubSchedule.userId,
