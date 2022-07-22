@@ -35,6 +35,21 @@ describe('일간 계획 정보 조회 [GET] /information/days?date=', () => {
     });
   });
 
+  describe('정보 작성 [POST] /information', () => {
+    it('201 - 정보 작성 성공', async () => {
+      await request(app)
+        .post('/information')
+        .set('Content-Type', 'application/json')
+        .send({
+            date : "2022-07-13",
+            type: "memo",
+            value : "이렇게 하면 한방에 되지롱"
+        })
+        .expect(201)
+        .expect('Content-Type', /json/);
+    });
+  });
+
 
 afterAll(async () => {
     await mongoose.connection.close();
