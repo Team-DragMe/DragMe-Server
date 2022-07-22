@@ -68,6 +68,28 @@ describe('월간 목표 조회 [GET] /information/months?date=', () => {
     });
   });
 
+  describe('주간 계획 이모지 리스트 조회 [GET] /information/emoji?startDate=&endDate=', () => {
+    it('200 - 주간 계획 이모지 리스트 조회 성공', async () => {
+      await request(app)
+        .get('/information/emoji')
+        .set('Content-Type', 'application/json')
+        .query({ 
+            startDate: '2022-07-17',
+            endDate: '2022-07-23' })
+        .expect(200)
+        .expect('Content-Type', /json/);
+    });
+  
+    it('400 - 필요한 값이 없습니다', async () => {
+      await request(app)
+        .get('/information/emoji')
+        .set('Content-Type', 'application/json')
+        .query({ 
+            startDate: '2022-07-17',
+        })
+        .expect(400);
+    });
+  });
 afterAll(async () => {
     await mongoose.connection.close();
     console.log('Mongoose Disconnected!');
