@@ -33,7 +33,7 @@ const createInformation = async (req: Request, res: Response) => {
       req.body.user?.id
     );
     sendMessagesToSlack(errorMessage);
-    return res
+    res
       .status(statusCode.INTERNAL_SERVER_ERROR)
       .send(
         util.fail(
@@ -134,6 +134,11 @@ const getMonthlyGoal = async (req: Request, res: Response) => {
 const getWeeklyEmojis = async (req: Request, res: Response) => {
   const { startDate, endDate } = req.query;
   const userId: string = '62cd6eb82b6b4e92c7fc08f1';
+  if (!startDate || !endDate) {
+    return res
+      .status(statusCode.BAD_REQUEST)
+      .send(util.fail(statusCode.BAD_REQUEST, message.NULL_VALUE));
+  }
   try {
     const weeklyEmojis = await InformationService.getWeeklyEmojis(
       userId,
@@ -158,7 +163,7 @@ const getWeeklyEmojis = async (req: Request, res: Response) => {
       req.body.user?.id
     );
     sendMessagesToSlack(errorMessage);
-    return res
+    res
       .status(statusCode.INTERNAL_SERVER_ERROR)
       .send(
         util.fail(
@@ -194,7 +199,7 @@ const getWeeklyGoal = async (req: Request, res: Response) => {
       req.body.user?.id
     );
     sendMessagesToSlack(errorMessage);
-    res
+    return res
       .status(statusCode.INTERNAL_SERVER_ERROR)
       .send(
         util.fail(

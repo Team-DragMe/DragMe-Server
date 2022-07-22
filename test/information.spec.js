@@ -41,9 +41,9 @@ describe('정보 작성 [POST] /information', () => {
         .post('/information')
         .set('Content-Type', 'application/json')
         .send({
-            date : "2022-07-13",
-            type: "memo",
-            value : "이렇게 하면 한방에 되지롱"
+           date: '2022-08-01',
+           type: 'monthlyGoal',
+           value: '살려줘',
         })
         .expect(201)
         .expect('Content-Type', /json/);
@@ -68,7 +68,7 @@ describe('월간 목표 조회 [GET] /information/months?date=', () => {
     });
   });
 
-  describe('주간 계획 이모지 리스트 조회 [GET] /information/emoji?startDate=&endDate=', () => {
+describe('주간 계획 이모지 리스트 조회 [GET] /information/emoji?startDate=&endDate=', () => {
     it('200 - 주간 계획 이모지 리스트 조회 성공', async () => {
       await request(app)
         .get('/information/emoji')
@@ -90,6 +90,25 @@ describe('월간 목표 조회 [GET] /information/months?date=', () => {
         .expect(400);
     });
   });
+
+describe('주간 목표 조회 [GET] /information/weeks?date=', () => {
+    it('200 - 주간 목표 조회 성공', async () => {
+      await request(app)
+        .get('/information/weeks')
+        .set('Content-Type', 'application/json')
+        .query({ date: '2022-07-01'})
+        .expect(200)
+        .expect('Content-Type', /json/);
+    });
+  
+    it('400 - 필요한 값이 없습니다', async () => {
+      await request(app)
+        .get('/information/months')
+        .set('Content-Type', 'application/json')
+        .expect(400);
+    });
+  });
+  
 afterAll(async () => {
     await mongoose.connection.close();
     console.log('Mongoose Disconnected!');
