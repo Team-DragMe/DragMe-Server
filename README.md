@@ -2,7 +2,7 @@
 
 ### 드래그 기반의 유연한 시간관리로 만들어가는 주체적인 삶의 계획표
 
-![DragMe_Poster](https://user-images.githubusercontent.com/21357387/177603982-fe71f427-46ce-4082-a561-343c9fe8ae14.png)
+![DragMe_Poster](https://user-images.githubusercontent.com/21357387/180400302-f7c51db4-bf3d-4bb2-9462-018d66bcf1fe.png)
 
 > SOPT 30th - THE SOPT App-Jam </b>
 >
@@ -303,6 +303,59 @@ feature, fix 이하 번호는 issue 번호에 맞게 생성
                |_ 📋 ScheduleService.ts
                |_ 📋 UserService.ts
 |_ 📋 index.ts
+```
+
+### 📌 Dependencies Module
+```json
+{
+  "name": "node-typescript-init",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon",
+    "build": "tsc && node dist",
+    "prepare": "husky install",
+    "test": "cross-env NODE_ENV=test jest --setupFiles dotenv/config --forceExit --detectOpenHandles"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/express": "^4.17.13",
+    "@types/jest": "^28.1.6",
+    "@types/mongoose": "^5.11.97",
+    "@types/node": "^17.0.25",
+    "@types/supertest": "^2.0.12",
+    "@typescript-eslint/eslint-plugin": "^5.30.6",
+    "@typescript-eslint/parser": "^5.30.6",
+    "babel-jest": "^28.1.3",
+    "husky": "^8.0.0",
+    "jest": "^28.1.3",
+    "nodemon": "^2.0.15",
+    "supertest": "^6.2.4",
+    "ts-jest": "^28.0.7",
+    "ts-node": "^10.7.0",
+    "typescript": "^4.6.3"
+  },
+  "dependencies": {
+    "@babel/core": "^7.18.9",
+    "@babel/preset-env": "^7.18.9",
+    "@types/cors": "^2.8.12",
+    "@types/lodash": "^4.14.182",
+    "axios": "^0.27.2",
+    "cors": "^2.8.5",
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.0.1",
+    "eslint": "^8.19.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "express": "^4.17.3",
+    "express-validator": "^6.14.0",
+    "lodash": "^4.17.21",
+    "mongoose": "^6.4.4",
+    "prettier": "^2.7.1"
+  }
+}
 ```
 
 ### 💼 Roles (API) & Progess Status
