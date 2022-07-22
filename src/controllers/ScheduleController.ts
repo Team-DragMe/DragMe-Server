@@ -185,9 +185,11 @@ const deleteTime = async (req: Request, res: Response) => {
  */
 const dayReschedule = async (req: Request, res: Response) => {
   let { scheduleId } = req.query;
+  const userId: string = '62cd27ae39f42cfbf520009a';
   try {
     const delaySchedule = await ScheduleService.dayReschedule(
-      scheduleId as string
+      scheduleId as string,
+      userId
     );
 
     if (!delaySchedule) {
@@ -524,10 +526,12 @@ const getRoutines = async (req: Request, res: Response) => {
  */
 const rescheduleDay = async (req: Request, res: Response) => {
   const { scheduleId } = req.query;
+  const userId: string = '62cd27ae39f42cfbf520009a';
   const scheduleUpdateDto: ScheduleUpdateDto = req.body;
 
   try {
     const moveBackSchedule = await ScheduleService.rescheduleDay(
+      userId,
       scheduleId as string,
       scheduleUpdateDto
     );
