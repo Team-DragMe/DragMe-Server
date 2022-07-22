@@ -185,9 +185,11 @@ const deleteTime = async (req: Request, res: Response) => {
  */
 const dayReschedule = async (req: Request, res: Response) => {
   let { scheduleId } = req.query;
+  const userId: string = '62cd27ae39f42cfbf520009a';
   try {
     const delaySchedule = await ScheduleService.dayReschedule(
-      scheduleId as string
+      scheduleId as string,
+      userId
     );
 
     if (!delaySchedule) {
@@ -333,10 +335,10 @@ const completeSchedule = async (req: Request, res: Response) => {
         .status(statusCode.NOT_FOUND)
         .send(util.fail(statusCode.NOT_FOUND, message.NOT_FOUND));
     }
-    if (isCompleted !== 'true' && isCompleted !== 'false'){
+    if (isCompleted !== 'true' && isCompleted !== 'false') {
       return res
         .status(statusCode.NOT_FOUND)
-        .send(util.fail(statusCode.NOT_FOUND, message.NOT_FOUND));      
+        .send(util.fail(statusCode.NOT_FOUND, message.NOT_FOUND));
     }
     res
       .status(statusCode.OK)
@@ -524,10 +526,12 @@ const getRoutines = async (req: Request, res: Response) => {
  */
 const rescheduleDay = async (req: Request, res: Response) => {
   const { scheduleId } = req.query;
+  const userId: string = '62cd27ae39f42cfbf520009a';
   const scheduleUpdateDto: ScheduleUpdateDto = req.body;
 
   try {
     const moveBackSchedule = await ScheduleService.rescheduleDay(
+      userId,
       scheduleId as string,
       scheduleUpdateDto
     );
