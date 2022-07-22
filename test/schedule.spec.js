@@ -88,7 +88,7 @@ describe('계획블록 완료하기 [PATCH] /schedule/complete?scheduleId=', () 
     await request(app)
       .patch('/schedule/complete')
       .set('Content-Type', 'application/json')
-      .query({ scheduleId: '62d7cf0a5fb95366f7329552' })
+      .query({ scheduleId: '62d6619fdaa86965b4ca053e' })
       .expect(200)
       .expect('Content-Type', /json/);
   });
@@ -152,7 +152,7 @@ describe('계획블록 수정 [PATCH] /schedule?scheduleId=', () => {
     await request(app)
       .patch('/schedule')
       .set('Content-Type', 'application/json')
-      .query({ scheduleId: '62d8fd7f6e6f967cd9010f8a' })
+      .query({ scheduleId: '62d6e01bdaa86965b4ca0547' })
       .send({
         title: '수정 API 테스트',
         categoryColorCode: '#success',
@@ -303,6 +303,147 @@ describe('계획블록 순서 변경 [PATCH] /schedule/order?scheduleId=', () =>
       })
       .expect(200)
       .expect('Content-Type', /json/);
+  });
+});
+
+describe('계획블록 시간 설정 [POST] /schedule/time?scheduleId=', () => {
+  it('201 - 계획블록 시간 생성 성공', async () => {
+    await request(app)
+      .post('/schedule/time')
+      .set('Content-Type', 'application/json')
+      .query({ scheduleId: '62d6e019daa86965b4ca0544' })
+      .send({ 
+        isUsed: false, 
+        timeBlockNumbers: [11, 12, 13, 14]})
+      .expect(201)
+      .expect('Content-Type', /json/);
+  });
+
+  it('404 - 존재하지 않는 데이터입니다', async () => {
+    await request(app)
+      .post('/schedule/routine-day')
+      .set('Content-Type', 'application/json')
+      .query({ scheduleId: '62d7cf0a5fb95366f7329556' })
+      .send({ 
+        isUsed: false, 
+        timeBlockNumbers: [11, 12, 13, 14]})
+      .expect(404);
+  });
+});
+
+describe('계획블록 시간 삭제 [PATCH] /schedule/time?scheduleId=', () => {
+  it('200 - 계획블록 시간 삭제 성공', async () => {
+    await request(app)
+      .patch('/schedule/time')
+      .set('Content-Type', 'application/json')
+      .query({ scheduleId: '62d596a7daa86965b4ca050b' })
+      .send({  
+        timeBlockNumbers: [7, 8]})
+      .expect(200)
+      .expect('Content-Type', /json/);
+  });
+
+  it('404 - 존재하지 않는 데이터입니다', async () => {
+    await request(app)
+      .patch('/schedule/routine-day')
+      .set('Content-Type', 'application/json')
+      .query({ scheduleId: '62d7cf0a5fb95366f7329557' })
+      .send({ 
+        timeBlockNumbers: [7, 8]})
+      .expect(404);
+  });
+});
+
+describe('계획블록 카테고리 변경 [PATCH] /schedule/category?scheduleId=', () => {
+  it('200 - 계획블록 카테고리 변경 성공', async () => {
+    await request(app)
+      .patch('/schedule/time')
+      .set('Content-Type', 'application/json')
+      .query({ scheduleId: '62d6e686daa86965b4ca054a' })
+      .send({  
+        categoryColorCode: '날 죽여줘'})
+      .expect(200)
+      .expect('Content-Type', /json/);
+  });
+
+  it('404 - 존재하지 않는 데이터입니다', async () => {
+    await request(app)
+      .patch('/schedule/routine-day')
+      .set('Content-Type', 'application/json')
+      .query({ scheduleId: '62d7cf0a5fb95366f7329558' })
+      .send({ 
+        categoryColorCode: '날 죽여줘'})
+      .expect(404);
+  });
+});
+
+describe('계획블록 카테고리 변경 [GET] /schedule/category?scheduleId=', () => {
+  it('200 - 계획블록 카테고리 변경 성공', async () => {
+    await request(app)
+      .patch('/schedule/time')
+      .set('Content-Type', 'application/json')
+      .query({ scheduleId: '62d6e686daa86965b4ca054a' })
+      .send({  
+        categoryColorCode: '날 죽여줘'})
+      .expect(200)
+      .expect('Content-Type', /json/);
+  });
+
+  it('404 - 존재하지 않는 데이터입니다', async () => {
+    await request(app)
+      .patch('/schedule/routine-day')
+      .set('Content-Type', 'application/json')
+      .query({ scheduleId: '62d7cf0a5fb95366f7329558' })
+      .send({ 
+        categoryColorCode: '날 죽여줘'})
+      .expect(404);
+  });
+});
+
+describe('주간 계획 계획블록 리스트 조회 [GET] /schedule/weeks?startDate=&endDate=', () => {
+  it('200 - 주간 계획블록 리스트 조회 성공', async () => {
+    await request(app)
+      .get('/schedule/weeks')
+      .set('Content-Type', 'application/json')
+      .query({ 
+        startDate : '2022-07-17', 
+        endDate : '2022-07-23'})
+      .expect(200)
+      .expect('Content-Type', /json/);
+  });
+
+  it('400 - 필요한 값이 없습니다.', async () => {
+    await request(app)
+      .get('/schedule/weeks')
+      .set('Content-Type', 'application/json')
+      .query({ 
+        startDate : '2022-07-17', 
+      })
+      .expect(400);
+  });
+});
+
+describe('계획블록 요일 이동 [PATCH] /schedule/days?schedulId=', () => {
+  it('200 - 계획블록 요일 이동', async () => {
+    await request(app)
+      .patch('/schedule/days')
+      .set('Content-Type', 'application/json')
+      .query({ scheduleId:'62d5bd1ef19a880599c0bb4c' })
+      .send({
+        date: '2022-07-23'
+      })
+      .expect(200)
+      .expect('Content-Type', /json/);
+  });
+
+  it('404 - 존재하지 않는 데이터입니다.', async () => {
+    await request(app)
+      .patch('/schedule/weeks')
+      .set('Content-Type', 'application/json')
+      .query({ 
+        scheduleId:'62d5bd1ef19a880599c0bb4z'
+      })
+      .expect(404);
   });
 });
 
