@@ -267,6 +267,7 @@ const getReschedules = async (
   try {
     const delaySchedules = await Schedule.find({
       userId: userId,
+      subSchedules: { $exists: true, $not: { $size: 0 }},
       isReschedule: true,
     }).sort({ orderIndex: 1 });
 
