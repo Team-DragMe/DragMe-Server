@@ -90,13 +90,13 @@ const completeSchedule = async (
     if (!checkCompleteSchedule) {
       return null;
     } else {
-        await Schedule.findByIdAndUpdate(
-          scheduleId,
-          {
-            $set: { isCompleted: isCompletedToBool, usedTime: [] },
-          },
-          { new: true }
-        )
+      await Schedule.findByIdAndUpdate(
+        scheduleId,
+        {
+          $set: { isCompleted: isCompletedToBool, usedTime: [] },
+        },
+        { new: true }
+      );
       return checkCompleteSchedule;
     }
   } catch (error) {
@@ -151,11 +151,14 @@ const deleteTime = async (
     const deleteScheduleTime = await Schedule.findById(scheduleId);
     if (!deleteScheduleTime) {
       return null;
-    } else{
+    } else {
       await Schedule.findByIdAndUpdate(
         scheduleId,
         {
-          $pull: { estimatedTime: { $in: timeDto.timeBlockNumbers } , usedTime: { $in: timeDto.timeBlockNumbers } },
+          $pull: {
+            estimatedTime: { $in: timeDto.timeBlockNumbers },
+            usedTime: { $in: timeDto.timeBlockNumbers },
+          },
         },
         {
           new: true,
@@ -267,7 +270,7 @@ const getReschedules = async (
   try {
     const delaySchedules = await Schedule.find({
       userId: userId,
-      subSchedules: { $exists: true, $not: { $size: 0 }},
+      subSchedules: { $exists: true, $not: { $size: 0 } },
       isReschedule: true,
     }).sort({ orderIndex: 1 });
 
@@ -365,7 +368,7 @@ const getRoutines = async (userId: string): Promise<ScheduleListGetDto> => {
   try {
     const routines = await Schedule.find({
       userId: userId,
-      subSchedules: { $exists: true, $not: { $size: 0 }},
+      subSchedules: { $exists: true, $not: { $size: 0 } },
       isRoutine: true,
     }).sort({ orderIndex: 1 });
 
@@ -620,7 +623,7 @@ const updateSchedule = async (
     let existingSubSchedules = await Promise.all(
       existingSchedule.subSchedules.map((existingSubSchedule: any) => {
         const result = {
-          date: '',
+          date: existingSchedule.title,
           title: existingSubSchedule.title,
           categoryColorCode: existingSubSchedule.categoryColorCode,
           userId: existingSubSchedule.userId,
@@ -643,7 +646,7 @@ const updateSchedule = async (
         if (!newSubSchedule.scheduleId) {
           // id가 존재하지 않는 경우 : 새로 생성할 하위 계획 : 새로운 계획 생성 및 id 배열에 push
           const scheduleCreateDto: ScheduleCreateDto = {
-            date: '',
+            date: 'subSchedule',
             title: newSubSchedule.title,
             categoryColorCode: scheduleUpdateDto.categoryColorCode!,
             userId: existingSchedule.userId.toString(),
